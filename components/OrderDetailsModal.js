@@ -194,7 +194,8 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
     let baseUrl = '';
     switch (app) {
       case 'gpay':
-        baseUrl = 'upi://pay';
+        // Google Pay uses gpay:// scheme
+        baseUrl = 'gpay://pay';
         break;
       case 'phonepe':
         baseUrl = 'phonepe://pay';
