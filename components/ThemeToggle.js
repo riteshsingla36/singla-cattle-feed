@@ -1,9 +1,11 @@
 'use client';
 
 import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <button
@@ -12,8 +14,8 @@ export default function ThemeToggle() {
                  dark:border-white/40 dark:hover:bg-white/20
                  border-gray-600 hover:bg-gray-100
                  bg-white/10 backdrop-blur-sm"
-      title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-      aria-label="Toggle dark mode"
+      title={theme === 'dark' ? t('switchToLightMode') : t('switchToDarkMode')}
+      aria-label={t('toggleDarkMode')}
     >
       {theme === 'dark' ? (
         // Sun icon for light mode (visible on dark bg)

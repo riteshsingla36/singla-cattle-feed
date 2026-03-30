@@ -177,8 +177,8 @@ export default function ProductsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('Products')}</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your product catalogue</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('allProducts')}</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">{t('manageProductCatalogue')}</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
@@ -210,8 +210,8 @@ export default function ProductsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
             </div>
-            <h3 className="empty-state-title">No products yet</h3>
-            <p className="empty-state-description">Get started by adding your first product to the catalog.</p>
+            <h3 className="empty-state-title">{t('noProductsYet')}</h3>
+            <p className="empty-state-description">{t('getStartedProducts')}</p>
           </div>
         ) : (
           <>
@@ -220,10 +220,10 @@ export default function ProductsPage() {
               <table className="table">
                 <thead className="table-head">
                   <tr>
-                    <th>{t('Product Name')}</th>
-                    <th>Description</th>
+                    <th>{t('productName')}</th>
+                    <th>{t('description')}</th>
                     <th>{t('price')}</th>
-                    <th className="text-right">Actions</th>
+                    <th className="text-right">{t('actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -339,7 +339,7 @@ export default function ProductsPage() {
               </div>
 
               <div>
-                <label className="form-label">Description</label>
+                <label className="form-label">{t('description')}</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -362,7 +362,7 @@ export default function ProductsPage() {
               </div>
 
               <div>
-                <label className="form-label">Unit (Bag Weight)</label>
+                <label className="form-label">{t('unitBagWeight')}</label>
                 <select
                   value={formData.unit}
                   onChange={(e) => setFormData({ ...formData, unit: e.target.value })}

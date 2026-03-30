@@ -326,7 +326,7 @@ export default function PurchaseOrdersPage() {
       {/* Page Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Purchase Orders</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('purchaseOrders')}</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">Create and manage purchase orders for suppliers</p>
         </div>
         <button
@@ -955,10 +955,10 @@ export default function PurchaseOrdersPage() {
                                 }`}
                               >
                                 {order.paymentStatus === 'paid'
-                                  ? t('Paid')
+                                  ? t('paymentStatusPaid')
                                   : order.paymentStatus === 'confirmation_pending'
-                                  ? t('Confirmation Pending')
-                                  : t('Pending')}
+                                  ? t('paymentStatusConfirmationPending')
+                                  : t('paymentStatusPending')}
                               </span>
                             </td>
                             <td className="px-4 py-3">

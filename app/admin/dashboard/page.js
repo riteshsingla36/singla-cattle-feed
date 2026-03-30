@@ -72,8 +72,8 @@ export default function AdminDashboard() {
 
   const menuItems = [
     {
-      title: t('Customer Management'),
-      description: 'Add, edit, delete customers',
+      title: t('customerManagement'),
+      description: t('manageCustomerAccounts'),
       href: '/admin/customers',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,8 +84,8 @@ export default function AdminDashboard() {
       count: stats.totalCustomers,
     },
     {
-      title: t('Product Management'),
-      description: 'Manage product catalog',
+      title: t('productManagement'),
+      description: t('manageProductCatalogue'),
       href: '/admin/products',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,8 +96,8 @@ export default function AdminDashboard() {
       count: stats.totalProducts,
     },
     {
-      title: t('Price Management'),
-      description: 'Set custom prices per customer',
+      title: t('priceManagement'),
+      description: t('setCustomPricesPerCustomer'),
       href: '/admin/prices',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,8 +108,8 @@ export default function AdminDashboard() {
       count: null,
     },
     {
-      title: t('Manage Orders'),
-      description: 'View and manage all orders',
+      title: t('manageOrders'),
+      description: t('viewManageAllOrders'),
       href: '/admin/orders',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,8 +120,8 @@ export default function AdminDashboard() {
       count: stats.pendingOrders,
     },
     {
-      title: 'Purchase Orders',
-      description: 'Create and manage POs',
+      title: t('purchaseOrders'),
+      description: t('createAndManagePOs'),
       href: '/admin/purchase-orders',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#10b981] mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading Dashboard...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">{t('loading')}...</p>
         </div>
       </div>
     );
@@ -151,9 +151,9 @@ export default function AdminDashboard() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="badge badge-primary">Admin</span>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('Dashboard')}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('dashboard')}</h1>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">Manage your cattle feed business with ease</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('manageBusinessEasily')}</p>
         </div>
         <div className="flex items-center space-x-3">
           <span className="px-4 py-2 bg-[#10b981]/10 text-[#059669] dark:bg-green-900/30 dark:text-green-400 rounded-lg text-sm font-semibold border border-[#10b981]/20">
@@ -189,8 +189,8 @@ export default function AdminDashboard() {
       {/* Quick Actions */}
       <div className="card card-gradient">
         <div className="card-header">
-          <h2 className="card-title dark:text-gray-100">Quick Actions</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Common administrative tasks</p>
+          <h2 className="card-title dark:text-gray-100">{t('quickActions')}</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{t('commonTasks')}</p>
         </div>
         <div className="card-body">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -199,40 +199,40 @@ export default function AdminDashboard() {
               className="group p-6 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-[#5d8a3c] hover:bg-[#5d8a3c]/5 dark:hover:bg-[#5d8a3c]/10 transition-all duration-300 text-center"
             >
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform">👤</div>
-              <div className="font-semibold text-gray-800 dark:text-gray-100">Add Customer</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Create new customer</p>
+              <div className="font-semibold text-gray-800 dark:text-gray-100">{t('addCustomer')}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{t('createNewCustomer')}</p>
             </Link>
             <Link
               href="/admin/products?action=add"
               className="group p-6 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-[#10b981] hover:bg-[#10b981]/5 dark:hover:bg-[#10b981]/10 transition-all duration-300 text-center"
             >
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform">📦</div>
-              <div className="font-semibold text-gray-800 dark:text-gray-100">Add Product</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Add to catalog</p>
+              <div className="font-semibold text-gray-800 dark:text-gray-100">{t('addProduct')}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{t('addToCatalog')}</p>
             </Link>
             <Link
               href="/admin/orders?filter=pending"
               className="group p-6 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-[#f59e0b] hover:bg-[#f59e0b]/5 dark:hover:bg-[#f59e0b]/10 transition-all duration-300 text-center"
             >
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform">📋</div>
-              <div className="font-semibold text-gray-800 dark:text-gray-100">View Pending Orders</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{stats.pendingOrders} waiting</p>
+              <div className="font-semibold text-gray-800 dark:text-gray-100">{t('viewPendingOrders')}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{stats.pendingOrders} {t('waiting')}</p>
             </Link>
             <Link
               href="/admin/purchase-orders"
               className="group p-6 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-[#6366f1] hover:bg-[#6366f1]/5 dark:hover:bg-[#6366f1]/10 transition-all duration-300 text-center"
             >
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform">📄</div>
-              <div className="font-semibold text-gray-800 dark:text-gray-100">Purchase Orders</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{stats.totalPurchaseOrders} created</p>
+              <div className="font-semibold text-gray-800 dark:text-gray-100">{t('purchaseOrders')}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{stats.totalPurchaseOrders} {t('created')}</p>
             </Link>
             <Link
               href="/admin/prices"
               className="group p-6 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-100 dark:border-gray-700 hover:border-[#d4a853] hover:bg-[#d4a853]/5 dark:hover:bg-[#d4a853]/10 transition-all duration-300 text-center"
             >
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform">💰</div>
-              <div className="font-semibold text-gray-800 dark:text-gray-100">Update Prices</div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Set custom pricing</p>
+              <div className="font-semibold text-gray-800 dark:text-gray-100">{t('updatePrices')}</div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{t('setCustomPricing')}</p>
             </Link>
           </div>
         </div>

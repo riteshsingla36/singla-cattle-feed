@@ -78,7 +78,7 @@ export const ClientLayout = ({ children }) => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link href="/" className="text-xl font-bold">
-                Cattle Feed Distribution
+                {t('appName')}
               </Link>
             </div>
 
@@ -130,7 +130,7 @@ export const ClientLayout = ({ children }) => {
                       onClick={handleSwitchBack}
                       className="px-3 py-2 rounded-md text-sm font-medium bg-orange-600 hover:bg-orange-700"
                     >
-                      Switch back to Admin
+                      {t('switchBackToAdmin')}
                     </button>
                   )}
 

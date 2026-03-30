@@ -145,10 +145,10 @@ export default function PricesPage() {
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-          {t('Price Management')}
+          {t('priceManagement')}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">
-          Set custom prices for individual customers
+          {t('setCustomPricesDescription')}
         </p>
       </div>
 
@@ -169,16 +169,16 @@ export default function PricesPage() {
         <div className="lg:col-span-1">
           <div className="card sticky top-6">
             <div className="card-header">
-              <h2 className="card-title dark:text-gray-100">Select Customer</h2>
+              <h2 className="card-title dark:text-gray-100">{t('selectCustomer')}</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Choose a customer to set prices
+                {t('chooseCustomerSetPrices')}
               </p>
             </div>
             <div className="card-body p-0">
               {customers.length === 0 ? (
                 <div className="empty-state py-8">
                   <p className="text-gray-500 dark:text-gray-400">
-                    No customers available
+                    {t('noCustomersAvailable')}
                   </p>
                 </div>
               ) : (
@@ -218,7 +218,7 @@ export default function PricesPage() {
                                   clipRule="evenodd"
                                 />
                               </svg>
-                              Selected
+                              {t('selected')}
                             </span>
                           )}
                         </div>
@@ -232,7 +232,7 @@ export default function PricesPage() {
                             >
                               <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                             </svg>
-                            {Object.keys(customerPrices).length} custom prices set
+                            {Object.keys(customerPrices).length} {t('customPricesSet')}
                           </div>
                         )}
                       </div>
@@ -250,13 +250,13 @@ export default function PricesPage() {
             <div className="card">
               <div className="card-header">
                 <h2 className="card-title dark:text-gray-100">
-                  Set Custom Price for{' '}
+                  {t('setCustomPriceFor')}{' '}
                   <span className="text-[#10b981]">
                     {customers.find((c) => c.id === selectedCustomer)?.name}
                   </span>
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Configure pricing for this customer
+                  {t('configurePricingCustomer')}
                 </p>
               </div>
               <div className="card-body space-y-6">
@@ -269,7 +269,7 @@ export default function PricesPage() {
                       onChange={(e) => handleProductChange(e.target.value)}
                       className="form-input"
                     >
-                      <option value="">Select a product</option>
+                      <option value="">{t('selectProduct')}</option>
                       {products.map((product) => (
                         <option key={product.id} value={product.id}>
                           {product.name} ({t('standardPrice')}:{' '}
@@ -291,10 +291,10 @@ export default function PricesPage() {
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
                         className="form-input"
-                        placeholder="Enter custom price"
+                        placeholder={t('enterCustomPrice')}
                       />
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Customer will see this price instead of the standard price
+                        {t('priceInsteadStandard')}
                       </p>
                     </div>
                   )}
@@ -317,12 +317,12 @@ export default function PricesPage() {
                               d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                             />
                           </svg>
-                          Price Summary
+                          {t('priceSummary')}
                         </h4>
                         <div className="space-y-4">
                           <div className="flex justify-between items-center pb-3 border-b border-blue-200 dark:border-blue-800">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Customer
+                              {t('customer')}
                             </span>
                             <span className="font-semibold text-gray-900 dark:text-gray-100">
                               {customers.find((c) => c.id === selectedCustomer)?.name}
@@ -330,7 +330,7 @@ export default function PricesPage() {
                           </div>
                           <div className="flex justify-between items-center pb-3 border-b border-blue-200 dark:border-blue-800">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Product
+                              {t('product')}
                             </span>
                             <span className="font-semibold text-gray-900 dark:text-gray-100">
                               {products.find((p) => p.id === selectedProduct)?.name}
@@ -338,7 +338,7 @@ export default function PricesPage() {
                           </div>
                           <div className="flex justify-between items-center pb-3 border-b border-blue-200 dark:border-blue-800">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Standard Price
+                              {t('standardPrice')}
                             </span>
                             <span className="font-semibold text-gray-900 dark:text-gray-100">
                               {formatCurrency(
@@ -349,7 +349,7 @@ export default function PricesPage() {
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-blue-600 dark:text-blue-400 font-semibold">
-                              Custom Price
+                              {t('yourCustomPrice')}
                             </span>
                             <span className="text-2xl font-bold text-[#10b981]">
                               {formatCurrency(parseFloat(price) || 0)}
@@ -368,7 +368,7 @@ export default function PricesPage() {
                                   clipRule="evenodd"
                                 />
                               </svg>
-                              <span className="font-medium">Discount applied</span>
+                              <span className="font-medium">{t('discountApplied')}</span>
                             </div>
                           )}
                           {parseFloat(price) > parseFloat(products.find((p) => p.id === selectedProduct)?.price) && (
@@ -385,7 +385,7 @@ export default function PricesPage() {
                                 />
                               </svg>
                               <span className="font-medium">
-                                Higher than standard price
+                                {t('higherThanStandard')}
                               </span>
                             </div>
                           )}

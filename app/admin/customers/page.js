@@ -262,8 +262,8 @@ export default function CustomersPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('Customers')}</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage customer accounts</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{t('allCustomers')}</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">{t('manageCustomerAccounts')}</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
@@ -295,8 +295,8 @@ export default function CustomersPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
-            <h3 className="empty-state-title">No customers yet</h3>
-            <p className="empty-state-description">Get started by adding your first customer.</p>
+            <h3 className="empty-state-title">{t('noCustomersYet')}</h3>
+            <p className="empty-state-description">{t('getStartedCustomers')}</p>
           </div>
         ) : (
           <>
@@ -307,8 +307,8 @@ export default function CustomersPage() {
                   <tr>
                     <th>{t('name')}</th>
                     <th>{t('phone')}</th>
-                    <th>Role</th>
-                    <th className="text-right">Actions</th>
+                    <th>{t('role')}</th>
+                    <th className="text-right">{t('actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -325,12 +325,12 @@ export default function CustomersPage() {
                       </td>
                       <td>
                         {customer.isAdmin ? (
-                          <span className="badge badge-error">Admin</span>
+                          <span className="badge badge-error">{t('admin')}</span>
                         ) : (
-                          <span className="badge badge-success">Customer</span>
+                          <span className="badge badge-success">{t('customer')}</span>
                         )}
                         {customer.isEnabled === false && (
-                          <span className="ml-2 badge badge-gray-600">Inactive</span>
+                          <span className="ml-2 badge badge-gray-600">{t('disabled')}</span>
                         )}
                       </td>
                       <td className="text-right">
@@ -363,9 +363,15 @@ export default function CustomersPage() {
                             onClick={() => handleImpersonate(customer)}
                             disabled={impersonating || !customer.userId || customer.isEnabled === false}
                             className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 font-medium text-sm px-2 py-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            title={customer.userId && customer.isEnabled !== false ? "Login as this customer" : customer.isEnabled === false ? "Customer account is disabled" : "No user account linked"}
+                            title={
+                              customer.userId && customer.isEnabled !== false
+                                ? t('loginAsThisCustomer')
+                                : customer.isEnabled === false
+                                ? t('customerAccountDisabled')
+                                : t('noUserAccountLinked')
+                            }
                           >
-                            Login as
+                            {t('loginAs')}
                           </button>
                           <button
                             onClick={() => handleEdit(customer)}
@@ -402,13 +408,13 @@ export default function CustomersPage() {
                       </h3>
                       <div className="mt-1 flex flex-wrap gap-1">
                         {customer.isAdmin && (
-                          <span className="badge badge-error text-xs">Admin</span>
+                          <span className="badge badge-error text-xs">{t('admin')}</span>
                         )}
                         {customer.isEnabled === false && (
-                          <span className="badge badge-gray-600 text-xs">Disabled</span>
+                          <span className="badge badge-gray-600 text-xs">{t('disabled')}</span>
                         )}
                         {!customer.isAdmin && customer.isEnabled !== false && (
-                          <span className="badge badge-success text-xs">Customer</span>
+                          <span className="badge badge-success text-xs">{t('customer')}</span>
                         )}
                       </div>
                     </div>
@@ -449,12 +455,12 @@ export default function CustomersPage() {
                         onClick={() => handleImpersonate(customer)}
                         disabled={impersonating}
                         className="inline-flex items-center px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm font-medium rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Login as this customer"
+                        title={t('loginAsThisCustomer')}
                       >
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                         </svg>
-                        Login as
+                        {t('loginAs')}
                       </button>
                     )}
                     <button
@@ -528,7 +534,7 @@ export default function CustomersPage() {
                 />
                 {editingCustomer && (
                   <p className="text-xs text-gray-500 mt-1">
-                    Phone number cannot be changed
+                    {t('phoneNumberCannotBeChanged')}
                   </p>
                 )}
               </div>
@@ -548,7 +554,7 @@ export default function CustomersPage() {
               )}
 
               <div>
-                <label className="form-label">Is Admin</label>
+                <label className="form-label">{t('isAdmin')}</label>
                 <label className="flex items-center">
                   <input
                     type="checkbox"
@@ -556,10 +562,10 @@ export default function CustomersPage() {
                     onChange={(e) => setFormData({ ...formData, isAdmin: e.target.checked })}
                     className="mr-2"
                   />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Is Admin</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('isAdmin')}</span>
                 </label>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Admin users can access the admin panel
+                  {t('adminUsersCanAccessAdminPanel')}
                 </p>
               </div>
 
