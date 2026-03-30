@@ -27,7 +27,8 @@
       "Bash(npx next:*)",
       "Bash(node:*)",
       "Bash(npx eslint:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(ls -la *.md)"
     ]
   }
 }

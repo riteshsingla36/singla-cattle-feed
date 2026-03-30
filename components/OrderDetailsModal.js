@@ -104,11 +104,10 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
       }).format(amount);
     };
 
-    // Construct admin order details URL using custom scheme st://
-    // This opens the Flutter app directly if installed.
-    // Format: st://admin/orders?orderId={id}
-    // See CUSTOM_URL_SCHEME_SETUP.md for Flutter configuration.
-    const adminOrderUrl = `st://admin/orders?orderId=${orderToShare.id}`;
+    // Construct redirect URL that will attempt to open the app first
+    // The redirect page will try to open st:// scheme, then fallback to browser
+    // Format: {ORIGIN}/admin/orders-redirect?orderId={id}
+    const adminOrderUrl = `${window.location.origin}/admin/orders-redirect?orderId=${orderToShare.id}`;
 
     let message = `*${t('orderDetails')}*\n\n`;
     message += `*${t('orderId')}:* #${orderToShare.id.substring(0, 8)}\n`;
