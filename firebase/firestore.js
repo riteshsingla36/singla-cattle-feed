@@ -1,0 +1,456 @@
+import { db } from './firebaseConfig';
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  serverTimestamp,
+  setDoc,
+} from 'firebase/firestore';
+
+// ============== CUSTOMERS ==============
+export const addCustomer = async (customerData) => {
+  try {
+    const docRef = await addDoc(collection(db, 'customers'), {
+      ...customerData,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getCustomerByPhone = async (phone) => {
+  const q = query(collection(db, 'customers'), where('phone', '==', phone));
+  const querySnapshot = await getDocs(q);
+  if (!querySnapshot.empty) {
+    return { success: true, customer: querySnapshot.docs[0].data(), id: querySnapshot.docs[0].id };
+  }
+  return { success: false, message: 'Customer not found' };
+};
+
+export const getCustomerById = async (customerId) => {
+  const docRef = doc(db, 'customers', customerId);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { success: true, customer: docSnap.data() };
+  }
+  return { success: false, message: 'Customer not found' };
+};
+
+export const getCustomerByUserId = async (userId) => {
+  try {
+    const q = query(collection(db, 'customers'), where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      return { success: true, customer: querySnapshot.docs[0].data(), id: querySnapshot.docs[0].id };
+    }
+    return { success: false, message: 'Customer not found' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const updateCustomer = async (customerId, data) => {
+  try {
+    const customerRef = doc(db, 'customers', customerId);
+    await updateDoc(customerRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const deleteCustomer = async (customerId) => {
+  try {
+    await deleteDoc(doc(db, 'customers', customerId));
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getAllCustomers = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'customers'));
+    const customers = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return { success: true, customers };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// ============== PRODUCTS ==============
+export const addProduct = async (productData) => {
+  try {
+    const docRef = await addDoc(collection(db, 'products'), {
+      ...productData,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getProduct = async (productId) => {
+  const docRef = doc(db, 'products', productId);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { success: true, product: docSnap.data() };
+  }
+  return { success: false, message: 'Product not found' };
+};
+
+export const getAllProducts = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'products'));
+    const products = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return { success: true, products };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const updateProduct = async (productId, data) => {
+  try {
+    const productRef = doc(db, 'products', productId);
+    await updateDoc(productRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const deleteProduct = async (productId) => {
+  try {
+    await deleteDoc(doc(db, 'products', productId));
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// ============== CUSTOMER PRICES ==============
+export const setCustomerPrice = async (customerId, productId, price) => {
+  try {
+    const priceRef = doc(db, 'customerPrices', `${customerId}_${productId}`);
+    await updateDoc(priceRef, {
+      customerId,
+      productId,
+      price,
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    // If doc doesn't exist, create it
+    try {
+      const docRef = await addDoc(collection(db, 'customerPrices'), {
+        customerId,
+        productId,
+        price,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return { success: true, id: docRef.id };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  }
+};
+
+export const getCustomerPrice = async (customerId, productId) => {
+  const q = query(
+    collection(db, 'customerPrices'),
+    where('customerId', '==', customerId),
+    where('productId', '==', productId)
+  );
+  const querySnapshot = await getDocs(q);
+  if (!querySnapshot.empty) {
+    return { success: true, price: querySnapshot.docs[0].data().price };
+  }
+  return { success: false, message: 'Price not set' };
+};
+
+export const getCustomerAllPrices = async (customerId) => {
+  try {
+    const q = query(
+      collection(db, 'customerPrices'),
+      where('customerId', '==', customerId)
+    );
+    const querySnapshot = await getDocs(q);
+    const prices = {};
+    querySnapshot.docs.forEach((doc) => {
+      prices[doc.data().productId] = doc.data().price;
+    });
+    return { success: true, prices };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Get all custom prices for a specific product across all customers
+export const getAllCustomerPricesForProduct = async (productId) => {
+  try {
+    const q = query(
+      collection(db, 'customerPrices'),
+      where('productId', '==', productId)
+    );
+    const querySnapshot = await getDocs(q);
+    const prices = {};
+    querySnapshot.docs.forEach((doc) => {
+      const data = doc.data();
+      prices[data.customerId] = data.price;
+    });
+    return { success: true, prices };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Get price for customer and product (returns custom price if exists, otherwise get product base price)
+export const getPriceForCustomer = async (customerId, productId) => {
+  // First check for custom price
+  const customPriceResult = await getCustomerPrice(customerId, productId);
+  if (customPriceResult.success) {
+    return { success: true, price: customPriceResult.price };
+  }
+
+  // Otherwise get product base price
+  const productResult = await getProduct(productId);
+  if (productResult.success) {
+    return { success: true, price: productResult.product.price };
+  }
+
+  return { success: false, message: 'Price not found' };
+};
+
+// ============== ORDERS ==============
+export const placeOrder = async (orderData) => {
+  try {
+    const docRef = await addDoc(collection(db, 'orders'), {
+      ...orderData,
+      status: 'pending',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getOrder = async (orderId) => {
+  const docRef = doc(db, 'orders', orderId);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { success: true, order: docSnap.data() };
+  }
+  return { success: false, message: 'Order not found' };
+};
+
+export const getCustomerOrders = async (customerId) => {
+  try {
+    const q = query(
+      collection(db, 'orders'),
+      where('customerId', '==', customerId),
+      orderBy('createdAt', 'desc')
+    );
+    const querySnapshot = await getDocs(q);
+    const orders = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return { success: true, orders };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getAllOrders = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'orders'));
+    const orders = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return { success: true, orders };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    await updateDoc(orderRef, {
+      status,
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const updatePaymentProof = async (orderId, paymentScreenshotUrl) => {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    await updateDoc(orderRef, {
+      paymentScreenshotUrl,
+      paymentStatus: 'paid',
+      paidAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// ============== QR CODE SETTINGS ==============
+export const getQRCodeSettings = async () => {
+  try {
+    const docRef = doc(db, 'settings', 'payment');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { success: true, settings: docSnap.data() };
+    }
+    return { success: false, message: 'Settings not found' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const setQRCodeSettings = async (qrCodeUrl, upiId) => {
+  try {
+    // Use setDoc with merge option to create or update the 'payment' document
+    await setDoc(doc(db, 'settings', 'payment'), {
+      qrCodeUrl,
+      upiId,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// ============== PURCHASE ORDERS ==============
+export const createPurchaseOrder = async (adminId, selectedOrderIds, items, totalAmount, totalCustomerAmount = null, totalProfit = null) => {
+  try {
+    const docRef = await addDoc(collection(db, 'purchaseOrders'), {
+      adminId,
+      selectedOrderIds,
+      items, // array of { productId, productName, quantity, standardPrice, standardSubtotal, customerSubtotal, profit }
+      totalAmount,
+      totalCustomerAmount,
+      totalProfit,
+      status: 'pending',
+      billUrl: null,
+      deliveredAt: null,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getAllPurchaseOrders = async () => {
+  try {
+    const querySnapshot = await getDocs(
+      query(collection(db, 'purchaseOrders'), orderBy('createdAt', 'desc'))
+    );
+    const purchaseOrders = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return { success: true, purchaseOrders };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getPurchaseOrder = async (purchaseOrderId) => {
+  try {
+    const docRef = doc(db, 'purchaseOrders', purchaseOrderId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { success: true, purchaseOrder: docSnap.data() };
+    }
+    return { success: false, message: 'Purchase order not found' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const updatePurchaseOrderStatus = async (purchaseOrderId, status, billUrl = null) => {
+  try {
+    const poRef = doc(db, 'purchaseOrders', purchaseOrderId);
+    const updateData = {
+      status,
+      updatedAt: serverTimestamp(),
+    };
+    if (billUrl) {
+      updateData.billUrl = billUrl;
+    }
+    if (status === 'delivered') {
+      updateData.deliveredAt = serverTimestamp();
+    }
+    await updateDoc(poRef, updateData);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getOrdersByIds = async (orderIds) => {
+  try {
+    const orderPromises = orderIds.map((orderId) => getDoc(doc(db, 'orders', orderId)));
+    const orderSnapshots = await Promise.all(orderPromises);
+    const orders = orderSnapshots
+      .filter((snap) => snap.exists())
+      .map((snap) => ({ id: snap.id, ...snap.data() }));
+    return { success: true, orders };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const bulkUpdateOrderStatus = async (orderIds, status) => {
+  try {
+    const updatePromises = orderIds.map((orderId) =>
+      updateDoc(doc(db, 'orders', orderId), {
+        status,
+        updatedAt: serverTimestamp(),
+      })
+    );
+    await Promise.all(updatePromises);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};

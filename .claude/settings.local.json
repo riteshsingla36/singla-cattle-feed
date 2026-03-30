@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:akijfeed.com)",
+      "Bash(grep -r \"w-1[0-9] h-1[0-9]\" app/**/*.js)",
+      "Bash(sed -i 's/w-10 h-10 text-gray-400/w-5 h-5 text-gray-400/g' app/checkout/page.js)",
+      "Bash(sed -i 's/w-10 h-10 text-\\\\[#10b981\\\\]/w-5 h-5 text-[#10b981]/g' app/checkout/page.js)",
+      "Bash(sed -i 's/w-10 h-10 text-gray-400/w-5 h-5 text-gray-400/g' app/prices/page.js)",
+      "Bash(sed -i 's/w-10 h-10 text-\\\\[#10b981\\\\]/w-5 h-5 text-[#10b981]/g' app/prices/page.js)",
+      "Bash(sed -i 's/w-10 h-10 bg-\\\\[#10b981\\\\]\\\\/10 rounded-full flex items-center justify-center/w-8 h-8 bg-[#10b981]\\\\/10 rounded-full flex items-center justify-center/g' app/dashboard/page.js)",
+      "Bash(sed -i 's/w-10 h-10 bg-\\\\[#f59e0b\\\\]\\\\/10 rounded-full flex items-center justify-center/w-8 h-8 bg-[#f59e0b]\\\\/10 rounded-full flex items-center justify-center/g' app/dashboard/page.js)",
+      "Bash(sed -i 's/w-7 h-7 text-\\\\[#10b981\\\\]/w-4 h-4 text-[#10b981]/g' app/dashboard/page.js)",
+      "Bash(sed -i 's/w-7 h-7 text-\\\\[#f59e0b\\\\]/w-4 h-4 text-[#f59e0b]/g' app/dashboard/page.js)",
+      "Bash(grep -r 'w-1[0-9] h-1[0-9]' app/admin/*.js app/**/*.js)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(npm run:*)",
+      "Bash(C:UsersritesDesktopsinglacattle-feed-appappadmindashboardpage.js C:UsersritesDesktopsinglacattle-feed-appappadminorderspage.js)",
+      "Bash(done)",
+      "Bash(find C:UsersritesDesktopsinglacattle-feed-app -name *Context* -type f)",
+      "Bash(find C:UsersritesDesktopsinglacattle-feed-app -name tailwind.config.* -type f)",
+      "Bash(iconv -f utf-8 -t utf-8 -c)",
+      "Bash(grep:*)",
+      "Bash(npm list:*)",
+      "Bash(npx babel:*)",
+      "Bash(npx next:*)",
+      "Bash(node:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}
