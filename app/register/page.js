@@ -117,8 +117,8 @@ export default function RegisterPage() {
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-primary rounded-2xl shadow-lg mb-4">
-            <span className="text-white font-bold text-2xl">ST</span>
+          <div className="inline-flex items-center justify-center w-24 h-24 mb-4">
+            <img src="/logo.png" alt="Singla Traders" className="w-24 h-24 object-contain" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Singla Traders</h1>
           <p className="text-sm text-gray-600 mt-1">Premium Cattle Feed Distribution</p>

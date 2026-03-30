@@ -133,8 +133,8 @@ export const CustomerNav = ({ children }) => {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center space-x-3 p-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="w-10 h-10 bg-[#10b981] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">ST</span>
+            <div className="w-12 h-12 flex items-center justify-center">
+              <img src="/logo.png" alt="Singla Traders" className="w-12 h-12 object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold text-gray-900 dark:text-gray-100 leading-tight">Singla Traders</span>
@@ -207,8 +207,8 @@ export const CustomerNav = ({ children }) => {
               </button>
 
               <Link href="/dashboard" className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-[#10b981] rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">ST</span>
+                <div className="w-12 h-12 flex items-center justify-center">
+                  <img src="/logo.png" alt="Singla Traders" className="w-12 h-12 object-contain" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-lg font-bold text-gray-900 dark:text-gray-100 leading-tight">Singla Traders</span>
