@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { loginCustomer, logoutCustomer } from '@/firebase/auth';
+import { loginCustomer, logoutCustomer, getCurrentUser } from '@/firebase/auth';
 import { getCustomerByPhone } from '@/firebase/firestore';
 
 export default function LoginPage() {
@@ -13,6 +13,49 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = getCurrentUser();
+      if (user) {
+        // Check if user is admin or customer
+        try {
+          const email = user.email;
+          if (email) {
+            const phone = email.split('@')[0];
+            if (phone) {
+              const customerResult = await getCustomerByPhone(phone);
+              if (customerResult.success) {
+                const isAdmin = !!customerResult.customer.isAdmin;
+                const isEnabled = customerResult.customer.isEnabled !== false;
+                if (!isEnabled) {
+                  // User is disabled, log them out and stay on login page
+                  await logoutCustomer();
+                  return;
+                }
+                if (isAdmin) {
+                  router.push('/admin/dashboard');
+                } else {
+                  router.push('/dashboard');
+                }
+              } else {
+                // Customer record not found, log out
+                await logoutCustomer();
+              }
+            } else {
+              // Invalid email format, log out
+              await logoutCustomer();
+            }
+          }
+        } catch (err) {
+          console.error('Auth check error:', err);
+          await logoutCustomer();
+        }
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
