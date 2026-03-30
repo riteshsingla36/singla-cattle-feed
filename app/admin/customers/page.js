@@ -8,7 +8,7 @@ import {
   updateCustomer,
   toggleCustomerStatus,
 } from '@/firebase/firestore';
-import { getCurrentUser, signInWithCustomToken } from '@/firebase/auth';
+import { getCurrentUser, signInWithCustomToken, auth } from '@/firebase/auth';
 import { validatePhone } from '@/lib/validations';
 
 export default function CustomersPage() {
@@ -26,6 +26,7 @@ export default function CustomersPage() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [impersonating, setImpersonating] = useState(false);
+  const [impersonatingLoading, setImpersonatingLoading] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
@@ -195,24 +196,28 @@ export default function CustomersPage() {
 
   const handleImpersonate = async (customer) => {
     setError('');
+    setImpersonatingLoading(true);
 
     // Check if customer is enabled
     if (customer.isEnabled === false) {
       setError('Cannot impersonate this customer: account is disabled');
+      setImpersonatingLoading(false);
       return;
     }
 
     // Check if customer has a userId (required for impersonation)
     if (!customer.userId) {
       setError('Cannot impersonate this customer: no user account linked');
+      setImpersonatingLoading(false);
       return;
     }
 
     try {
       // Get current user's ID token
-      const currentUser = auth.currentUser;
+      const currentUser = getCurrentUser();
       if (!currentUser) {
         setError('You must be logged in as admin to impersonate');
+        setImpersonatingLoading(false);
         return;
       }
 
@@ -254,6 +259,8 @@ export default function CustomersPage() {
     } catch (err) {
       setError('Failed to login as customer: ' + err.message);
       console.error('Impersonation error:', err);
+    } finally {
+      setImpersonatingLoading(false);
     }
   };
 
@@ -361,8 +368,8 @@ export default function CustomersPage() {
 
                           <button
                             onClick={() => handleImpersonate(customer)}
-                            disabled={impersonating || !customer.userId || customer.isEnabled === false}
-                            className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 font-medium text-sm px-2 py-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={impersonating || impersonatingLoading || !customer.userId || customer.isEnabled === false}
+                            className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 font-medium text-sm px-2 py-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                             title={
                               customer.userId && customer.isEnabled !== false
                                 ? t('loginAsThisCustomer')
@@ -371,6 +378,12 @@ export default function CustomersPage() {
                                 : t('noUserAccountLinked')
                             }
                           >
+                            {impersonatingLoading && (
+                              <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                            )}
                             {t('loginAs')}
                           </button>
                           <button
@@ -453,11 +466,17 @@ export default function CustomersPage() {
                     {customer.userId && customer.isEnabled !== false && (
                       <button
                         onClick={() => handleImpersonate(customer)}
-                        disabled={impersonating}
-                        className="inline-flex items-center px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm font-medium rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={impersonating || impersonatingLoading}
+                        className="inline-flex items-center px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm font-medium rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed gap-1"
                         title={t('loginAsThisCustomer')}
                       >
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {impersonatingLoading && (
+                          <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        )}
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                         </svg>
                         {t('loginAs')}
