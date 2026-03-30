@@ -72,6 +72,19 @@ export const updateCustomer = async (customerId, data) => {
   }
 };
 
+export const toggleCustomerStatus = async (customerId, isEnabled) => {
+  try {
+    const customerRef = doc(db, 'customers', customerId);
+    await updateDoc(customerRef, {
+      isEnabled,
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
 export const deleteCustomer = async (customerId) => {
   try {
     await deleteDoc(doc(db, 'customers', customerId));

@@ -92,6 +92,7 @@ export async function POST(request) {
       phone: customerPhone,
       userId: userRecord.uid,
       isAdmin: isAdmin || false,
+      isEnabled: true, // New customers are enabled by default
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });

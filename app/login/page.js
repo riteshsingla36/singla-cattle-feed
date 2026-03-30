@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { loginCustomer } from '@/firebase/auth';
+import { loginCustomer, logoutCustomer } from '@/firebase/auth';
 import { getCustomerByPhone } from '@/firebase/firestore';
 
 export default function LoginPage() {
@@ -30,6 +30,22 @@ export default function LoginPage() {
 
     if (result.success) {
       const customerResult = await getCustomerByPhone(phone);
+
+      if (!customerResult.success) {
+        setError('Customer account not found');
+        setIsLoading(false);
+        return;
+      }
+
+      // Check if customer account is enabled
+      if (customerResult.customer.isEnabled === false) {
+        setError('Your account has been disabled. Please contact the administrator.');
+        setIsLoading(false);
+        // Logout the user who just logged in
+        await logoutCustomer();
+        return;
+      }
+
       let adminStatus = false;
       if (customerResult.success) {
         adminStatus = !!customerResult.customer.isAdmin;

@@ -6,7 +6,7 @@ import {
   getAllCustomers,
   addCustomer,
   updateCustomer,
-  deleteCustomer,
+  toggleCustomerStatus,
 } from '@/firebase/firestore';
 import { getCurrentUser, signInWithCustomToken } from '@/firebase/auth';
 import { validatePhone } from '@/lib/validations';
@@ -167,14 +167,16 @@ export default function CustomersPage() {
     setShowModal(true);
   };
 
-  const handleDelete = async (customerId) => {
-    if (!confirm('Are you sure you want to delete this customer?')) return;
+  const handleToggleStatus = async (customerId, currentStatus, customerName) => {
+    const newStatus = !currentStatus;
+    const action = newStatus ? 'enable' : 'disable';
+    if (!confirm(`Are you sure you want to ${action} ${customerName}?`)) return;
 
-    const result = await deleteCustomer(customerId);
+    const result = await toggleCustomerStatus(customerId, newStatus);
     if (result.success) {
       fetchCustomers();
     } else {
-      alert('Failed to delete customer: ' + result.error);
+      alert(`Failed to ${action} customer: ${result.error}`);
     }
   };
 
@@ -193,6 +195,12 @@ export default function CustomersPage() {
 
   const handleImpersonate = async (customer) => {
     setError('');
+
+    // Check if customer is enabled
+    if (customer.isEnabled === false) {
+      setError('Cannot impersonate this customer: account is disabled');
+      return;
+    }
 
     // Check if customer has a userId (required for impersonation)
     if (!customer.userId) {
@@ -308,6 +316,9 @@ export default function CustomersPage() {
                     <tr key={customer.id} className="table-row">
                       <td className="font-semibold text-gray-900 dark:text-gray-100">
                         {customer.name}
+                        {customer.isEnabled === false && (
+                          <span className="ml-2 badge badge-error text-xs">Disabled</span>
+                        )}
                       </td>
                       <td className="text-gray-600 dark:text-gray-300">
                         {customer.phone}
@@ -317,6 +328,9 @@ export default function CustomersPage() {
                           <span className="badge badge-error">Admin</span>
                         ) : (
                           <span className="badge badge-success">Customer</span>
+                        )}
+                        {customer.isEnabled === false && (
+                          <span className="ml-2 badge badge-gray-600">Inactive</span>
                         )}
                       </td>
                       <td className="text-right">
@@ -347,9 +361,9 @@ export default function CustomersPage() {
 
                           <button
                             onClick={() => handleImpersonate(customer)}
-                            disabled={impersonating || !customer.userId}
+                            disabled={impersonating || !customer.userId || customer.isEnabled === false}
                             className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 font-medium text-sm px-2 py-1 rounded hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            title={customer.userId ? "Login as this customer" : "No user account linked"}
+                            title={customer.userId && customer.isEnabled !== false ? "Login as this customer" : customer.isEnabled === false ? "Customer account is disabled" : "No user account linked"}
                           >
                             Login as
                           </button>
@@ -360,10 +374,14 @@ export default function CustomersPage() {
                             {t('edit')}
                           </button>
                           <button
-                            onClick={() => handleDelete(customer.id)}
-                            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 font-medium text-sm px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                            onClick={() => handleToggleStatus(customer.id, customer.isEnabled !== false, customer.name)}
+                            className={`font-medium text-sm px-2 py-1 rounded transition-colors ${
+                              customer.isEnabled !== false
+                                ? 'text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+                                : 'text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20'
+                            }`}
                           >
-                            {t('delete')}
+                            {customer.isEnabled !== false ? t('disable') : t('enable')}
                           </button>
                         </div>
                       </td>
@@ -382,10 +400,14 @@ export default function CustomersPage() {
                       <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
                         {customer.name}
                       </h3>
-                      <div className="mt-1">
-                        {customer.isAdmin ? (
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {customer.isAdmin && (
                           <span className="badge badge-error text-xs">Admin</span>
-                        ) : (
+                        )}
+                        {customer.isEnabled === false && (
+                          <span className="badge badge-gray-600 text-xs">Disabled</span>
+                        )}
+                        {!customer.isAdmin && customer.isEnabled !== false && (
                           <span className="badge badge-success text-xs">Customer</span>
                         )}
                       </div>
@@ -422,7 +444,7 @@ export default function CustomersPage() {
                       </svg>
                       WhatsApp
                     </a>
-                    {customer.userId && (
+                    {customer.userId && customer.isEnabled !== false && (
                       <button
                         onClick={() => handleImpersonate(customer)}
                         disabled={impersonating}
@@ -445,13 +467,21 @@ export default function CustomersPage() {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(customer.id)}
-                      className="inline-flex items-center px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-medium rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                      onClick={() => handleToggleStatus(customer.id, customer.isEnabled !== false, customer.name)}
+                      className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        customer.isEnabled !== false
+                          ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30'
+                          : 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30'
+                      }`}
                     >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        {customer.isEnabled !== false ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        )}
                       </svg>
-                      Delete
+                      {customer.isEnabled !== false ? 'Disable' : 'Enable'}
                     </button>
                   </div>
                 </div>

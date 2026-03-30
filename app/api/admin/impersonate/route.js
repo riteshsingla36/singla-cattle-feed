@@ -81,6 +81,28 @@ export async function POST(request) {
       );
     }
 
+    // Check if the target customer is enabled
+    const targetCustomerSnapshot = await admin.firestore()
+      .collection('customers')
+      .where('userId', '==', customerUserId)
+      .limit(1)
+      .get();
+
+    if (targetCustomerSnapshot.empty) {
+      return NextResponse.json(
+        { error: 'Customer profile not found' },
+        { status: 404 }
+      );
+    }
+
+    const targetCustomer = targetCustomerSnapshot.docs[0].data();
+    if (targetCustomer.isEnabled === false) {
+      return NextResponse.json(
+        { error: 'Cannot impersonate a disabled customer account' },
+        { status: 403 }
+      );
+    }
+
     // Generate a custom token for the customer
     const customToken = await admin.auth().createCustomToken(customerUserId);
 
