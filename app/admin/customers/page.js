@@ -101,21 +101,26 @@ export default function CustomersPage() {
         }
 
         // Then create customer record with userId
-        result = await addCustomer({
+        const customerData = {
           name: formData.name,
           phone: formData.phone,
           userId: authResult.user.uid,
           isAdmin: formData.isAdmin,
-        });
+        };
+        console.log('📝 Creating customer in Firestore with data:', customerData);
+        result = await addCustomer(customerData);
 
         if (result.success) {
+          console.log('✅ Firestore customer created:', result);
           setMessage('Customer added successfully');
         } else {
           // If Firestore fails, clean up the auth user to maintain consistency
+          console.error('❌ Firestore addCustomer failed:', result);
           try {
             await authResult.user.delete();
+            console.log('✅ Cleaned up auth user after failure');
           } catch (deleteError) {
-            console.error('Failed to cleanup auth user after Firestore error:', deleteError);
+            console.error('❌ Failed to cleanup auth user after Firestore error:', deleteError);
           }
           setError('Failed to create customer profile: ' + (result.error || 'Unknown error'));
         }
