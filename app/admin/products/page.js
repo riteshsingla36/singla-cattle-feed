@@ -64,7 +64,6 @@ export default function ProductsPage() {
       });
 
       await Promise.all(adjustmentPromises);
-      console.log(`Adjusted ${adjustmentPromises.length} custom prices by ₹${priceDelta}`);
     } catch (error) {
       console.error('Error adjusting custom prices:', error);
     }

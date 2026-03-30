@@ -31,17 +31,12 @@ const db = admin.firestore();
 
 async function migrateSettings() {
   try {
-    console.log('Starting QR settings migration...\n');
-
     // Get all documents from settings collection
     const settingsSnapshot = await db.collection('settings').get();
 
     if (settingsSnapshot.empty) {
-      console.log('No settings documents found. Nothing to migrate.');
       return;
     }
-
-    console.log(`Found ${settingsSnapshot.docs.length} document(s) in settings collection:\n`);
 
     let oldSettingsDoc = null;
     let oldData = null;
@@ -49,10 +44,6 @@ async function migrateSettings() {
     // Look for a document that has qrCodeUrl or upiId fields
     settingsSnapshot.forEach((doc) => {
       const data = doc.data();
-      console.log(`Document ID: ${doc.id}`);
-      console.log(`  Has qrCodeUrl: ${data.qrCodeUrl ? '✅' : '❌'}`);
-      console.log(`  Has upiId: ${data.upiId ? '✅' : '❌'}`);
-      console.log(`  Has updatedAt: ${data.updatedAt ? '✅' : '❌'}\n`);
 
       if (data.qrCodeUrl || data.upiId) {
         oldSettingsDoc = doc.id;
@@ -61,24 +52,15 @@ async function migrateSettings() {
     });
 
     if (!oldSettingsDoc || !oldData) {
-      console.log('❌ No settings document with qrCodeUrl/upiId found.');
-      console.log('Make sure you have saved QR settings at least once.');
       return;
     }
-
-    console.log(`\nFound settings in document: "${oldSettingsDoc}"`);
-    console.log('Settings to migrate:');
-    console.log(`  qrCodeUrl: ${oldData.qrCodeUrl || 'not set'}`);
-    console.log(`  upiId: ${oldData.upiId || 'not set'}\n`);
 
     // Check if 'payment' document already exists
     const paymentDoc = await db.collection('settings').doc('payment').get();
 
     if (paymentDoc.exists) {
-      console.log('⚠️  Document "payment" already exists.');
       const response = prompt('Do you want to:\n1) Skip migration\n2) Overwrite with old settings\n> ');
       if (response !== '2') {
-        console.log('Migration cancelled.');
         return;
       }
     }
@@ -90,30 +72,16 @@ async function migrateSettings() {
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
 
-    console.log('✅ Created/updated "payment" document with old settings.');
-
     // Ask if old document should be deleted (only if it's not the payment document)
     if (oldSettingsDoc !== 'payment') {
       const response = prompt(`\nDo you want to delete the old document "${oldSettingsDoc}"? (y/n): `);
       if (response.toLowerCase() === 'y') {
         await db.collection('settings').doc(oldSettingsDoc).delete();
-        console.log(`✅ Deleted old document "${oldSettingsDoc}".`);
-      } else {
-        console.log(`ℹ️  Old document "${oldSettingsDoc}" kept.`);
       }
     }
-
-    console.log('\n✅ Migration completed successfully!');
-    console.log('\nNext steps:');
-    console.log('1. Go to Admin Settings page');
-    console.log('2. The QR code URL and UPI ID should now be visible');
-    console.log('3. You can edit and save them if needed');
-
   } catch (error) {
     console.error('\n❌ Migration failed:', error);
-    console.log('\nTroubleshooting:');
-    console.log('- Make sure GOOGLE_APPLICATION_CREDENTIALS env var points to your service account key file');
-    console.log('- Or ensure you have Application Default Credentials set up');
+    throw error;
   }
 }
 

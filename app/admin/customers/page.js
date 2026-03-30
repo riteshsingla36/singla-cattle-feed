@@ -8,8 +8,7 @@ import {
   updateCustomer,
   deleteCustomer,
 } from '@/firebase/firestore';
-import { registerCustomer, signInWithCustomToken } from '@/firebase/auth';
-import { auth } from '@/firebase/firebaseConfig';
+import { getCurrentUser, signInWithCustomToken } from '@/firebase/auth';
 import { validatePhone } from '@/lib/validations';
 
 export default function CustomersPage() {
@@ -33,6 +32,14 @@ export default function CustomersPage() {
     // Check if already impersonating on mount (shouldn't happen but safe)
     setImpersonating(sessionStorage.getItem('isImpersonating') === 'true');
   }, []);
+
+  // Clear error when form data changes (user is typing)
+  useEffect(() => {
+    if (error) {
+      setError('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData]);
 
   const fetchCustomers = async () => {
     try {
@@ -88,42 +95,51 @@ export default function CustomersPage() {
           setMessage('Customer updated successfully');
         }
       } else {
-        // First create Firebase Auth user
-        const authResult = await registerCustomer(
-          formData.phone,
-          formData.password,
-          formData.name
+        // Check if phone number already exists (client-side check for better UX)
+        const phoneExists = customers.some(
+          (customer) => customer.phone === formData.phone
         );
 
-        if (!authResult.success) {
-          setError('Failed to create authentication user: ' + authResult.message);
+        if (phoneExists) {
+          setError('A customer with this phone number already exists');
+          setLoading(false);
           return;
         }
 
-        // Then create customer record with userId
-        const customerData = {
-          name: formData.name,
-          phone: formData.phone,
-          userId: authResult.user.uid,
-          isAdmin: formData.isAdmin,
-        };
-        console.log('📝 Creating customer in Firestore with data:', customerData);
-        result = await addCustomer(customerData);
-
-        if (result.success) {
-          console.log('✅ Firestore customer created:', result);
-          setMessage('Customer added successfully');
-        } else {
-          // If Firestore fails, clean up the auth user to maintain consistency
-          console.error('❌ Firestore addCustomer failed:', result);
-          try {
-            await authResult.user.delete();
-            console.log('✅ Cleaned up auth user after failure');
-          } catch (deleteError) {
-            console.error('❌ Failed to cleanup auth user after Firestore error:', deleteError);
-          }
-          setError('Failed to create customer profile: ' + (result.error || 'Unknown error'));
+        // Create customer via admin API (server-side) to avoid signing out admin
+        const user = getCurrentUser();
+        if (!user) {
+          setError('You must be logged in as admin to create customers');
+          setLoading(false);
+          return;
         }
+
+        const idToken = await user.getIdToken();
+
+        const response = await fetch('/api/admin/create-customer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            customerPhone: formData.phone,
+            password: formData.password,
+            isAdmin: formData.isAdmin,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.error || 'Failed to create customer');
+          setLoading(false);
+          return;
+        }
+
+        result = { success: true };
+        setMessage('Customer added successfully');
       }
 
       if (result.success) {
@@ -532,9 +548,20 @@ export default function CustomersPage() {
               <div className="flex space-x-3 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+                  disabled={loading}
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                  {t('save')}
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Saving...
+                    </>
+                  ) : (
+                    t('save')
+                  )}
                 </button>
                 <button
                   type="button"

@@ -32,7 +32,6 @@ export default function OrdersPage() {
       if (!user) return;
 
       const result = await getCustomerOrders(user.uid);
-      console.log(result, 'result');
       if (result.success) {
         setOrders(result.orders);
       }
