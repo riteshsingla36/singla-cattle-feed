@@ -213,8 +213,8 @@ export default function CheckoutPage() {
       const result = await placeOrder(orderData);
 
       if (result.success) {
-        if (paymentStatus === 'paid') {
-          alert('Order placed and payment confirmed!');
+        if (paymentStatus === 'confirmation_pending') {
+          alert('Order placed! Payment screenshot uploaded. Awaiting admin confirmation.');
         } else {
           alert('Order placed successfully! Please upload payment proof from your orders page.');
         }

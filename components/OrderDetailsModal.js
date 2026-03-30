@@ -1,18 +1,53 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { updatePaymentProof } from '@/firebase/firestore';
+import { useTranslation } from 'react-i18next';
+import { updatePaymentProof, getOrder } from '@/firebase/firestore';
 
-export default function OrderDetailsModal({ order, isOpen, onClose, showShareButton = false, adminWhatsAppNumbers = [], qrCodeUrl = '', upiId = '' }) {
+export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUploaded, showShareButton = false, adminWhatsAppNumbers = [], qrCodeUrl = '', upiId = '' }) {
+  const { t } = useTranslation();
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [freshOrder, setFreshOrder] = useState(order);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
+      // Reset state when modal closes
+      setFreshOrder(null);
       setPaymentScreenshot(null);
       setUploading(false);
+      setLoading(false);
+      return;
     }
-  }, [isOpen]);
+
+    // Fetch fresh order data when modal opens
+    const fetchFreshOrder = async () => {
+      if (!order?.id) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const result = await getOrder(order.id);
+        if (result.success && result.order) {
+          setFreshOrder(result.order);
+        } else {
+          // If fetch fails, keep the order from props as fallback
+          setFreshOrder(order);
+        }
+      } catch (error) {
+        console.error('Error fetching fresh order data:', error);
+        // On error, use the order from props
+        setFreshOrder(order);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFreshOrder();
+  }, [isOpen, order?.id]);
 
   const handleSubmitPayment = async (orderId) => {
     if (!paymentScreenshot) {
@@ -43,8 +78,11 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
       const result = await updatePaymentProof(orderId, screenshotUrl);
 
       if (result.success) {
-        alert('Payment proof uploaded successfully!');
+        alert('Payment proof uploaded! Awaiting admin confirmation.');
         setPaymentScreenshot(null);
+        if (onPaymentUploaded) {
+          onPaymentUploaded();
+        }
         onClose();
       } else {
         alert('Failed to update payment: ' + result.error);
@@ -57,7 +95,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
     }
   };
 
-  const shareOnWhatsApp = (order) => {
+  const shareOnWhatsApp = (orderToShare = freshOrder) => {
     const formatCurrency = (amount) => {
       return new Intl.NumberFormat('en-IN', {
         style: 'currency',
@@ -67,22 +105,22 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
     };
 
     // Construct admin order details URL
-    const adminOrderUrl = `${window.location.origin}/admin/orders?orderId=${order.id}`;
+    const adminOrderUrl = `${window.location.origin}/admin/orders?orderId=${orderToShare.id}`;
 
     let message = `*New Order Details*\n\n`;
-    message += `*Order ID:* #${order.id.substring(0, 8)}\n`;
-    message += `*Date:* ${formatDate(order.createdAt)}\n`;
-    message += `*Customer:* ${order.customerName || 'N/A'}\n`;
-    message += `*Status:* ${order.status}\n`;
-    message += `*Payment Status:* ${order.paymentStatus || 'N/A'}\n\n`;
+    message += `*Order ID:* #${orderToShare.id.substring(0, 8)}\n`;
+    message += `*Date:* ${formatDate(orderToShare.createdAt)}\n`;
+    message += `*Customer:* ${orderToShare.customerName || 'N/A'}\n`;
+    message += `*Status:* ${orderToShare.status}\n`;
+    message += `*Payment Status:* ${orderToShare.paymentStatus || 'N/A'}\n\n`;
     message += `*Items:*\n`;
 
-    order.items?.forEach((item, idx) => {
+    orderToShare.items?.forEach((item, idx) => {
       message += `${idx + 1}. ${item.productName}\n`;
       message += `   Qty: ${item.quantity} × ${formatCurrency(item.price)} = ${formatCurrency(item.quantity * item.price)}\n`;
     });
 
-    message += `\n*Total Amount:* ${formatCurrency(order.totalAmount)}\n`;
+    message += `\n*Total Amount:* ${formatCurrency(orderToShare.totalAmount)}\n`;
 
     // Add QR code if available
     if (upiId) {
@@ -107,7 +145,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
     }
   };
 
-  if (!order || !isOpen) return null;
+  if (!freshOrder || !isOpen) return null;
 
   const formatDate = (timestamp) => {
     if (!timestamp) return '-';
@@ -143,6 +181,26 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
     }
   };
 
+  // Don't render anything if modal is closed
+  if (!isOpen) {
+    return null;
+  }
+
+  // Show loading while fetching fresh data or if no order data available yet
+  if (loading || !freshOrder) {
+    return (
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+        onClick={onClose}
+      >
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#10b981]"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading order details...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
@@ -157,7 +215,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
           <div className="flex items-center space-x-2">
             {showShareButton && (
               <button
-                onClick={() => shareOnWhatsApp(order)}
+                onClick={() => shareOnWhatsApp()}
                 className="inline-flex items-center px-4 py-2 bg-[#25D366] text-white text-sm font-medium rounded-lg hover:bg-[#128C7E] shadow-lg"
                 title="Share order details with admin"
               >
@@ -182,30 +240,40 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Order ID</p>
-              <p className="font-semibold text-gray-800 dark:text-gray-100">#{order.id.substring(0, 8)}</p>
+              <p className="font-semibold text-gray-800 dark:text-gray-100">#{freshOrder.id.substring(0, 8)}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Order Date</p>
-              <p className="font-semibold text-gray-800 dark:text-gray-100">{formatDate(order.createdAt)}</p>
+              <p className="font-semibold text-gray-800 dark:text-gray-100">{formatDate(freshOrder.createdAt)}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Customer</p>
-              <p className="font-semibold text-gray-800 dark:text-gray-100">{order.customerName || 'N/A'}</p>
+              <p className="font-semibold text-gray-800 dark:text-gray-100">{freshOrder.customerName || 'N/A'}</p>
             </div>
           </div>
 
           <div className="flex items-center space-x-3">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Order Status</p>
-              {getStatusBadge(order.status)}
+              {getStatusBadge(freshOrder.status)}
             </div>
-            {order.paymentStatus && (
+            {freshOrder.paymentStatus && (
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Payment</p>
                 <span
-                  className={`badge ${order.paymentStatus === 'paid' ? 'badge-success' : 'badge-warning'}`}
+                  className={`badge ${
+                    freshOrder.paymentStatus === 'paid'
+                      ? 'badge-success'
+                      : freshOrder.paymentStatus === 'confirmation_pending'
+                      ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400'
+                      : 'badge-warning'
+                  }`}
                 >
-                  {order.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                  {freshOrder.paymentStatus === 'paid'
+                    ? t('paymentStatusPaid')
+                    : freshOrder.paymentStatus === 'confirmation_pending'
+                    ? t('paymentStatusConfirmationPending')
+                    : t('paymentStatusPending')}
                 </span>
               </div>
             )}
@@ -230,7 +298,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {order.items?.map((item, idx) => (
+                  {freshOrder.items?.map((item, idx) => (
                     <tr key={idx} className="dark:bg-gray-800">
                       <td className="px-4 py-3 text-sm text-gray-800 dark:text-gray-200">{item.productName}</td>
                       <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 text-right">{item.quantity}</td>
@@ -245,7 +313,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
                       Total Amount
                     </td>
                     <td className="px-4 py-3 text-lg font-bold text-[#10b981] dark:text-green-400 text-right">
-                      {formatCurrency(order.totalAmount)}
+                      {formatCurrency(freshOrder.totalAmount)}
                     </td>
                   </tr>
                 </tfoot>
@@ -253,7 +321,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
             </div>
           </div>
 
-          {order.paymentScreenshotUrl && (
+          {freshOrder.paymentScreenshotUrl && (
             <div className="border-t pt-6 dark:border-gray-700">
               <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-3 flex items-center space-x-2">
                 <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,7 +330,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
                 <span>Payment Screenshot</span>
               </h3>
               <img
-                src={order.paymentScreenshotUrl}
+                src={freshOrder.paymentScreenshotUrl}
                 alt="Payment screenshot"
                 className="max-w-md rounded-lg border-2 border-gray-200 dark:border-gray-700 shadow-md"
               />
@@ -270,7 +338,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
           )}
 
           {/* QR Code for Payment - Show if QR available and no payment screenshot */}
-          {qrCodeUrl && !order.paymentScreenshotUrl && order.status !== 'cancelled' && (
+          {qrCodeUrl && !freshOrder.paymentScreenshotUrl && freshOrder.status !== 'cancelled' && (
             <div className="border-t pt-6 dark:border-gray-700">
               <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-3 flex items-center space-x-2">
                 <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -291,7 +359,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
           )}
 
           {/* Payment Upload Section - Only show if payment is pending and no screenshot */}
-          {!order.paymentScreenshotUrl && order.status !== 'cancelled' && (
+          {!freshOrder.paymentScreenshotUrl && freshOrder.status !== 'cancelled' && (
             <div className="border-t pt-6 dark:border-gray-700">
               <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-3 flex items-center space-x-2">
                 <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -318,7 +386,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, showShareBut
                   )}
                 </div>
                 <button
-                  onClick={() => handleSubmitPayment(order.id)}
+                  onClick={() => handleSubmitPayment(freshOrder.id)}
                   disabled={!paymentScreenshot || uploading}
                   className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >

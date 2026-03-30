@@ -949,10 +949,16 @@ export default function PurchaseOrdersPage() {
                                 className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${
                                   order.paymentStatus === 'paid'
                                     ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-400'
+                                    : order.paymentStatus === 'confirmation_pending'
+                                    ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400'
                                     : 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400'
                                 }`}
                               >
-                                {order.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                                {order.paymentStatus === 'paid'
+                                  ? t('Paid')
+                                  : order.paymentStatus === 'confirmation_pending'
+                                  ? t('Confirmation Pending')
+                                  : t('Pending')}
                               </span>
                             </td>
                             <td className="px-4 py-3">
@@ -1100,10 +1106,16 @@ export default function PurchaseOrdersPage() {
                     className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
                       selectedLinkedOrder.paymentStatus === 'paid'
                         ? 'badge-success'
+                        : selectedLinkedOrder.paymentStatus === 'confirmation_pending'
+                        ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400'
                         : 'badge-warning'
                     }`}
                   >
-                    {selectedLinkedOrder.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                    {selectedLinkedOrder.paymentStatus === 'paid'
+                      ? t('Paid')
+                      : selectedLinkedOrder.paymentStatus === 'confirmation_pending'
+                      ? t('Confirmation Pending')
+                      : t('Pending')}
                   </span>
                 </div>
               </div>

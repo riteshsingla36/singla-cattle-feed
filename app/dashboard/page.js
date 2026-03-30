@@ -273,6 +273,7 @@ export default function DashboardPage() {
         order={selectedOrder}
         isOpen={!!selectedOrder}
         onClose={() => setSelectedOrder(null)}
+        onPaymentUploaded={fetchOrders}
         showShareButton={true}
         adminWhatsAppNumbers={adminWhatsAppNumbers}
         qrCodeUrl={qrCodeUrl}

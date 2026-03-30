@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'next/navigation';
-import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts } from '@/firebase/firestore';
+import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts, confirmPayment } from '@/firebase/firestore';
 
 export default function OrdersPage() {
   const { t } = useTranslation();
@@ -18,6 +18,7 @@ export default function OrdersPage() {
   const [customDateEnd, setCustomDateEnd] = useState('');
   const [sortDirection, setSortDirection] = useState('desc'); // 'asc' or 'desc', default 'desc' (latest first)
   const [updating, setUpdating] = useState(null);
+  const [confirming, setConfirming] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [customerPhone, setCustomerPhone] = useState('');
   const [loadingCustomer, setLoadingCustomer] = useState(false);
@@ -253,6 +254,23 @@ export default function OrdersPage() {
     }
   };
 
+  const handleConfirmPayment = async (orderId) => {
+    setConfirming(orderId);
+
+    const result = await confirmPayment(orderId);
+
+    setConfirming(null);
+
+    if (result.success) {
+      fetchOrders();
+      if (selectedOrder && selectedOrder.id === orderId) {
+        setSelectedOrder({ ...selectedOrder, paymentStatus: 'paid' });
+      }
+    } else {
+      alert('Failed to confirm payment');
+    }
+  };
+
   const formatDate = (timestamp) => {
     if (!timestamp) return '-';
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
@@ -276,6 +294,28 @@ export default function OrdersPage() {
         return 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-400';
       default:
         return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
+    }
+  };
+
+  const getPaymentStatusColor = (paymentStatus) => {
+    switch (paymentStatus) {
+      case 'paid':
+        return 'badge-success';
+      case 'confirmation_pending':
+        return 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400';
+      default:
+        return 'badge-warning';
+    }
+  };
+
+  const getPaymentStatusText = (paymentStatus) => {
+    switch (paymentStatus) {
+      case 'paid':
+        return t('Paid');
+      case 'confirmation_pending':
+        return t('Confirmation Pending');
+      default:
+        return t('Pending');
     }
   };
 
@@ -336,7 +376,8 @@ export default function OrdersPage() {
               >
                 <option value="all">All Payments</option>
                 <option value="paid">Paid</option>
-                <option value="pending">Pending</option>
+                <option value="confirmation_pending">Confirmation Pending</option>
+                <option value="pending">No Payment</option>
               </select>
             </div>
 
@@ -531,11 +572,9 @@ export default function OrdersPage() {
                       </span>
                     </td>
                     <td>
-                      {order.paymentStatus === 'paid' ? (
-                        <span className="badge badge-success">Paid</span>
-                      ) : (
-                        <span className="badge badge-warning">Pending</span>
-                      )}
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(order.paymentStatus)}`}>
+                        {getPaymentStatusText(order.paymentStatus)}
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -577,11 +616,9 @@ export default function OrdersPage() {
                             >
                               {order.status}
                             </span>
-                            {order.paymentStatus === 'paid' ? (
-                              <span className="badge badge-success text-xs w-fit">Paid</span>
-                            ) : (
-                              <span className="badge badge-warning text-xs w-fit">Pending</span>
-                            )}
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full w-fit ${getPaymentStatusColor(order.paymentStatus)}`}>
+                              {getPaymentStatusText(order.paymentStatus)}
+                            </span>
                           </div>
                         </div>
 
@@ -664,13 +701,11 @@ export default function OrdersPage() {
                   <div className="p-4">
                     <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">Payment Status</p>
                     <span
-                      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                        selectedOrder.paymentStatus === 'paid'
-                          ? 'badge-success'
-                          : 'badge-warning'
-                      }`}
+                      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${getPaymentStatusColor(
+                        selectedOrder.paymentStatus
+                      )}`}
                     >
-                      {selectedOrder.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                      {getPaymentStatusText(selectedOrder.paymentStatus)}
                     </span>
                   </div>
                 </div>
@@ -832,30 +867,49 @@ export default function OrdersPage() {
               </div>
 
               {/* Action Buttons */}
-              {selectedOrder.status === 'pending' && (
+              {(selectedOrder.status === 'pending' || selectedOrder.paymentStatus === 'confirmation_pending') && (
                 <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t-2 border-gray-100 dark:border-gray-700">
-                  <button
-                    onClick={() => {
-                      handleStatusUpdate(selectedOrder.id, 'delivered');
-                      setSelectedOrder(null);
-                    }}
-                    disabled={updating === selectedOrder.id}
-                    className="btn-primary flex items-center justify-center space-x-2 disabled:opacity-50"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{updating === selectedOrder.id ? 'Updating...' : 'Mark as Delivered'}</span>
-                  </button>
-                  <button
-                    onClick={() => handleStatusUpdate(selectedOrder.id, 'cancelled')}
-                    className="btn-danger flex items-center justify-center space-x-2"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    <span>Cancel Order</span>
-                  </button>
+                  {selectedOrder.paymentStatus === 'confirmation_pending' && (
+                    <button
+                      onClick={() => {
+                        handleConfirmPayment(selectedOrder.id);
+                        setSelectedOrder(null);
+                      }}
+                      disabled={confirming === selectedOrder.id}
+                      className="bg-blue-600 text-white flex items-center justify-center space-x-2 px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>{confirming === selectedOrder.id ? 'Confirming...' : t('confirmPayment')}</span>
+                    </button>
+                  )}
+                  {selectedOrder.status === 'pending' && (
+                    <>
+                      <button
+                        onClick={() => {
+                          handleStatusUpdate(selectedOrder.id, 'delivered');
+                          setSelectedOrder(null);
+                        }}
+                        disabled={updating === selectedOrder.id}
+                        className="btn-primary flex items-center justify-center space-x-2 disabled:opacity-50"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{updating === selectedOrder.id ? 'Updating...' : 'Mark as Delivered'}</span>
+                      </button>
+                      <button
+                        onClick={() => handleStatusUpdate(selectedOrder.id, 'cancelled')}
+                        className="btn-danger flex items-center justify-center space-x-2"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span>Cancel Order</span>
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>

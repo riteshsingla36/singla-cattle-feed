@@ -332,8 +332,22 @@ export const updatePaymentProof = async (orderId, paymentScreenshotUrl) => {
     const orderRef = doc(db, 'orders', orderId);
     await updateDoc(orderRef, {
       paymentScreenshotUrl,
+      paymentStatus: 'confirmation_pending',
+      uploadedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const confirmPayment = async (orderId) => {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    await updateDoc(orderRef, {
       paymentStatus: 'paid',
-      paidAt: serverTimestamp(),
+      confirmedAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
     return { success: true };
