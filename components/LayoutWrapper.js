@@ -6,6 +6,9 @@ import { useAuthState } from '@/hooks/useAuthState';
 import { CustomerNav } from '@/components/CustomerNav';
 import { AdminNav } from '@/components/AdminNav';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { ThemeProvider } from '@/context/ThemeContext';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/lib/i18n';
 
 export const LayoutWrapper = ({ children }) => {
   const pathname = usePathname();
@@ -39,31 +42,61 @@ export const LayoutWrapper = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider>
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </ThemeProvider>
+      </I18nextProvider>
     );
   }
 
-  // If on public page, render without navigation
+  // If on public page, render without navigation but with i18n and theme
   if (isPublicPath) {
-    return <LanguageProvider>{children}</LanguageProvider>;
+    return (
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider>
+          <LanguageProvider>{children}</LanguageProvider>
+        </ThemeProvider>
+      </I18nextProvider>
+    );
   }
 
   // If not authenticated, don't render anything (will redirect)
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider>
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </ThemeProvider>
+      </I18nextProvider>
     );
   }
 
-  // Render with appropriate navigation
+  // Render with appropriate navigation and providers
   if (pathname.startsWith('/admin') && isAdmin) {
-    return <AdminNav>{children}</AdminNav>;
+    return (
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider>
+          <LanguageProvider>
+            <AdminNav>{children}</AdminNav>
+          </LanguageProvider>
+        </ThemeProvider>
+      </I18nextProvider>
+    );
   }
 
   // For all other authenticated pages, show customer nav
-  return <CustomerNav>{children}</CustomerNav>;
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider>
+        <LanguageProvider>
+          <CustomerNav>{children}</CustomerNav>
+        </LanguageProvider>
+      </ThemeProvider>
+    </I18nextProvider>
+  );
 };

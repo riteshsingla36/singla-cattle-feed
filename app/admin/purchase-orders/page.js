@@ -1112,10 +1112,10 @@ export default function PurchaseOrdersPage() {
                     }`}
                   >
                     {selectedLinkedOrder.paymentStatus === 'paid'
-                      ? t('Paid')
+                      ? t('paymentStatusPaid')
                       : selectedLinkedOrder.paymentStatus === 'confirmation_pending'
-                      ? t('Confirmation Pending')
-                      : t('Pending')}
+                      ? t('paymentStatusConfirmationPending')
+                      : t('paymentStatusPending')}
                   </span>
                 </div>
               </div>

@@ -311,11 +311,11 @@ export default function OrdersPage() {
   const getPaymentStatusText = (paymentStatus) => {
     switch (paymentStatus) {
       case 'paid':
-        return t('Paid');
+        return t('paymentStatusPaid');
       case 'confirmation_pending':
-        return t('Confirmation Pending');
+        return t('paymentStatusConfirmationPending');
       default:
-        return t('Pending');
+        return t('paymentStatusPending');
     }
   };
 

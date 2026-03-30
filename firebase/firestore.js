@@ -278,7 +278,7 @@ export const getOrder = async (orderId) => {
   const docRef = doc(db, 'orders', orderId);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    return { success: true, order: docSnap.data() };
+    return { success: true, order: { id: docSnap.id, ...docSnap.data() } };
   }
   return { success: false, message: 'Order not found' };
 };
