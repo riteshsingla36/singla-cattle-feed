@@ -28,7 +28,11 @@
       "Bash(node:*)",
       "Bash(npx eslint:*)",
       "Bash(npx tsc:*)",
-      "Bash(ls -la *.md)"
+      "Bash(ls -la *.md)",
+      "Bash(git log:*)",
+      "WebSearch",
+      "Bash(find . -name *.dart -type f)",
+      "Bash(mv temp.js components/OrderDetailsModal.js)"
     ]
   }
 }

@@ -183,7 +183,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
     }
   };
 
-  const generateUpiDeepLink = (app) => {
+  const generateUpiDeepLink = () => {
     if (!upiId) return '';
 
     const amount = freshOrder?.totalAmount || 0;
@@ -191,22 +191,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
     const payeeName = 'Singla Traders'; // Could be dynamic from settings
     const transactionRef = freshOrder?.id || '';
 
-    let baseUrl = '';
-    switch (app) {
-      case 'gpay':
-        // Google Pay uses gpay:// scheme
-        baseUrl = 'gpay://pay';
-        break;
-      case 'phonepe':
-        baseUrl = 'phonepe://pay';
-        break;
-      case 'paytm':
-        baseUrl = 'paytm://pay';
-        break;
-      default:
-        return '';
-    }
-
+    // Generate UPI deep link with proper parameters
     const params = new URLSearchParams({
       pa: upiId,
       pn: payeeName,
@@ -215,13 +200,17 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
       tr: transactionRef,
     });
 
-    return `${baseUrl}?${params.toString()}`;
+    // Use standard UPI format - works for all UPI apps (PhonePe, Google Pay, Paytm, etc.)
+    return `upi://pay?${params.toString()}`;
   };
 
-  const openPaymentApp = (app) => {
-    const deepLink = generateUpiDeepLink(app);
+  const handlePayViaUpi = () => {
+    const deepLink = generateUpiDeepLink();
     if (deepLink) {
-      window.location.href = deepLink;
+      // Navigate to the redirect page which will attempt to open the app
+      // and provide a fallback UI if the app doesn't open
+      const redirectUrl = `/payment/upi-redirect?upiLink=${encodeURIComponent(deepLink)}&upiId=${encodeURIComponent(upiId)}&amount=${freshOrder.totalAmount}&payeeName=${encodeURIComponent('Singla Traders')}&app=UPI`;
+      window.location.href = redirectUrl;
     }
   };
 
@@ -427,55 +416,25 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
                 )}
               </div>
 
-              {/* Payment App Buttons */}
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {/* Google Pay */}
+              {/* Single Pay via UPI Button */}
+              <div className="flex flex-col items-center space-y-3">
                 <button
-                  onClick={() => openPaymentApp('gpay')}
-                  className="flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all"
-                  style={{ backgroundColor: '#4285F4', color: 'white' }}
-                  title="Pay with Google Pay"
+                  onClick={handlePayViaUpi}
+                  className="flex items-center justify-center space-x-2 py-3 px-8 rounded-lg font-medium bg-[#10b981] text-white hover:bg-[#059669] shadow-lg transition-all"
+                  title="Pay with any UPI app"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6.18 15.64a2.18 2.18 0 01-2.18 2.18 2.18 2.18 0 01-2.18-2.18 2.18 2.18 0 012.18-2.18 2.18 2.18 0 012.18 2.18zM4 4.55a2.24 2.24 0 012.24-2.24h1.3a2.24 2.24 0 012.24 2.24v1.3a2.24 2.24 0 01-2.24 2.24H6.24A2.24 2.24 0 014 6.85V4.55zm8.83 9.38a2.24 2.24 0 012.24 2.24h1.3a2.24 2.24 0 012.24-2.24V6.85a2.24 2.24 0 01-2.24-2.24h-1.3a2.24 2.24 0 01-2.24 2.24v9.09zM12.8 5.45l-1.37 1.36a1.12 1.12 0 001.58 0l1.37-1.36 1.37 1.36a1.12 1.12 0 001.58 0l1.37-1.36 1.37 1.36a1.12 1.12 0 001.58 0l1.37-1.36L18.45 7a1.12 1.12 0 00-1.58-1.58l-1.37 1.36-1.37-1.36a1.12 1.12 0 00-1.58 0l-1.37 1.36L8.2 5.45a1.12 1.12 0 00-1.58 0l-1.37 1.36z"/>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
-                  <span>Google Pay</span>
+                  <span className="text-lg">Pay via UPI</span>
                 </button>
 
-                {/* PhonePe */}
-                <button
-                  onClick={() => openPaymentApp('phonepe')}
-                  className="flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all"
-                  style={{ backgroundColor: '#5F2BEA', color: 'white' }}
-                  title="Pay with PhonePe"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-                    <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
-                  </svg>
-                  <span>PhonePe</span>
-                </button>
-
-                {/* Paytm */}
-                <button
-                  onClick={() => openPaymentApp('paytm')}
-                  className="flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all"
-                  style={{ backgroundColor: '#00BAF2', color: 'white' }}
-                  title="Pay with Paytm"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M7 7h10v2H7V7zm0 4h7v2H7v-2zm12 2H5c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2c0-1.1-.9-2-2-2z"/>
-                  </svg>
-                  <span>Paytm</span>
-                </button>
-
-                {/* Copy UPI ID */}
                 <button
                   onClick={handleCopyUpiId}
-                  className="flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                  className="flex items-center justify-center space-x-2 py-2 px-4 rounded-lg font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm"
                   title="Copy UPI ID"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   <span>Copy UPI ID</span>
@@ -483,7 +442,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
               </div>
 
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
-                Tap your preferred payment app to open it with pre-filled details
+                Opens UPI app with pre-filled payment details
               </p>
             </div>
           )}

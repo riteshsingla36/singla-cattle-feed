@@ -69,8 +69,8 @@ export default function DashboardPage() {
   };
 
   const pendingCount = orders.filter((o) => o.status === 'pending').length;
-  const completedCount = orders.filter((o) => o.status === 'completed').length;
-  const totalSpent = orders.filter((o) => o.status === 'completed').reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  const completedCount = orders.filter((o) => o.status === 'completed' || o.status === 'delivered').length;
+  const totalSpent = orders.filter((o) => o.status === 'completed' || o.status === 'delivered').reduce((sum, o) => sum + (o.totalAmount || 0), 0);
 
   const formatDate = (timestamp) => {
     if (!timestamp) return '-';
