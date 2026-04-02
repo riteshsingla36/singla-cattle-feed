@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'next/navigation';
-import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts, confirmPayment } from '@/firebase/firestore';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts, confirmPayment, getOrder } from '@/firebase/firestore';
 
 export default function OrdersPage() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
@@ -19,6 +20,7 @@ export default function OrdersPage() {
   const [sortDirection, setSortDirection] = useState('desc'); // 'asc' or 'desc', default 'desc' (latest first)
   const [updating, setUpdating] = useState(null);
   const [confirming, setConfirming] = useState(null);
+  const [downloading, setDownloading] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [customerPhone, setCustomerPhone] = useState('');
   const [loadingCustomer, setLoadingCustomer] = useState(false);
@@ -28,6 +30,8 @@ export default function OrdersPage() {
   const customerDropdownRef = useRef(null);
   const [productPrices, setProductPrices] = useState({});
   const [loadingProductPrices, setLoadingProductPrices] = useState(false);
+  const [pageSize, setPageSize] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchOrders();
@@ -39,6 +43,35 @@ export default function OrdersPage() {
       setCustomerPhone('');
     }
   }, [selectedOrder]);
+
+  // Handle orderId from URL (covers initial load and when URL changes while on the page)
+  useEffect(() => {
+    const orderId = searchParams.get('orderId');
+    if (orderId && orders.length > 0) {
+      const order = orders.find(o => o.id === orderId);
+      if (order && (!selectedOrder || selectedOrder.id !== order.id)) {
+        setSelectedOrder(order);
+        if (order.customerId) {
+          setLoadingCustomer(true);
+          getCustomerByUserId(order.customerId)
+            .then((result) => {
+              if (result.success && result.customer) {
+                setCustomerPhone(result.customer.phone || '');
+              } else {
+                setCustomerPhone('');
+              }
+            })
+            .catch((err) => {
+              console.error('Error fetching customer:', err);
+              setCustomerPhone('');
+            })
+            .finally(() => {
+              setLoadingCustomer(false);
+            });
+        }
+      }
+    }
+  }, [searchParams, orders, selectedOrder]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -135,6 +168,44 @@ export default function OrdersPage() {
       console.error('Error fetching product prices:', error);
     } finally {
       setLoadingProductPrices(false);
+    }
+  };
+
+  // Close modal and clear orderId from URL
+  const closeModal = () => {
+    // Clear orderId from URL first
+    if (searchParams.get('orderId')) {
+      router.replace('/admin/orders', { scroll: false });
+    }
+    // Then close modal
+    setSelectedOrder(null);
+  };
+
+  // Handle notification click: open order modal and fetch fresh order data
+  const handleNotificationClick = async (orderId) => {
+    try {
+      const result = await getOrder(orderId);
+      if (result.success && result.order) {
+        setSelectedOrder(result.order);
+        // Refresh orders list in background to get latest status
+        await fetchOrders();
+        // Also fetch customer phone if needed
+        if (result.order.customerId) {
+          setLoadingCustomer(true);
+          getCustomerByUserId(result.order.customerId)
+            .then((result) => {
+              if (result.success && result.customer) {
+                setCustomerPhone(result.customer.phone || '');
+              } else {
+                setCustomerPhone('');
+              }
+            })
+            .catch(() => setCustomerPhone(''))
+            .finally(() => setLoadingCustomer(false));
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching order from notification:', error);
     }
   };
 
@@ -237,6 +308,20 @@ export default function OrdersPage() {
     return result;
   }, [orders, orderStatusFilter, paymentStatusFilter, selectedCustomerId, dateRange, customDateStart, customDateEnd, sortDirection]);
 
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredAndSortedOrders.length / pageSize);
+  }, [filteredAndSortedOrders.length, pageSize]);
+
+  const paginatedOrders = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredAndSortedOrders.slice(start, start + pageSize);
+  }, [filteredAndSortedOrders, currentPage, pageSize]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [orderStatusFilter, paymentStatusFilter, selectedCustomerId, dateRange, customDateStart, customDateEnd, sortDirection, pageSize]);
+
   const handleStatusUpdate = async (orderId, newStatus) => {
     setUpdating(orderId);
 
@@ -268,6 +353,33 @@ export default function OrdersPage() {
       }
     } else {
       alert('Failed to confirm payment');
+    }
+  };
+
+  const handleDownloadPaymentScreenshot = async (url, orderId) => {
+    try {
+      setDownloading(orderId);
+      // Fetch the image as a blob
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch image');
+      }
+      const blob = await response.blob();
+
+      // Create a blob URL and trigger download
+      const blobUrl = window.URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = blobUrl;
+      anchor.download = `payment-screenshot-${orderId?.substring(0, 8) || 'download'}.jpg`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      alert('Failed to download image. Please try again.');
+    } finally {
+      setDownloading(null);
     }
   };
 
@@ -500,6 +612,7 @@ export default function OrdersPage() {
               )}
             </div>
           </div>
+
         </div>
       </div>
 
@@ -531,7 +644,7 @@ export default function OrdersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                {filteredAndSortedOrders.map((order) => (
+                {paginatedOrders.map((order) => (
                   <tr key={order.id} className="table-row">
                     <td className="font-medium">
                       <button
@@ -584,7 +697,7 @@ export default function OrdersPage() {
 
             {/* Mobile Card View */}
             <div className="md:hidden space-y-4">
-                {filteredAndSortedOrders.map((order) => (
+                {paginatedOrders.map((order) => (
                   <div key={order.id} className="card p-4">
                         <div className="flex items-start justify-between mb-3">
                           <button
@@ -640,16 +753,69 @@ export default function OrdersPage() {
                             <span className="font-bold text-gray-900 dark:text-gray-100">{formatCurrency(order.totalAmount)}</span>
                           </div>
                         </div>
-                      </div>
+                  </div>
                 ))}
-              </div>
+            </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 bg-gray-50 dark:bg-gray-900/30 rounded-lg">
+                  {/* Page Size Selector */}
+                  <div className="flex items-center space-x-2">
+                    <label className="text-sm text-gray-600 dark:text-gray-400">Show:</label>
+                    <select
+                      value={pageSize}
+                      onChange={(e) => {
+                        setPageSize(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                      className="form-select w-20 text-sm py-1"
+                    >
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                    </select>
+                  </div>
+
+                  {/* Pagination Buttons */}
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    >
+                      Previous
+                    </button>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    >
+                      Next
+                    </button>
+                  </div>
+
+                  {/* Showing X-Y of Z */}
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {`Showing ${(currentPage - 1) * pageSize + 1} - ${Math.min(currentPage * pageSize, filteredAndSortedOrders.length)} of ${filteredAndSortedOrders.length} orders`}
+                  </div>
+                </div>)}
             </>
         )}
       </div>
 
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-hidden">
-          <div className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-hidden"
+          onClick={closeModal}
+        >
+          <div
+            className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
               <div>
@@ -659,7 +825,7 @@ export default function OrdersPage() {
                 </p>
               </div>
               <button
-                onClick={() => setSelectedOrder(null)}
+                onClick={closeModal}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                 aria-label="Close modal"
               >
@@ -745,12 +911,26 @@ export default function OrdersPage() {
               {selectedOrder.paymentScreenshotUrl && (
                 <div className="card">
                   <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-3">{t('paymentScreenshot')}</h3>
-                    <img
-                      src={selectedOrder.paymentScreenshotUrl}
-                      alt={t('paymentScreenshot')}
-                      className="max-w-full rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-md w-auto h-auto max-h-96 object-contain"
-                    />
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-semibold text-gray-800 dark:text-gray-100">{t('paymentScreenshot')}</h3>
+                      <button
+                        onClick={() => handleDownloadPaymentScreenshot(selectedOrder.paymentScreenshotUrl, selectedOrder.id)}
+                        disabled={downloading === selectedOrder.id}
+                        className="inline-flex items-center space-x-2 px-3 py-1.5 text-sm bg-[#10b981] text-white rounded-lg hover:bg-[#059669] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span>{downloading === selectedOrder.id ? 'Downloading...' : 'Download'}</span>
+                      </button>
+                    </div>
+                    <div className="overflow-hidden flex justify-center bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
+                      <img
+                        src={selectedOrder.paymentScreenshotUrl}
+                        alt={t('paymentScreenshot')}
+                        className="max-w-full rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-md max-h-[50vh] object-contain"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -873,7 +1053,7 @@ export default function OrdersPage() {
                     <button
                       onClick={() => {
                         handleConfirmPayment(selectedOrder.id);
-                        setSelectedOrder(null);
+                        closeModal();
                       }}
                       disabled={confirming === selectedOrder.id}
                       className="bg-blue-600 text-white flex items-center justify-center space-x-2 px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
@@ -889,7 +1069,7 @@ export default function OrdersPage() {
                       <button
                         onClick={() => {
                           handleStatusUpdate(selectedOrder.id, 'delivered');
-                          setSelectedOrder(null);
+                          closeModal();
                         }}
                         disabled={updating === selectedOrder.id}
                         className="btn-primary flex items-center justify-center space-x-2 disabled:opacity-50"

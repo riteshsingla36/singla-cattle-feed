@@ -19,6 +19,8 @@ export default function OrdersPage() {
   const [customDateStart, setCustomDateStart] = useState('');
   const [customDateEnd, setCustomDateEnd] = useState('');
   const [sortDirection, setSortDirection] = useState('desc');
+  const [pageSize, setPageSize] = useState(25);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchOrders();
@@ -212,6 +214,20 @@ export default function OrdersPage() {
     return result;
   }, [orders, dateRange, customDateStart, customDateEnd, sortDirection]);
 
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredAndSortedOrders.length / pageSize);
+  }, [filteredAndSortedOrders.length, pageSize]);
+
+  const paginatedOrders = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredAndSortedOrders.slice(start, start + pageSize);
+  }, [filteredAndSortedOrders, currentPage, pageSize]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [dateRange, customDateStart, customDateEnd, sortDirection, pageSize]);
+
   const getStatusBadge = (status) => {
     switch (status) {
       case 'pending':
@@ -341,7 +357,7 @@ export default function OrdersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAndSortedOrders.map((order) => (
+                  {paginatedOrders.map((order) => (
                     <tr key={order.id} className="table-row">
                       <td className="font-medium">
                         <button
@@ -363,7 +379,7 @@ export default function OrdersPage() {
 
             {/* Mobile Card View */}
             <div className="md:hidden space-y-4">
-              {filteredAndSortedOrders.map((order) => (
+              {paginatedOrders.map((order) => (
                 <div key={order.id} className="card p-4">
                   <div className="flex items-start justify-between mb-3">
                     <button
@@ -392,6 +408,54 @@ export default function OrdersPage() {
                 </div>
               ))}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 bg-gray-50 dark:bg-gray-900/30 rounded-lg">
+                {/* Page Size Selector */}
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm text-gray-600 dark:text-gray-400">Show:</label>
+                  <select
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPageSize(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="form-select w-20 text-sm py-1"
+                  >
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                </div>
+
+                {/* Pagination Buttons */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                  >
+                    Next
+                  </button>
+                </div>
+
+                {/* Showing X-Y of Z */}
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {`Showing ${(currentPage - 1) * pageSize + 1} - ${Math.min(currentPage * pageSize, filteredAndSortedOrders.length)} of ${filteredAndSortedOrders.length} orders`}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

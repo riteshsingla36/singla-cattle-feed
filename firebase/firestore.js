@@ -12,7 +12,10 @@ import {
   orderBy,
   serverTimestamp,
   setDoc,
+  onSnapshot,
+  limit,
 } from 'firebase/firestore';
+import { createNotification } from '@/lib/notifications';
 
 // ============== CUSTOMERS ==============
 export const addCustomer = async (customerData) => {
@@ -268,6 +271,24 @@ export const placeOrder = async (orderData) => {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
+
+    // Try to create notification for admins (don't fail order if notification fails)
+    try {
+      const orderShortId = docRef.id.substring(0, 12);
+      await createNotification({
+        type: 'new_order',
+        message: `New order from ${orderData.customerName || 'Customer'}`,
+        orderId: docRef.id,
+        orderShortId: orderShortId,
+        amount: orderData.totalAmount,
+        customerName: orderData.customerName || 'Customer',
+        customerId: orderData.customerId,
+      });
+    } catch (notificationError) {
+      console.error('Failed to create order notification:', notificationError);
+      // Continue - order was placed successfully
+    }
+
     return { success: true, id: docRef.id };
   } catch (error) {
     return { success: false, error: error.message };
@@ -327,15 +348,148 @@ export const updateOrderStatus = async (orderId, status) => {
   }
 };
 
+export const getNotifications = async (adminId, limitCount = 50) => {
+  try {
+    const q = query(
+      collection(db, 'notifications'),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const notifications = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const isRead = data.readBy && data.readBy.includes(adminId);
+      notifications.push({
+        id: doc.id,
+        ...data,
+        isRead,
+      });
+    });
+
+    return { success: true, notifications };
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const subscribeToNotifications = (adminId, onNotification) => {
+  const q = query(
+    collection(db, 'notifications'),
+    orderBy('createdAt', 'desc'),
+    limit(100)
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === 'added' || change.type === 'modified') {
+        const data = change.doc.data();
+        const notificationId = change.doc.id;
+        const isRead = data.readBy && data.readBy.includes(adminId);
+
+        if (!isRead) {
+          onNotification({
+            id: notificationId,
+            ...data,
+            isRead,
+          });
+        }
+      }
+    });
+  });
+
+  return unsubscribe;
+};
+
+export const markNotificationAsRead = async (notificationId, adminId) => {
+  try {
+    const notificationRef = doc(db, 'notifications', notificationId);
+    await updateDoc(notificationRef, {
+      readBy: [...new Set([adminId])],
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error marking notification as read:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const markAllNotificationsAsRead = async (adminId) => {
+  try {
+    const result = await getNotifications(adminId, 100);
+    if (!result.success) return { success: false };
+
+    const batchUpdates = result.notifications
+      .filter((n) => !n.isRead)
+      .map((n) =>
+        updateDoc(doc(db, 'notifications', n.id), {
+          readBy: [...new Set([...n.readBy, adminId])],
+        })
+      );
+
+    await Promise.all(batchUpdates);
+    return { success: true };
+  } catch (error) {
+    console.error('Error marking all notifications as read:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getUnreadNotificationsCount = async (adminId) => {
+  try {
+    const result = await getNotifications(adminId, 100);
+    if (!result.success) return 0;
+
+    const unread = result.notifications.filter((n) => !n.isRead);
+    return unread.length;
+  } catch (error) {
+    console.error('Error getting unread count:', error);
+    return 0;
+  }
+};
+
 export const updatePaymentProof = async (orderId, paymentScreenshotUrl) => {
   try {
+    // First, get the order to retrieve details for notification
     const orderRef = doc(db, 'orders', orderId);
+    const orderSnap = await getDoc(orderRef);
+
+    if (!orderSnap.exists()) {
+      return { success: false, error: 'Order not found' };
+    }
+
+    const orderData = orderSnap.data();
+
+    // Update the order
     await updateDoc(orderRef, {
       paymentScreenshotUrl,
       paymentStatus: 'confirmation_pending',
       uploadedAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
+
+    // Create notification for all admins (broadcast)
+    // All admins will see this notification; their read status tracked individually via readBy array
+    const orderShortId = orderId.substring(0, 12);
+    const notificationData = {
+      type: 'payment_screenshot_uploaded',
+      orderId,
+      orderShortId,
+      customerName: orderData.customerName || 'Unknown',
+      amount: orderData.totalAmount || 0,
+      message: `Payment screenshot uploaded for order #${orderShortId} by ${orderData.customerName || 'Unknown'}`,
+      screenshotUrl: paymentScreenshotUrl,
+      metadata: {
+        paymentStatus: 'confirmation_pending',
+        totalItems: orderData.items?.length || 0,
+      },
+    };
+
+    await createNotification(notificationData);
+
     return { success: true };
   } catch (error) {
     return { success: false, error: error.message };

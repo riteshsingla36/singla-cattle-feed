@@ -7,6 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import NotificationBell from '@/components/NotificationBell';
 
 export const AdminNav = ({ children }) => {
   const router = useRouter();
@@ -236,6 +237,7 @@ export const AdminNav = ({ children }) => {
 
             {/* Right side */}
             <div className="flex items-center space-x-4">
+              <NotificationBell />
               <div className="hidden sm:flex items-center space-x-2">
                 <LanguageSwitcher />
                 <ThemeToggle />
