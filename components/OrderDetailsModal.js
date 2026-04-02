@@ -205,13 +205,75 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
   };
 
   const handlePayViaUpi = () => {
-    const deepLink = generateUpiDeepLink();
-    if (deepLink) {
-      // Navigate to the redirect page which will attempt to open the app
-      // and provide a fallback UI if the app doesn't open
-      const redirectUrl = `/payment/upi-redirect?upiLink=${encodeURIComponent(deepLink)}&upiId=${encodeURIComponent(upiId)}&amount=${freshOrder.totalAmount}&payeeName=${encodeURIComponent('Singla Traders')}&app=UPI`;
+    const redirectUrl = buildUpiRedirectUrl('UPI');
+    if (redirectUrl) {
       window.location.href = redirectUrl;
     }
+  };
+
+  const handlePayViaGooglePay = () => {
+    const redirectUrl = buildUpiRedirectUrl('Google Pay');
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  };
+
+  const handlePayViaPhonePe = () => {
+    const redirectUrl = buildUpiRedirectUrl('PhonePe');
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  };
+
+  const handlePayViaPaytm = () => {
+    const redirectUrl = buildUpiRedirectUrl('Paytm');
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  };
+
+  const buildUpiRedirectUrl = (appName) => {
+    if (!upiId) return '';
+
+    const amount = freshOrder?.totalAmount || 0;
+    const formattedAmount = amount.toFixed(2);
+    const payeeName = 'Singla Traders';
+    const transactionRef = freshOrder?.id || '';
+
+    // Generate UPI deep link with proper parameters
+    const params = new URLSearchParams({
+      pa: upiId,
+      pn: payeeName,
+      am: formattedAmount,
+      cu: 'INR',
+      tr: transactionRef,
+    });
+
+    // Use app-specific schemes as requested
+    let upiLink;
+    switch (appName) {
+      case 'Google Pay':
+        upiLink = `tez://upi/pay?${params.toString()}`;
+        break;
+      case 'PhonePe':
+        upiLink = `phonepe://pay?${params.toString()}`;
+        break;
+      case 'Paytm':
+        upiLink = `paytmmp://pay?${params.toString()}`;
+        break;
+      default:
+        upiLink = `upi://pay?${params.toString()}`;
+    }
+
+    // Build redirect URL
+    const redirectUrl = new URL(`${window.location.origin}/payment/upi-redirect`);
+    redirectUrl.searchParams.append('upiLink', upiLink);
+    redirectUrl.searchParams.append('upiId', upiId);
+    redirectUrl.searchParams.append('amount', amount);
+    redirectUrl.searchParams.append('payeeName', payeeName);
+    redirectUrl.searchParams.append('app', appName);
+
+    return redirectUrl.toString();
   };
 
   const handleCopyUpiId = async () => {
@@ -416,22 +478,63 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
                 )}
               </div>
 
-              {/* Single Pay via UPI Button */}
-              <div className="flex flex-col items-center space-y-3">
-                <button
-                  onClick={handlePayViaUpi}
-                  className="flex items-center justify-center space-x-2 py-3 px-8 rounded-lg font-medium bg-[#10b981] text-white hover:bg-[#059669] shadow-lg transition-all"
-                  title="Pay with any UPI app"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                  </svg>
-                  <span className="text-lg">Pay via UPI</span>
-                </button>
+              {/* Pay via UPI Apps */}
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Pay using UPI Apps</p>
+                <div className="grid grid-cols-1 gap-2">
+                  {/* General Pay via UPI Button - Opens OS chooser */}
+                  <button
+                    onClick={handlePayViaUpi}
+                    className="flex items-center justify-center space-x-3 py-3 px-4 rounded-lg font-medium bg-[#10b981] text-white hover:bg-[#059669] shadow-md transition-all"
+                    title="Pay with any UPI app"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    <span>Pay via UPI (Open with any app)</span>
+                  </button>
 
+                  {/* Google Pay Button */}
+                  <button
+                    onClick={handlePayViaGooglePay}
+                    className="flex items-center justify-center space-x-3 py-3 px-4 rounded-lg font-medium bg-[#4285F4] text-white hover:bg-[#3367D6] shadow-md transition-all"
+                    title="Pay with Google Pay"
+                  >
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M6.18 15.64a2.18 2.18 0 01-2.18 2.18 2.18 2.18 0 01-2.18-2.18 2.18 2.18 0 012.18-2.18c.48 0 .93.12 1.32.33.4.21.78.56 1.05.98.28.42.44.93.44 1.46 0 .6-.23 1.13-.61 1.5-.39.38-.94.58-1.54.58-.6 0-1.12-.2-1.49-.57-.37-.38-.57-.89-.57-1.53 0-.66.25-1.22.66-1.61.42-.39.99-.59 1.6-.59.35 0 .7.05 1.02.16.33.11.62.29.86.53.24.24.43.53.56.86.13.33.2.72.2 1.15 0 .5-.19.95-.5 1.3-.31.35-.75.54-1.25.54-.46 0-.86-.15-1.15-.44-.29-.29-.44-.68-.44-1.16 0-.39.15-.74.4-1.02.26-.28.62-.42 1.05-.42.35 0 .67.09.95.26.28.18.51.41.68.71.18.3.31.65.39 1.04.08.39.12.81.12 1.26 0 .55-.21 1.03-.55 1.38-.35.36-.83.54-1.4.54-.46 0-.88-.14-1.23-.42-.35-.28-.53-.66-.53-1.13 0-.36.11-.69.29-.98.18-.29.44-.52.76-.68.32-.16.69-.24 1.09-.24.49 0 .94.12 1.32.35.38.23.71.55.97.94.26.39.46.85.58 1.36.12.51.18 1.06.18 1.62 0 .63-.24 1.18-.63 1.59-.4.41-.95.62-1.54.62-.39 0-.73-.12-1.02-.36-.29-.23-.54-.55-.75-.93-.21-.38-.37-.8-.49-1.25zM15.99 7.35c.41 0 .77.13 1.05.38.28.26.42.59.42 1.02 0 .51-.19.95-.51 1.27-.33.33-.77.49-1.25.49-.44 0-.82-.14-1.12-.41-.3-.27-.45-.63-.45-1.07 0-.5.19-.93.51-1.25.32-.32.76-.48 1.25-.48.44 0 .81.14 1.1.41.29.27.44.63.44 1.08 0 .43-.16.8-.43 1.09-.27.29-.65.43-1.09.43-.43 0-.8-.13-1.09-.39-.29-.26-.44-.61-.44-1.04 0-.5.19-.93.51-1.25.32-.32.76-.48 1.25-.48.44 0 .81.14 1.1.41.29.27.44.63.44 1.08 0 .46-.17.85-.44 1.15-.27.3-.64.45-1.07.45-.48 0-.87-.15-1.17-.44-.3-.29-.45-.68-.45-1.15 0-.5.19-.93.51-1.25.32-.32.76-.48 1.25-.48.48 0 .87.15 1.16.45.29.29.44.7.44 1.19 0 .55-.21 1.02-.55 1.37-.34.34-.82.52-1.37.52-.41 0-.76-.12-1.04-.36-.28-.24-.43-.56-.43-.96 0-.45.17-.83.45-1.12.28-.28.67-.42 1.12-.42.41 0 .75.12 1.02.36.27.24.41.57.41.98 0 .43-.16.79-.43 1.07-.27.27-.65.41-1.09.41-.39 0-.72-.11-.98-.33-.26-.22-.39-.51-.39-.86 0-.39.15-.72.39-.98.25-.26.6-.39 1.01-.39.36 0 .66.1.9.3.24.2.36.46.36.78 0 .33-.12.61-.32.83-.2.22-.49.33-.85.33-.35 0-.64-.1-.87-.3-.23-.2-.35-.46-.35-.78 0-.34.13-.62.34-.84.22-.22.52-.33.88-.33.33 0 .6.1.81.29.21.2.31.46.31.78 0 .32-.12.59-.32.8-.2.21-.49.32-.83.32-.31 0-.57-.09-.77-.27-.2-.18-.3-.42-.3-.72 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .53.09.72.26.19.18.29.41.29.7 0 .31-.12.57-.31.77-.2.2-.47.3-.8.3a3.07 3.07 0 01-.8-.23 2.48 2.48 0 01-.57-.42 2.18 2.18 0 01-.38-.56c-.08-.21-.12-.45-.12-.71 0-.35.13-.65.35-.88.22-.23.53-.34.89-.34.36 0 .65.11.88.33.23.22.34.52.34.88 0 .34-.13.63-.34.86-.21.22-.51.33-.86.33-.34 0-.62-.1-.84-.29-.22-.19-.33-.45-.33-.77 0-.34.13-.62.34-.84.21-.22.5-.33.84-.33.31 0 .56.09.76.26.2.18.3.42.3.72 0 .32-.12.59-.31.8-.2.21-.47.32-.79.32-.29 0-.53-.09-.72-.26-.19-.18-.29-.41-.29-.7 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .52.09.71.26.19.18.28.41.28.7 0 .3-.11.56-.29.77-.18.21-.44.32-.74.32a2.25 2.25 0 01-.72-.22c-.21-.16-.31-.38-.31-.66 0-.32.12-.59.32-.8.2-.21.47-.32.79-.32.29 0 .53.09.71.26.19.18.28.41.28.7 0 .32-.12.59-.31.8-.2.21-.47.32-.79.32-.29 0-.53-.09-.71-.26-.19-.18-.28-.41-.28-.7 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .53.09.71.26.19.18.28.41.28.7 0 .32-.12.59-.31.8-.2.21-.47.32-.79.32-.29 0-.53-.09-.71-.26-.19-.18-.28-.41-.28-.7 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .53.09.71.26.19.18.28.41.28.7 0 .3-.11.56-.29.77-.18.21-.44.32-.74.32-.35 0-.64-.12-.87-.36-.23-.24-.34-.56-.34-.95 0-.41.15-.77.4-1.04.25-.27.6-.4 1.02-.4.42 0 .76.12 1.03.36.27.24.4.57.4.98 0 .41-.15.77-.4 1.05-.25.27-.6.41-1.02.41-.47 0-.86-.15-1.15-.45-.29-.3-.44-.71-.44-1.19 0-.55.21-1.02.55-1.37.34-.34.82-.52 1.37-.52.41 0 .76.12 1.04.36.28.24.42.57.42.98 0 .43-.16.8-.43 1.09-.27.29-.64.44-1.09.44-.49 0-.88-.15-1.17-.44-.29-.29-.44-.68-.44-1.15 0-.55.21-1.02.55-1.37.34-.34.82-.52 1.37-.52.48 0 .87.15 1.16.45.29.29.44.7.44 1.19 0 .57-.22 1.06-.57 1.43-.35.37-.83.56-1.4.56-.41 0-.76-.12-1.04-.36-.28-.24-.42-.56-.42-.97 0-.43.16-.8.42-1.09.26-.29.63-.43 1.08-.43.39 0 .71.11.96.33.25.22.37.51.37.86 0 .37-.14.69-.37.94-.23.25-.56.38-.94.38-.33 0-.6-.1-.81-.3-.21-.2-.31-.46-.31-.79 0-.34.13-.62.34-.84.21-.22.5-.33.84-.33.31 0 .56.09.76.26.2.18.3.41.3.7 0 .3-.11.56-.29.77-.18.21-.44.32-.74.32-.34 0-.62-.11-.84-.32-.22-.21-.33-.5-.33-.85 0-.38.14-.7.36-.95.23-.25.55-.38.92-.38.34 0 .62.1.84.3.22.2.33.46.33.79 0 .33-.12.61-.32.83-.2.22-.49.33-.82.33s-.6-.09-.81-.27c-.21-.18-.31-.42-.31-.72 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .53.09.71.26.19.18.28.41.28.7 0 .31-.11.57-.29.77-.18.21-.44.31-.74.31-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .32-.12.59-.31.8-.2.21-.47.32-.79.32-.29 0-.53-.09-.71-.26-.19-.18-.28-.41-.28-.7 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .53.09.71.26.19.18.28.41.28.7 0 .3-.11.56-.29.77-.18.21-.44.32-.74.32-.3 0-.55-.09-.74-.26-.19-.18-.29-.41-.29-.7 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .53.09.71.26.19.18.28.41.28.7 0 .31-.11.57-.29.77-.18.21-.44.31-.74.31-.3 0-.55-.09-.74-.26-.19-.18-.29-.41-.29-.7 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .53.09.71.26.19.18.28.41.28.7 0 .3-.11.56-.29.77-.18.21-.44.32-.74.32-.35 0-.63-.12-.86-.36-.23-.24-.34-.57-.34-.96 0-.43.16-.8.43-1.09.27-.29.64-.44 1.09-.44.5 0 .91.16 1.22.47.31.31.47.72.47 1.2 0 .56-.22 1.05-.57 1.42-.35.37-.83.56-1.41.56-.41 0-.75-.12-1.03-.36-.28-.24-.42-.57-.42-.98 0-.43.16-.8.42-1.09.26-.29.63-.43 1.08-.43.39 0 .7.11.95.33.25.22.37.51.37.86 0 .37-.14.69-.37.94-.23.25-.56.38-.94.38-.33 0-.6-.1-.81-.3-.21-.2-.31-.46-.31-.79 0-.34.13-.62.34-.84.21-.22.5-.33.84-.33.31 0 .56.09.76.26.2.18.3.41.3.7 0 .3-.11.56-.29.77-.18.21-.44.32-.74.32-.34 0-.62-.11-.84-.32-.22-.21-.33-.5-.33-.85 0-.39.14-.71.36-.96.23-.25.55-.38.92-.38.34 0 .62.1.84.3.22.2.33.46.33.79 0 .33-.12.61-.32.83-.2.22-.49.33-.82.33-.31 0-.55-.09-.74-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.3 0 .54.09.73.26.19.18.28.41.28.7 0 .3-.11.56-.29.77-.18.21-.44.31-.74.31-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .32-.12.59-.31.8-.2.21-.47.32-.79.32-.29 0-.53-.09-.71-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .31-.11.57-.29.77-.18.21-.44.31-.74.31-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .3-.11.56-.29.77-.18.21-.44.32-.74.32a4.8 4.8 0 00-.74-.22 5.27 5.27 0 00-.56-.42 4.69 4.69 0 00-.38-.56c-.08-.21-.12-.45-.12-.71 0-.37.13-.68.35-.91.22-.23.53-.35.89-.35.35 0 .63.1.85.31.22.2.33.47.33.8 0 .35-.13.65-.34.88-.21.22-.5.33-.84.33-.31 0-.56-.09-.76-.26-.2-.18-.3-.42-.3-.72 0-.32.12-.59.31-.8.2-.21.47-.32.79-.32.29 0 .53.09.71.26.19.18.28.41.28.7 0 .3-.11.56-.29.77-.18.21-.44.32-.74.32-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .3-.11.56-.29.77-.18.21-.44.31-.74.31-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .3-.11.56-.29.77-.18.21-.44.31-.74.31-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .3-.11.56-.29.77-.18.21-.44.31-.74.31-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .31-.11.57-.29.77-.18.21-.44.31-.74.31-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31.29 0 .52.09.7.26.18.18.27.41.27.7 0 .31-.11.57-.29.77-.18.21-.44.31-.74.31-.3 0-.54-.09-.73-.26-.19-.18-.28-.41-.28-.7 0-.31.11-.57.29-.77.18-.21.44-.31.74-.31z" fill="currentColor"/>
+                    </svg>
+                    <span>Google Pay</span>
+                  </button>
+
+                  {/* PhonePe Button */}
+                  <button
+                    onClick={handlePayViaPhonePe}
+                    className="flex items-center justify-center space-x-3 py-3 px-4 rounded-lg font-medium bg-[#5F2BEA] text-white hover:bg-[#4a22b8] shadow-md transition-all"
+                    title="Pay with PhonePe"
+                  >
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="currentColor"/>
+                    </svg>
+                    <span>PhonePe</span>
+                  </button>
+
+                  {/* Paytm Button */}
+                  <button
+                    onClick={handlePayViaPaytm}
+                    className="flex items-center justify-center space-x-3 py-3 px-4 rounded-lg font-medium bg-[#00BAF2] text-white hover:bg-[#00a0d6] shadow-md transition-all"
+                    title="Pay with Paytm"
+                  >
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="currentColor"/>
+                    </svg>
+                    <span>Paytm</span>
+                  </button>
+                </div>
+
+                {/* Copy UPI ID Button */}
                 <button
                   onClick={handleCopyUpiId}
-                  className="flex items-center justify-center space-x-2 py-2 px-4 rounded-lg font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm"
+                  className="flex items-center justify-center space-x-2 py-2 px-4 rounded-lg font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm w-full"
                   title="Copy UPI ID"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,6 +542,10 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
                   </svg>
                   <span>Copy UPI ID</span>
                 </button>
+
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
+                  Opens UPI app with pre-filled payment details
+                </p>
               </div>
 
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">

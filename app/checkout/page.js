@@ -240,6 +240,59 @@ export default function CheckoutPage() {
     }).format(amount);
   };
 
+  const buildUpiRedirectUrl = (appName) => {
+    if (!upiId) return '';
+
+    const amount = cartTotal || 0;
+    const formattedAmount = amount.toFixed(2);
+    const payeeName = 'Singla Traders';
+    const transactionRef = `ORD-${Date.now()}`;
+
+    // Generate UPI deep link with proper parameters
+    const params = new URLSearchParams({
+      pa: upiId,
+      pn: payeeName,
+      am: formattedAmount,
+      cu: 'INR',
+      tr: transactionRef,
+    });
+
+    // Use app-specific schemes as requested
+    let upiLink;
+    switch (appName) {
+      case 'Google Pay':
+        upiLink = `tez://upi/pay?${params.toString()}`;
+        break;
+      case 'PhonePe':
+        upiLink = `phonepe://pay?${params.toString()}`;
+        break;
+      case 'Paytm':
+        upiLink = `paytmmp://pay?${params.toString()}`;
+        break;
+      default:
+        upiLink = `upi://pay?${params.toString()}`;
+    }
+
+    // Build redirect URL
+    const redirectUrl = new URL(`${window.location.origin}/payment/upi-redirect`);
+    redirectUrl.searchParams.append('upiLink', upiLink);
+    redirectUrl.searchParams.append('upiId', upiId);
+    redirectUrl.searchParams.append('amount', amount);
+    redirectUrl.searchParams.append('payeeName', payeeName);
+    redirectUrl.searchParams.append('app', appName);
+
+    return redirectUrl.toString();
+  };
+
+  const handlePayViaUpi = () => {
+    const redirectUrl = buildUpiRedirectUrl('UPI');
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      alert('UPI ID is not configured. Please contact support.');
+    }
+  };
+
   const cartTotal = calculateTotal();
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -477,6 +530,25 @@ export default function CheckoutPage() {
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">Scan QR code with any UPI app</p>
                           </div>
                         </div>
+                      </div>
+                    )}
+
+                    {/* Pay via UPI Button - Opens OS chooser */}
+                    {upiId && cartTotal > 0 && (
+                      <div className="mb-6">
+                        <button
+                          onClick={handlePayViaUpi}
+                          className="w-full flex items-center justify-center space-x-3 py-4 px-6 rounded-xl font-semibold bg-gradient-to-r from-[#10b981] to-[#059669] text-white hover:from-[#059669] hover:to-[#047857] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+                          title="Pay with any UPI app"
+                        >
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                          </svg>
+                          <span>Pay via UPI (Open with any app)</span>
+                        </button>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                          Click to open your default UPI app with pre-filled payment details
+                        </p>
                       </div>
                     )}
 
