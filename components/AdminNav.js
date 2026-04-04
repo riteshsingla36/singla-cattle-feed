@@ -164,7 +164,7 @@ export const AdminNav = ({ children }) => {
       </aside>
 
       {/* Desktop Header */}
-      <nav className="bg-gradient-to-r from-[#2d3748] to-[#1a202c] dark:from-gray-900 dark:to-gray-700 text-white shadow-xl">
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-[#2d3748] to-[#1a202c] dark:from-gray-900 dark:to-gray-700 text-white shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo + Hamburger */}
@@ -268,7 +268,7 @@ export const AdminNav = ({ children }) => {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto pt-24 pb-8 px-4 sm:px-6 lg:px-8">
         {children}
       </main>
     </div>
