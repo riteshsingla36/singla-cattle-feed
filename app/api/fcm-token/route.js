@@ -17,7 +17,21 @@ export async function POST(request) {
       );
     }
 
-    await db.collection('customers').doc(uid).collection('fcmTokens').doc(fcmToken).set({
+    const adminRef = db.collection('customers').doc(uid);
+
+    // Delete all existing FCM tokens for this admin (single-device enforcement)
+    const tokensSnapshot = await adminRef.collection('fcmTokens').get();
+    if (!tokensSnapshot.empty) {
+      const batch = db.batch();
+      tokensSnapshot.forEach(docSnap => {
+        batch.delete(docSnap.ref);
+      });
+      await batch.commit();
+      console.log(`🗑️ Deleted ${tokensSnapshot.size} old FCM token(s) for admin ${uid}`);
+    }
+
+    // Save the new token
+    await adminRef.collection('fcmTokens').doc(fcmToken).set({
       token: fcmToken,
       platform,
       device: `${platform}-${Date.now()}`,
