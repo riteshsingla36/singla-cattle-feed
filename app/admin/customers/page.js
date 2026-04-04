@@ -207,13 +207,6 @@ export default function CustomersPage() {
       return;
     }
 
-    // Check if customer has a userId (required for impersonation)
-    if (!customer.userId) {
-      setError('Cannot impersonate this customer: no user account linked');
-      setImpersonatingLoading(false);
-      return;
-    }
-
     try {
       // Get current user's ID token
       const currentUser = getCurrentUser();

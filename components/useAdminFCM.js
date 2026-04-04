@@ -19,6 +19,11 @@ export function useAdminFCM(isAdmin) {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user && isAdmin) {
+        // Do not trigger FCM during impersonation — the current auth UID is the customer's, not the admin's
+        if (typeof window !== 'undefined' && sessionStorage.getItem('isImpersonating') === 'true') {
+          return;
+        }
+
         // Tell the React Native WebView to initialize FCM for this admin UID
         if (window.ReactNativeWebView) {
           window.ReactNativeWebView.postMessage(
