@@ -18,14 +18,25 @@ import {
 import { createNotification } from '@/lib/notifications';
 
 // ============== CUSTOMERS ==============
-export const addCustomer = async (customerData) => {
+export const addCustomer = async (customerData, docId) => {
   try {
-    const docRef = await addDoc(collection(db, 'customers'), {
-      ...customerData,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    return { success: true, id: docRef.id };
+    if (docId) {
+      // Use provided docId (e.g., Firebase Auth UID) so subcollections stay in sync
+      await setDoc(doc(db, 'customers', docId), {
+        ...customerData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return { success: true, id: docId };
+    } else {
+      // Fallback: auto-generate ID (backwards compat)
+      const docRef = await addDoc(collection(db, 'customers'), {
+        ...customerData,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return { success: true, id: docRef.id };
+    }
   } catch (error) {
     return { success: false, error: error.message };
   }

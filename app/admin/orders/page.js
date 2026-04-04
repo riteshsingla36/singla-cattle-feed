@@ -359,25 +359,17 @@ export default function OrdersPage() {
   const handleDownloadPaymentScreenshot = async (url, orderId) => {
     try {
       setDownloading(orderId);
-      // Fetch the image as a blob
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch image');
-      }
-      const blob = await response.blob();
 
-      // Create a blob URL and trigger download
-      const blobUrl = window.URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = blobUrl;
-      anchor.download = `payment-screenshot-${orderId?.substring(0, 8) || 'download'}.jpg`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      document.body.removeChild(anchor);
-      window.URL.revokeObjectURL(blobUrl);
+      // Try to open image in new tab/window (preferred for WebView)
+      const newWindow = window.open(url, '_blank');
+
+      // If pop-up blocked or window.open not supported, fallback to same-tab navigation
+      if (!newWindow) {
+        window.location.href = url;
+      }
     } catch (error) {
-      console.error('Error downloading file:', error);
-      alert('Failed to download image. Please try again.');
+      console.error('Error opening image:', error);
+      alert('Failed to open image. Please try again.');
     } finally {
       setDownloading(null);
     }

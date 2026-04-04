@@ -87,12 +87,11 @@ export default function RegisterPage() {
       const result = await registerCustomer(phone, password, name);
 
       if (result.success) {
-        const customerResult = await addCustomer({
-          name,
-          phone,
-          userId: result.user.uid,
-          isAdmin: false,
-        });
+        // Use auth UID as Firestore doc ID so FCM token subcollection stays in sync
+        const customerResult = await addCustomer(
+          { name, phone, isAdmin: false },
+          result.user.uid
+        );
 
         if (customerResult.success) {
           setLoading(false);

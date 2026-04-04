@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import NotificationBell from '@/components/NotificationBell';
+import { useAdminFCM } from '@/components/useAdminFCM';
 
 export const AdminNav = ({ children }) => {
   const router = useRouter();
@@ -15,6 +16,9 @@ export const AdminNav = ({ children }) => {
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+
+  // Auto-save FCM token to Firestore so push notifications work
+  useAdminFCM(true);
 
   useEffect(() => {
     const currentUser = getCurrentUser();
