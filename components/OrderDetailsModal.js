@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '@/components/Toast';
 import { updatePaymentProof, getOrder } from '@/firebase/firestore';
 
 export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUploaded, showShareButton = false, adminWhatsAppNumbers = [], qrCodeUrl = '', upiId = '' }) {
   const { t } = useTranslation();
+  const showToast = useToast();
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [freshOrder, setFreshOrder] = useState(order);
@@ -51,7 +53,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
 
   const handleSubmitPayment = async (orderId) => {
     if (!paymentScreenshot) {
-      alert('Please select a payment screenshot');
+      showToast('Please select a payment screenshot', 'info');
       return;
     }
 
@@ -78,18 +80,18 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
       const result = await updatePaymentProof(orderId, screenshotUrl);
 
       if (result.success) {
-        alert('Payment proof uploaded! Awaiting admin confirmation.');
+        showToast('Payment proof uploaded! Awaiting admin confirmation.', 'success');
         setPaymentScreenshot(null);
         if (onPaymentUploaded) {
           onPaymentUploaded();
         }
         onClose();
       } else {
-        alert('Failed to update payment: ' + result.error);
+        showToast('Failed to update payment: ' + result.error, 'error');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred while uploading payment: ' + error.message);
+      showToast('An error occurred while uploading payment: ' + error.message, 'error');
     } finally {
       setUploading(false);
     }
@@ -108,7 +110,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
       }
     } catch (error) {
       console.error('Error opening image:', error);
-      alert('Failed to open image. Please try again.');
+      showToast('Failed to open image. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -162,7 +164,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
         window.open(url, '_blank');
       });
     } else {
-      alert('No admin phone numbers found. Please configure admin contacts.');
+      showToast('No admin phone numbers found. Please configure admin contacts.', 'info');
     }
   };
 
@@ -270,7 +272,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
     if (!upiId) return;
     try {
       await navigator.clipboard.writeText(upiId);
-      alert('UPI ID copied to clipboard!');
+      showToast('UPI ID copied to clipboard!', 'success');
     } catch (err) {
       // Fallback for older browsers
       const textArea = document.createElement('textarea');
@@ -279,7 +281,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert('UPI ID copied to clipboard!');
+      showToast('UPI ID copied to clipboard!', 'success');
     }
   };
 

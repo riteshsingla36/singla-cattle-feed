@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '@/components/Toast';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts, confirmPayment, getOrder } from '@/firebase/firestore';
 
 export default function OrdersPage() {
   const { t } = useTranslation();
+  const showToast = useToast();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [orders, setOrders] = useState([]);
@@ -335,7 +337,7 @@ export default function OrdersPage() {
         setSelectedOrder({ ...selectedOrder, status: newStatus });
       }
     } else {
-      alert('Failed to update order status');
+      showToast('Failed to update order status', 'error');
     }
   };
 
@@ -352,7 +354,7 @@ export default function OrdersPage() {
         setSelectedOrder({ ...selectedOrder, paymentStatus: 'paid' });
       }
     } else {
-      alert('Failed to confirm payment');
+      showToast('Failed to confirm payment', 'error');
     }
   };
 
@@ -369,7 +371,7 @@ export default function OrdersPage() {
       }
     } catch (error) {
       console.error('Error opening image:', error);
-      alert('Failed to open image. Please try again.');
+      showToast('Failed to open image. Please try again.', 'error');
     } finally {
       setDownloading(null);
     }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useToast } from '@/components/Toast';
 import { useTranslation } from 'react-i18next';
 import {
   getAllProducts,
@@ -13,6 +14,7 @@ import {
 
 export default function ProductsPage() {
   const { t } = useTranslation();
+  const showToast = useToast();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -147,7 +149,7 @@ export default function ProductsPage() {
     if (result.success) {
       fetchProducts();
     } else {
-      alert('Failed to delete product: ' + result.error);
+      showToast('Failed to delete product: ' + result.error, 'error');
     }
   };
 

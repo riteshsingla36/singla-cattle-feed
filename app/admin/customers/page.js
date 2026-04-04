@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '@/components/Toast';
 import {
   getAllCustomers,
   addCustomer,
@@ -13,6 +14,7 @@ import { validatePhone } from '@/lib/validations';
 
 export default function CustomersPage() {
   const { t } = useTranslation();
+  const showToast = useToast();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -177,7 +179,7 @@ export default function CustomersPage() {
     if (result.success) {
       fetchCustomers();
     } else {
-      alert(`Failed to ${action} customer: ${result.error}`);
+      showToast(`Failed to ${action} customer: ${result.error}`, 'error');
     }
   };
 
@@ -255,7 +257,7 @@ export default function CustomersPage() {
 
       setImpersonating(true);
 
-      alert(`Now logged in as ${customer.name}. Use the "Switch back to Admin" button to return.`);
+      showToast(`Now logged in as ${customer.name}. Use the "Switch back to Admin" button to return.`, 'success');
     } catch (err) {
       setError('Failed to login as customer: ' + err.message);
       console.error('Impersonation error:', err);

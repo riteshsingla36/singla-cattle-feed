@@ -8,6 +8,7 @@ import { AdminNav } from '@/components/AdminNav';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { I18nextProvider } from 'react-i18next';
+import { ToastProvider } from '@/components/Toast';
 import i18n from '@/lib/i18n';
 
 export const LayoutWrapper = ({ children }) => {
@@ -44,9 +45,11 @@ export const LayoutWrapper = ({ children }) => {
     return (
       <I18nextProvider i18n={i18n}>
         <ThemeProvider>
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
+          <ToastProvider>
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          </ToastProvider>
         </ThemeProvider>
       </I18nextProvider>
     );
@@ -57,7 +60,9 @@ export const LayoutWrapper = ({ children }) => {
     return (
       <I18nextProvider i18n={i18n}>
         <ThemeProvider>
-          <LanguageProvider>{children}</LanguageProvider>
+          <LanguageProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </I18nextProvider>
     );
@@ -68,9 +73,11 @@ export const LayoutWrapper = ({ children }) => {
     return (
       <I18nextProvider i18n={i18n}>
         <ThemeProvider>
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
+          <ToastProvider>
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          </ToastProvider>
         </ThemeProvider>
       </I18nextProvider>
     );
@@ -82,7 +89,9 @@ export const LayoutWrapper = ({ children }) => {
       <I18nextProvider i18n={i18n}>
         <ThemeProvider>
           <LanguageProvider>
-            <AdminNav>{children}</AdminNav>
+            <ToastProvider>
+              <AdminNav>{children}</AdminNav>
+            </ToastProvider>
           </LanguageProvider>
         </ThemeProvider>
       </I18nextProvider>
@@ -94,7 +103,9 @@ export const LayoutWrapper = ({ children }) => {
     <I18nextProvider i18n={i18n}>
       <ThemeProvider>
         <LanguageProvider>
-          <CustomerNav>{children}</CustomerNav>
+          <ToastProvider>
+            <CustomerNav>{children}</CustomerNav>
+          </ToastProvider>
         </LanguageProvider>
       </ThemeProvider>
     </I18nextProvider>

@@ -9,11 +9,13 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { useAuthState } from '@/hooks/useAuthState';
+import { useToast } from '@/components/Toast';
 
 export const ClientLayout = ({ children }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { user, isAdmin } = useAuthState();
+  const showToast = useToast();
 
   // Compute impersonating directly from sessionStorage on each render
   // This will be re-evaluated whenever the component re-renders (e.g., when user changes)
@@ -24,13 +26,13 @@ export const ClientLayout = ({ children }) => {
       const adminUid = sessionStorage.getItem('originalAdminUid');
       const adminPhone = sessionStorage.getItem('originalAdminPhone');
       if (!adminUid) {
-        alert('No admin session found to switch back to');
+        showToast('No admin session found to switch back to', 'error');
         return;
       }
 
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        alert('No user is currently logged in');
+        showToast('No user is currently logged in', 'error');
         return;
       }
 
@@ -54,9 +56,9 @@ export const ClientLayout = ({ children }) => {
       await signInWithCustomToken(auth, data.customToken);
       sessionStorage.removeItem('originalAdminUid');
       sessionStorage.removeItem('isImpersonating');
-      alert('Successfully switched back to admin account');
+      showToast('Successfully switched back to admin account', 'success');
     } catch (err) {
-      alert('Failed to switch back: ' + err.message);
+      showToast('Failed to switch back: ' + err.message, 'error');
       console.error('Switch back error:', err);
     }
   };

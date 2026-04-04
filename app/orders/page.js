@@ -4,10 +4,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getCurrentUser } from '@/firebase/auth';
 import { getCustomerOrders, getQRCodeSettings, getAllCustomers } from '@/firebase/firestore';
+import { useToast } from '@/components/Toast';
 import OrderDetailsModal from '@/components/OrderDetailsModal';
 
 export default function OrdersPage() {
   const { t } = useTranslation();
+  const showToast = useToast();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -174,7 +176,7 @@ export default function OrdersPage() {
         window.open(url, '_blank');
       });
     } else {
-      alert('No admin phone numbers found. Please configure admin contacts.');
+      showToast('No admin phone numbers found. Please configure admin contacts.', 'info');
     }
   };
 

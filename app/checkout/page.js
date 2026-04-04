@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/Toast';
 import { getCurrentUser } from '@/firebase/auth';
 import { getAllProducts, getCustomerAllPrices, getQRCodeSettings, placeOrder } from '@/firebase/firestore';
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const showToast = useToast();
   const [products, setProducts] = useState([]);
   const [customerPrices, setCustomerPrices] = useState({});
   const [cart, setCart] = useState([]);
@@ -151,11 +153,11 @@ export default function CheckoutPage() {
     const file = e.target.files[0];
     if (file) {
       if (!file.type.match('image.*')) {
-        alert('Please upload an image file');
+        showToast('Please upload an image file', 'info');
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        alert('File size must be less than 5MB');
+        showToast('File size must be less than 5MB', 'info');
         return;
       }
       setPaymentScreenshot(file);
@@ -184,7 +186,7 @@ export default function CheckoutPage() {
     e.preventDefault();
 
     if (cart.length === 0) {
-      alert('Please add items to cart');
+      showToast('Please add items to cart', 'info');
       return;
     }
 
@@ -214,19 +216,19 @@ export default function CheckoutPage() {
 
       if (result.success) {
         if (paymentStatus === 'confirmation_pending') {
-          alert('Order placed! Payment screenshot uploaded. Awaiting admin confirmation.');
+          showToast('Order placed! Payment screenshot uploaded. Awaiting admin confirmation.', 'success');
         } else {
-          alert('Order placed successfully! Please upload payment proof from your orders page.');
+          showToast('Order placed successfully! Please upload payment proof from your orders page.', 'success');
         }
         clearCart();
         setPaymentScreenshot(null);
         router.push('/orders');
       } else {
-        alert('Failed to place order: ' + result.message);
+        showToast('Failed to place order: ' + result.message, 'error');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred while placing order');
+      showToast('An error occurred while placing order', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -289,7 +291,7 @@ export default function CheckoutPage() {
     if (redirectUrl) {
       window.location.href = redirectUrl;
     } else {
-      alert('UPI ID is not configured. Please contact support.');
+      showToast('UPI ID is not configured. Please contact support.', 'info');
     }
   };
 

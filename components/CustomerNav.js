@@ -8,6 +8,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useToast } from '@/components/Toast';
 
 export const CustomerNav = ({ children }) => {
   const router = useRouter();
@@ -17,6 +18,7 @@ export const CustomerNav = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [switchBackLoading, setSwitchBackLoading] = useState(false);
+  const showToast = useToast();
   const impersonating = typeof window !== 'undefined' && sessionStorage.getItem('isImpersonating') === 'true';
 
   useEffect(() => {
@@ -39,14 +41,14 @@ export const CustomerNav = ({ children }) => {
       const adminPhone = sessionStorage.getItem('originalAdminPhone');
 
       if (!adminUid) {
-        alert(t('noAdminSession'));
+        showToast(t('noAdminSession'), 'error');
         setSwitchBackLoading(false);
         return;
       }
 
       const currentUser = auth.currentUser;
       if (!currentUser) {
-        alert(t('noUserLoggedIn'));
+        showToast(t('noUserLoggedIn'), 'error');
         setSwitchBackLoading(false);
         return;
       }
@@ -72,7 +74,7 @@ export const CustomerNav = ({ children }) => {
       sessionStorage.removeItem('originalAdminUid');
       sessionStorage.removeItem('originalAdminPhone');
       sessionStorage.removeItem('isImpersonating');
-      alert(t('switchedBackSuccess'));
+      showToast(t('switchedBackSuccess'), 'success');
     } catch (err) {
       alert(`${t('failedSwitchBack')}: ${err.message}`);
       console.error('Switch back error:', err);

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useToast } from '@/components/Toast';
 import Link from 'next/link';
 
 export default function UpiRedirectPage() {
@@ -12,6 +13,7 @@ export default function UpiRedirectPage() {
   const payeeName = searchParams.get('payeeName') || 'Singla Traders';
   const appName = searchParams.get('app') || 'Payment App';
 
+  const showToast = useToast();
   const [countingDown, setCountingDown] = useState(5);
   const [appOpened, setAppOpened] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
@@ -74,7 +76,7 @@ export default function UpiRedirectPage() {
   const handleCopyUpiId = async () => {
     try {
       await navigator.clipboard.writeText(upiId);
-      alert('UPI ID copied!');
+      showToast('UPI ID copied!', 'success');
     } catch (err) {
       const textArea = document.createElement('textarea');
       textArea.value = upiId;
@@ -82,7 +84,7 @@ export default function UpiRedirectPage() {
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert('UPI ID copied!');
+      showToast('UPI ID copied!', 'success');
     }
   };
 
