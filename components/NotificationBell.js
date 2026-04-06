@@ -38,6 +38,8 @@ export default function NotificationBell({ onNotificationClick }) {
         const unreadOnly = result.notifications.filter((n) => !n.isRead);
         setNotifications(unreadOnly);
         setUnreadCount(unreadOnly.length);
+        // Populate known ID set so subscription won't double-count these
+        knownIdsRef.current = new Set(unreadOnly.map(n => n.id));
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -46,11 +48,19 @@ export default function NotificationBell({ onNotificationClick }) {
     }
   };
 
+  // Track which notification IDs we already know about to avoid double-counting
+  const knownIdsRef = useRef(new Set());
+
   // Subscribe to real-time updates
   useEffect(() => {
     if (!adminId) return;
 
     const unsubscribe = subscribeToNotifications(adminId, (newNotification) => {
+      // Deduplicate: skip if we've already seen this notification
+      if (knownIdsRef.current.has(newNotification.id)) return;
+
+      knownIdsRef.current.add(newNotification.id);
+
       // Add to top of notifications list
       setNotifications((prev) => [newNotification, ...prev.slice(0, 19)]); // Keep max 20
       setUnreadCount((prev) => prev + 1);
