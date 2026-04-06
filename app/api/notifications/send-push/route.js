@@ -57,29 +57,21 @@ export async function POST(request) {
       );
     }
 
-    // Step 3: Build FCM message
-    const androidChannel = (type === 'order-placed' || type === 'order') ? 'orders' : 'payments';
+    // Step 3: Build FCM message - data-only so Notifee shows the notification and we get tap events
     const fcmMessage = {
-      notification: {
-        title: 'Singla Traders',
-        body: message,
-      },
       data: {
         type: type || 'general',
         orderId: orderId || '',
         orderShortId: orderShortId || '',
         customerName: customerName || '',
         amount: amount ? String(amount) : '',
+        title: 'Singla Traders',
+        body: message,
         click_action: 'OPEN_ORDER',
       },
       tokens: allTokens,
       android: {
         priority: 'high',
-        notification: {
-          channelId: androidChannel,
-          sound: 'default',
-          clickAction: 'OPEN_ORDER',
-        },
       },
       apns: {
         payload: {

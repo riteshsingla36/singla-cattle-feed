@@ -9,6 +9,7 @@ import { LanguageProvider } from '@/context/LanguageContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { I18nextProvider } from 'react-i18next';
 import { ToastProvider } from '@/components/Toast';
+import { NotificationHandler } from '@/components/NotificationHandler';
 import i18n from '@/lib/i18n';
 
 export const LayoutWrapper = ({ children }) => {
@@ -91,6 +92,7 @@ export const LayoutWrapper = ({ children }) => {
           <LanguageProvider>
             <ToastProvider>
               <AdminNav>{children}</AdminNav>
+              <NotificationHandler />
             </ToastProvider>
           </LanguageProvider>
         </ThemeProvider>
