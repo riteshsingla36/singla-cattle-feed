@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useEffect, useRef, useState } from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '@/firebase/firebaseConfig';
-import { getCustomerByPhone } from '@/firebase/firestore';
-import { signOut } from 'firebase/auth';
+import { getCustomerByPhone, subscribeToSession } from '@/firebase/firestore';
 
 /**
  * Custom hook to track Firebase authentication state and user profile
+ * Enforces single-device login: if another device logs in, this session is invalidated
  * Returns: { user, isAdmin, loading, initialized }
  */
 export function useAuthState() {
@@ -15,36 +15,41 @@ export function useAuthState() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
+  const sessionRef = useRef({ unsubscribe: null, currentSessionId: null });
 
   useEffect(() => {
     let isMounted = true;
 
     // Set up auth state listener
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!isMounted) return;
+
+      // Clean up previous session subscription if any
+      if (sessionRef.current.unsubscribe) {
+        sessionRef.current.unsubscribe();
+        sessionRef.current.unsubscribe = null;
+        sessionRef.current.currentSessionId = null;
+      }
 
       if (firebaseUser) {
         setUser(firebaseUser);
 
         // Fetch customer data to check admin status and enabled status
         try {
-          // Convert email back to phone (email format: phone@cattlefeed.local)
           const phone = firebaseUser.email?.split('@')[0];
           if (phone) {
             const customerResult = await getCustomerByPhone(phone);
             if (customerResult.success) {
               const customer = customerResult.customer;
-              // Check if customer is enabled (default to true if field missing)
+              const customerId = customerResult.id;
               const isEnabled = customer.isEnabled !== false;
               if (!isEnabled) {
-                // Customer is disabled, sign out immediately
                 console.log('Customer account is disabled, signing out');
                 await signOut(auth);
                 setIsAdmin(false);
                 localStorage.removeItem('isAdmin');
                 setUser(null);
               } else {
-                // Customer is enabled, check admin status
                 if (customer.isAdmin) {
                   setIsAdmin(true);
                   localStorage.setItem('isAdmin', 'true');
@@ -52,9 +57,35 @@ export function useAuthState() {
                   setIsAdmin(false);
                   localStorage.setItem('isAdmin', 'false');
                 }
+
+                // Subscribe to session changes for single-device enforcement
+                let initialSnapshotReceived = false;
+
+                const unsubSession = subscribeToSession(customerId, (firestoreSessionId) => {
+                  if (!isMounted) return;
+
+                  const ownSession = localStorage.getItem('currentSessionId');
+
+                  // First snapshot: DON'T log out
+                  if (!initialSnapshotReceived) {
+                    initialSnapshotReceived = true;
+                    // If localStorage already has a session (from recent login), trust it
+                    // and let Firestore catch up later. Otherwise, sync from Firestore.
+                    if (!ownSession && firestoreSessionId) {
+                      localStorage.setItem('currentSessionId', firestoreSessionId);
+                    }
+                    return;
+                  }
+
+                  // Subsequent snapshots: if Firestore session differs from ours, another device logged in
+                  if (ownSession && firestoreSessionId && firestoreSessionId !== ownSession) {
+                    console.log('Single-device enforcement: signing out, session invalidated');
+                    signOut(auth);
+                  }
+                });
+                sessionRef.current.unsubscribe = unsubSession;
               }
             } else {
-              // Customer record not found, treat as non-admin
               setIsAdmin(false);
               localStorage.setItem('isAdmin', 'false');
             }
@@ -77,7 +108,12 @@ export function useAuthState() {
     // Cleanup
     return () => {
       isMounted = false;
-      unsubscribe();
+      unsubscribeAuth();
+      if (sessionRef.current.unsubscribe) {
+        sessionRef.current.unsubscribe();
+        sessionRef.current.unsubscribe = null;
+        sessionRef.current.currentSessionId = null;
+      }
     };
   }, []);
 

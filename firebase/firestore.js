@@ -646,3 +646,20 @@ export const bulkUpdateOrderStatus = async (orderIds, status) => {
     return { success: false, error: error.message };
   }
 };
+
+// ============== SESSION MANAGEMENT (Single-Device Enforcement) ==============
+export const subscribeToSession = (userId, callback) => {
+  const userDocRef = doc(db, 'customers', userId);
+  const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      callback(data.currentSessionId);
+    } else {
+      callback(null);
+    }
+  }, (error) => {
+    console.error('Session subscription error:', error);
+  });
+
+  return unsubscribe;
+};

@@ -89,7 +89,7 @@ export default function RegisterPage() {
       if (result.success) {
         // Use auth UID as Firestore doc ID so FCM token subcollection stays in sync
         const customerResult = await addCustomer(
-          { name, phone, isAdmin: false },
+          { name, phone, isAdmin: false, currentSessionId: crypto.randomUUID() },
           result.user.uid
         );
 

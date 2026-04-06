@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { loginCustomer, logoutCustomer, getCurrentUser } from '@/firebase/auth';
-import { getCustomerByPhone } from '@/firebase/firestore';
+import { loginCustomer, logoutCustomer, getCurrentUser, generateSessionId } from '@/firebase/auth';
+import { getCustomerByPhone, updateCustomer } from '@/firebase/firestore';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -93,6 +93,20 @@ export default function LoginPage() {
       if (customerResult.success) {
         adminStatus = !!customerResult.customer.isAdmin;
         localStorage.setItem('isAdmin', adminStatus ? 'true' : 'false');
+
+        // Enforce single-device: generate new session ID to invalidate other sessions
+        const sessionId = generateSessionId();
+        localStorage.setItem('currentSessionId', sessionId);
+
+        // Save session to Firestore in background (don't block login flow)
+        setTimeout(async () => {
+          try {
+            const sessionResult = await updateCustomer(customerResult.id, { currentSessionId: sessionId });
+            console.log('📝 Session save result:', JSON.stringify(sessionResult));
+          } catch (sessionError) {
+            console.error('Session save failed (non-critical):', sessionError);
+          }
+        }, 1500);
       }
 
       if (adminStatus) {
