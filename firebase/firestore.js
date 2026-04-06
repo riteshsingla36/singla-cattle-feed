@@ -287,7 +287,7 @@ export const placeOrder = async (orderData) => {
     try {
       const orderShortId = docRef.id.substring(0, 12);
       await createNotification({
-        type: 'new_order',
+        type: 'order-placed',
         message: `New order from ${orderData.customerName || 'Customer'}`,
         orderId: docRef.id,
         orderShortId: orderShortId,

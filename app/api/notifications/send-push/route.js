@@ -58,6 +58,7 @@ export async function POST(request) {
     }
 
     // Step 3: Build FCM message
+    const androidChannel = (type === 'order-placed' || type === 'order') ? 'orders' : 'payments';
     const fcmMessage = {
       notification: {
         title: 'Singla Traders',
@@ -75,7 +76,7 @@ export async function POST(request) {
       android: {
         priority: 'high',
         notification: {
-          channelId: 'payments',
+          channelId: androidChannel,
           sound: 'default',
           clickAction: 'OPEN_ORDER',
         },
