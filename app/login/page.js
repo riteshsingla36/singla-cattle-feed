@@ -94,19 +94,19 @@ export default function LoginPage() {
         adminStatus = !!customerResult.customer.isAdmin;
         localStorage.setItem('isAdmin', adminStatus ? 'true' : 'false');
 
-        // Enforce single-device: generate new session ID to invalidate other sessions
+        // Enforce single-device: generate new session ID and save to Firestore BEFORE redirect
         const sessionId = generateSessionId();
+        const sessionTimestamp = Date.now().toString();
         localStorage.setItem('currentSessionId', sessionId);
+        localStorage.setItem('currentSessionTimestamp', sessionTimestamp);
 
-        // Save session to Firestore in background (don't block login flow)
-        setTimeout(async () => {
-          try {
-            const sessionResult = await updateCustomer(customerResult.id, { currentSessionId: sessionId });
-            console.log('📝 Session save result:', JSON.stringify(sessionResult));
-          } catch (sessionError) {
-            console.error('Session save failed (non-critical):', sessionError);
-          }
-        }, 1500);
+        // Save session to Firestore immediately (blocks login flow to prevent race condition)
+        try {
+          const sessionResult = await updateCustomer(customerResult.id, { currentSessionId: sessionId });
+          console.log('📝 Session save result:', JSON.stringify(sessionResult));
+        } catch (sessionError) {
+          console.error('Session save failed (non-critical):', sessionError);
+        }
       }
 
       if (adminStatus) {

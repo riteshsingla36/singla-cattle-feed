@@ -64,6 +64,9 @@ export const logoutCustomer = async () => {
     await signOut(auth);
     // Clear admin status from storage
     localStorage.removeItem('isAdmin');
+    // Clear single-device session tracking
+    localStorage.removeItem('currentSessionId');
+    localStorage.removeItem('currentSessionTimestamp');
     // Clear impersonation state
     sessionStorage.removeItem('originalAdminUid');
     sessionStorage.removeItem('isImpersonating');

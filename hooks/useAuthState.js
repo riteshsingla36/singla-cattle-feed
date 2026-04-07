@@ -65,14 +65,25 @@ export function useAuthState() {
                   if (!isMounted) return;
 
                   const ownSession = localStorage.getItem('currentSessionId');
+                  const sessionTimestamp = localStorage.getItem('currentSessionTimestamp');
 
-                  // First snapshot: DON'T log out
                   if (!initialSnapshotReceived) {
                     initialSnapshotReceived = true;
-                    // If localStorage already has a session (from recent login), trust it
-                    // and let Firestore catch up later. Otherwise, sync from Firestore.
-                    if (!ownSession && firestoreSessionId) {
-                      localStorage.setItem('currentSessionId', firestoreSessionId);
+
+                    // If we have both a session ID and a recent timestamp (< 5 min), trust
+                    // our own session — we likely just logged in and Firestore isn't caught up yet.
+                    if (ownSession && sessionTimestamp) {
+                      const age = Date.now() - parseInt(sessionTimestamp, 10);
+                      if (age < 5 * 60 * 1000) {
+                        // Fresh session, skip validation
+                        return;
+                      }
+                    }
+
+                    // Stale or missing session — validate against Firestore right away
+                    if (firestoreSessionId && firestoreSessionId !== ownSession) {
+                      console.log('Single-device enforcement: session mismatch on mount, signing out');
+                      signOut(auth);
                     }
                     return;
                   }
