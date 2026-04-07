@@ -25,6 +25,8 @@ export default function OrdersPage() {
   const [downloading, setDownloading] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [customerPhone, setCustomerPhone] = useState('');
+  const [customerDeliveryAddress, setCustomerDeliveryAddress] = useState('');
+  const [customerDeliveryCoords, setCustomerDeliveryCoords] = useState(null);
   const [loadingCustomer, setLoadingCustomer] = useState(false);
   const [allCustomers, setAllCustomers] = useState([]);
   const [customerSearchQuery, setCustomerSearchQuery] = useState('');
@@ -43,6 +45,8 @@ export default function OrdersPage() {
   useEffect(() => {
     if (!selectedOrder) {
       setCustomerPhone('');
+      setCustomerDeliveryAddress('');
+      setCustomerDeliveryCoords(null);
     }
   }, [selectedOrder]);
 
@@ -54,22 +58,7 @@ export default function OrdersPage() {
       if (order && (!selectedOrder || selectedOrder.id !== order.id)) {
         setSelectedOrder(order);
         if (order.customerId) {
-          setLoadingCustomer(true);
-          getCustomerByUserId(order.customerId)
-            .then((result) => {
-              if (result.success && result.customer) {
-                setCustomerPhone(result.customer.phone || '');
-              } else {
-                setCustomerPhone('');
-              }
-            })
-            .catch((err) => {
-              console.error('Error fetching customer:', err);
-              setCustomerPhone('');
-            })
-            .finally(() => {
-              setLoadingCustomer(false);
-            });
+          fetchCustomerDetails(order.customerId);
         }
       }
     }
@@ -108,24 +97,8 @@ export default function OrdersPage() {
           const order = result.orders.find(o => o.id === orderId);
           if (order) {
             setSelectedOrder(order);
-            // Fetch customer phone if needed
             if (order.customerId) {
-              setLoadingCustomer(true);
-              getCustomerByUserId(order.customerId)
-                .then((result) => {
-                  if (result.success && result.customer) {
-                    setCustomerPhone(result.customer.phone || '');
-                  } else {
-                    setCustomerPhone('');
-                  }
-                })
-                .catch((err) => {
-                  console.error('Error fetching customer:', err);
-                  setCustomerPhone('');
-                })
-                .finally(() => {
-                  setLoadingCustomer(false);
-                });
+              fetchCustomerDetails(order.customerId);
             }
           }
         }
@@ -134,6 +107,34 @@ export default function OrdersPage() {
       console.error('Error fetching orders:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCustomerDetails = async (customerId) => {
+    if (!customerId) return;
+    setLoadingCustomer(true);
+    try {
+      const result = await getCustomerByUserId(customerId);
+      if (result.success && result.customer) {
+        setCustomerPhone(result.customer.phone || '');
+        setCustomerDeliveryAddress(result.customer.deliveryAddress || '');
+        if (result.customer.deliveryLat && result.customer.deliveryLng) {
+          setCustomerDeliveryCoords({ lat: result.customer.deliveryLat, lng: result.customer.deliveryLng });
+        } else {
+          setCustomerDeliveryCoords(null);
+        }
+      } else {
+        setCustomerPhone('');
+        setCustomerDeliveryAddress('');
+        setCustomerDeliveryCoords(null);
+      }
+    } catch (err) {
+      console.error('Error fetching customer:', err);
+      setCustomerPhone('');
+      setCustomerDeliveryAddress('');
+      setCustomerDeliveryCoords(null);
+    } finally {
+      setLoadingCustomer(false);
     }
   };
 
@@ -193,17 +194,7 @@ export default function OrdersPage() {
         await fetchOrders();
         // Also fetch customer phone if needed
         if (result.order.customerId) {
-          setLoadingCustomer(true);
-          getCustomerByUserId(result.order.customerId)
-            .then((result) => {
-              if (result.success && result.customer) {
-                setCustomerPhone(result.customer.phone || '');
-              } else {
-                setCustomerPhone('');
-              }
-            })
-            .catch(() => setCustomerPhone(''))
-            .finally(() => setLoadingCustomer(false));
+          fetchCustomerDetails(result.order.customerId);
         }
       }
     } catch (error) {
@@ -645,17 +636,7 @@ export default function OrdersPage() {
                         onClick={() => {
                           setSelectedOrder(order);
                           if (order.customerId) {
-                            setLoadingCustomer(true);
-                            getCustomerByUserId(order.customerId)
-                              .then((result) => {
-                                if (result.success && result.customer) {
-                                  setCustomerPhone(result.customer.phone || '');
-                                } else {
-                                  setCustomerPhone('');
-                                }
-                              })
-                              .catch(() => setCustomerPhone(''))
-                              .finally(() => setLoadingCustomer(false));
+                            fetchCustomerDetails(order.customerId);
                           }
                         }}
                         className="text-[#10b981] hover:text-[#059669] font-semibold"
@@ -698,17 +679,7 @@ export default function OrdersPage() {
                             onClick={() => {
                               setSelectedOrder(order);
                               if (order.customerId) {
-                                setLoadingCustomer(true);
-                                getCustomerByUserId(order.customerId)
-                                  .then((result) => {
-                                    if (result.success && result.customer) {
-                                      setCustomerPhone(result.customer.phone || '');
-                                    } else {
-                                      setCustomerPhone('');
-                                    }
-                                  })
-                                  .catch(() => setCustomerPhone(''))
-                                  .finally(() => setLoadingCustomer(false));
+                                fetchCustomerDetails(order.customerId);
                               }
                             }}
                             className="text-[#10b981] hover:text-[#059669] font-semibold text-lg"
@@ -897,6 +868,24 @@ export default function OrdersPage() {
                         </svg>
                         {t('whatsapp')}
                       </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Delivery Address Section */}
+              {customerDeliveryAddress && (
+                <div className="card">
+                  <div className="p-4">
+                    <div className="flex items-start space-x-2">
+                      <svg className="w-5 h-5 text-[#10b981] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Delivery Address</p>
+                        <p className="text-sm text-gray-800 dark:text-gray-200">{customerDeliveryAddress}</p>
+                      </div>
                     </div>
                   </div>
                 </div>

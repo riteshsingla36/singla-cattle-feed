@@ -309,6 +309,7 @@ export default function CustomersPage() {
                   <tr>
                     <th>{t('name')}</th>
                     <th>{t('phone')}</th>
+                    <th>{t('deliveryAddress')}</th>
                     <th>{t('role')}</th>
                     <th className="text-right">{t('actions')}</th>
                   </tr>
@@ -324,6 +325,9 @@ export default function CustomersPage() {
                       </td>
                       <td className="text-gray-600 dark:text-gray-300">
                         {customer.phone}
+                      </td>
+                      <td className="text-gray-600 dark:text-gray-300 max-w-xs truncate" title={customer.deliveryAddress || ''}>
+                        {customer.deliveryAddress || '-'}
                       </td>
                       <td>
                         {customer.isAdmin ? (
@@ -433,6 +437,12 @@ export default function CustomersPage() {
                       <span className="text-gray-500 dark:text-gray-400">Phone:</span>
                       <span className="text-gray-900 dark:text-gray-100 font-medium">{customer.phone}</span>
                     </div>
+                    {customer.deliveryAddress && (
+                      <div>
+                        <span className="text-gray-500 dark:text-gray-400">Address:</span>
+                        <p className="text-gray-900 dark:text-gray-100 mt-1">{customer.deliveryAddress}</p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
