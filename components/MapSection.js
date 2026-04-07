@@ -3,15 +3,18 @@ import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-lea
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Fix Leaflet default marker icons (CDN URLs)
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
-
 const INDIA_CENTER = [20.5937, 78.9629];
+
+// Create explicit custom icon to avoid Leaflet's broken default icon in bundlers
+const greenIcon = L.icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
 
 /** Handles map clicks — dispatches custom event for parent */
 function MapClickHandler() {
@@ -42,14 +45,6 @@ function PositionUpdater({ position }) {
 
 /** Draggable marker that dispatches drag-end events */
 function DraggableMarker({ position }) {
-  const markerRef = useRef(null);
-
-  useEffect(() => {
-    if (markerRef.current && position) {
-      markerRef.current.setLatLng([position.lat, position.lng]);
-    }
-  }, [position?.lat, position?.lng]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const handleDragEnd = (e) => {
     const latlng = e.target.getLatLng();
     window.dispatchEvent(new CustomEvent('marker-drag', {
@@ -61,8 +56,8 @@ function DraggableMarker({ position }) {
 
   return (
     <Marker
-      ref={markerRef}
       position={[position.lat, position.lng]}
+      icon={greenIcon}
       draggable={true}
       eventHandlers={{ dragend: handleDragEnd }}
     />
@@ -71,20 +66,23 @@ function DraggableMarker({ position }) {
 
 export default function MapSection({ position, onLoaded }) {
   return (
-    <MapContainer
-      center={position || INDIA_CENTER}
-      zoom={position ? 15 : 5}
-      style={{ height: '100%', width: '100%' }}
-      whenCreated={onLoaded}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        maxZoom={19}
-      />
-      <MapClickHandler />
-      <PositionUpdater position={position} />
-      <DraggableMarker position={position} />
-    </MapContainer>
+    // z-0 + overflow-hidden to contain Leaflet's internal z-indexes from escaping
+    <div className="relative z-0 overflow-hidden">
+      <MapContainer
+        center={position || INDIA_CENTER}
+        zoom={position ? 15 : 5}
+        style={{ height: '100%', width: '100%' }}
+        whenCreated={onLoaded}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
+        />
+        <MapClickHandler />
+        <PositionUpdater position={position} />
+        <DraggableMarker position={position} />
+      </MapContainer>
+    </div>
   );
 }

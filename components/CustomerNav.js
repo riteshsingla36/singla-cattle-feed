@@ -120,14 +120,14 @@ export const CustomerNav = ({ children }) => {
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-gray-900/50 z-40 md:hidden"
+          className="fixed inset-0 bg-gray-900/50 z-[9999] md:hidden"
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
 
       {/* Mobile sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-800 transform ${
+        className={`fixed inset-y-0 left-0 z-[10000] w-72 bg-white dark:bg-gray-800 transform ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } transition-transform duration-300 ease-in-out md:hidden shadow-xl`}
       >
