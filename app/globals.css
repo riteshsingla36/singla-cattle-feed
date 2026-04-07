@@ -373,6 +373,26 @@
   }
 }
 
+/* Prevent all zoom on touch devices */
+html {
+  touch-action: manipulation;
+  overflow: hidden;
+}
+
+body {
+  touch-action: manipulation;
+  overflow-y: auto;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Prevent zoom on focus for all inputs */
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}
+
 /* Body Background - Base */
 body {
   @apply bg-gray-50 min-h-screen;
