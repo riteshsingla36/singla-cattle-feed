@@ -15,38 +15,28 @@ export default function OrderRedirectPage() {
   useEffect(() => {
     if (!orderId) return;
 
-    // Try to open the app immediately
     const appUrl = `st://admin/orders?orderId=${orderId}`;
-    window.location.href = appUrl;
+    const fallbackUrl = `/admin/orders?orderId=${orderId}`;
 
-    // Start countdown timer for fallback
-    const timer = setInterval(() => {
-      setCountingDown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          if (!appOpened) {
-            // User probably doesn't have the app, show they'll be redirected to browser
-            window.location.href = `/admin/orders?orderId=${orderId}`;
-          }
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    // Use hidden iframe — Android Chrome allows opening custom schemes
+    // via iframe more reliably than window.location
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = appUrl;
+    document.body.appendChild(iframe);
 
-    // Detect if user returned to the page (app didn't open)
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        setAppOpened(true);
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    // Fallback: if app doesn't open within 3 seconds, redirect to browser
+    const timer = setTimeout(() => {
+      window.location.href = fallbackUrl;
+    }, 3000);
 
     return () => {
-      clearInterval(timer);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearTimeout(timer);
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
     };
-  }, [orderId, appOpened]);
+  }, [orderId]);
 
   if (!orderId) {
     return (
@@ -98,8 +88,8 @@ export default function OrderRedirectPage() {
           {countingDown > 0 && !appOpened && (
             <div className="mb-4">
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                If the app doesn&apos;t open automatically, you will be redirected to the web version in{' '}
-                <span className="font-semibold text-[#10b981]">{countingDown}</span> seconds...
+                Opening Singla Traders app... If the app doesn&apos;t open automatically, you will be redirected to the web version in{' '}
+                <span className="font-semibold text-[#10b981]">{countingDown}</span> seconds.
               </p>
             </div>
           )}
