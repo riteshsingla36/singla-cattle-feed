@@ -6,18 +6,22 @@ import { useTranslation } from 'react-i18next';
 import { getCurrentUser, changePassword } from '@/firebase/auth';
 import { getCustomerByPhone, updateCustomer } from '@/firebase/firestore';
 import dynamic from 'next/dynamic';
-if (typeof window !== 'undefined') {
-  const L = require('leaflet');
-  delete L.Icon.Default.prototype._getIconUrl;
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-  });
-}
 
-// Dynamically import MapSection to avoid SSR issues with Leaflet
-const MapSection = dynamic(() => import('@/components/MapSection'), { ssr: false });
+// Load map with explicit error handling so next/dynamic chunk failures are visible
+const MapLoaded = dynamic(
+  () => import('@/components/MapSection').then((m) => m.default),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-full bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#10b981] mx-auto"></div>
+          <p className="mt-2 text-sm text-gray-500">Loading map (stuck? check console)...</p>
+        </div>
+      </div>
+    ),
+  },
+);
 
 // Reverse geocode using Nominatim (free, no API key)
 let lastGeocodeTime = 0;
@@ -50,7 +54,6 @@ export default function ProfilePage() {
   // Map state
   const [position, setPosition] = useState(null);
   const [address, setAddress] = useState('');
-  const [mapLoaded, setMapLoaded] = useState(false);
   const [mapKey, setMapKey] = useState(0); // used to force map re-center
   const [savingAddress, setSavingAddress] = useState(false);
   const [addressMessage, setAddressMessage] = useState('');
@@ -118,7 +121,40 @@ export default function ProfilePage() {
     }
   };
 
+  const handleSearchSelect = (result) => {
+    setMapKey((k) => k + 1); // force map to re-render centered on new location
+    setPosition({ lat: result.lat, lng: result.lng });
+    setAddress(result.address);
+  };
+
   const handleUseMyLocation = () => {
+    // Detect if running inside Android WebView (react-native-webview)
+    const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
+    const isReactNativeWebView = typeof window !== 'undefined' && window.ReactNativeWebView !== undefined;
+
+    if (isAndroid && isReactNativeWebView) {
+      // Request location from the native Android app via custom URL scheme
+      setLocating(true);
+
+      // Set up handlers that the native app will call via injectJavaScript
+      window.__handleNativeLocation = (lat, lng) => {
+        setMapKey((k) => k + 1);
+        setPosition({ lat, lng });
+        reverseGeocode(lat, lng, setAddress);
+        setLocating(false);
+      };
+
+      window.__handleNativeLocationError = (message) => {
+        setAddressError(message || 'Unable to get your location');
+        setLocating(false);
+      };
+
+      // Trigger native location request
+      window.location.href = 'singlafeed://native-location-request';
+      return;
+    }
+
+    // Browser / iOS WebView: use standard geolocation API
     if (!navigator.geolocation) {
       setAddressError('Geolocation is not supported by your browser');
       return;
@@ -229,20 +265,11 @@ export default function ProfilePage() {
 
         <div className="card-body">
           {/* Map */}
-          <div className="relative h-80 w-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 mb-4">
-            <MapSection
-              key={mapKey}
-              position={position}
-              onLoaded={() => setMapLoaded(true)}
-            />
-            {!mapLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#10b981] mx-auto"></div>
-                  <p className="mt-2 text-sm text-gray-500">Loading map...</p>
-                </div>
-              </div>
-            )}
+          <div
+            className="w-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 mb-4"
+            style={{ height: 320 }}
+          >
+            <MapLoaded key={mapKey} position={position} onSelect={handleSearchSelect} />
           </div>
 
           {/* Use My Location Button */}
