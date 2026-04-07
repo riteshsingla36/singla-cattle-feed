@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // Prevent double-tap-to-zoom
+                // Prevent double-tap-to-zoom (non-blocking check only)
                 var lastTouchEnd = 0;
                 document.addEventListener('touchend', function(e) {
                   var now = Date.now();
@@ -41,25 +41,14 @@ export default function RootLayout({ children }) {
                 // Prevent pinch-zoom
                 document.addEventListener('gesturestart', function(e) {
                   e.preventDefault();
-                }, { passive: false });
+                });
 
-                document.addEventListener('touchstart', function(e) {
-                  if (e.touches.length > 1) {
-                    e.preventDefault();
-                  }
-                }, { passive: false });
+                document.addEventListener('gesturechange', function(e) {
+                  e.preventDefault();
+                });
 
-                document.addEventListener('touchmove', function(e) {
-                  if (e.touches.length > 1) {
-                    e.preventDefault();
-                  }
-                }, { passive: false });
-
-                // Prevent keyboard-zoom on iOS
-                document.addEventListener('keydown', function(e) {
-                  if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '0')) {
-                    e.preventDefault();
-                  }
+                document.addEventListener('gestureend', function(e) {
+                  e.preventDefault();
                 });
               })();
             `,

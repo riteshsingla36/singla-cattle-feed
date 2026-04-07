@@ -373,15 +373,9 @@
   }
 }
 
-/* Prevent all zoom on touch devices */
-html {
-  touch-action: manipulation;
-  overflow: hidden;
-}
-
+/* Prevent text-size auto-zoom on iOS */
+html,
 body {
-  touch-action: manipulation;
-  overflow-y: auto;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
