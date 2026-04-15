@@ -28,6 +28,20 @@ export default function DashboardPage() {
       const user = getCurrentUser();
       if (!user) return;
 
+      // Check for profile completeness
+      const phone = user.email?.split('@')[0];
+      if (phone) {
+        const customerResult = await getCustomerByPhone(phone);
+        if (customerResult.success && customerResult.customer) {
+          const c = customerResult.customer;
+          const isComplete = !!(c.addressLine1 && c.village && c.city && c.pincode);
+          if (!isComplete) {
+            router.push('/complete-profile');
+            return;
+          }
+        }
+      }
+
       const result = await getCustomerOrders(user.uid);
       if (result.success) {
         setOrders(result.orders);

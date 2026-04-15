@@ -18,7 +18,8 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [profileComplete, setProfileComplete] = useState(true); // assume true until checked
+  const [profileComplete, setProfileComplete] = useState(true);
+  const [customerProfile, setCustomerProfile] = useState(null);
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -72,14 +73,23 @@ export default function CheckoutPage() {
         getQRCodeSettings(),
       ]);
 
-      // Check if customer has village & city
+      // Check if customer has required address fields
       try {
         const phone = user.email?.split('@')[0];
         if (phone) {
           const customerResult = await getCustomerByPhone(phone);
           if (customerResult.success && customerResult.customer) {
             const c = customerResult.customer;
-            setProfileComplete(!!(c.village && c.village.trim() && c.city && c.city.trim()));
+            const isComplete = !!(
+              c.addressLine1 && 
+              c.village && 
+              c.city && 
+              c.pincode && 
+              c.pincode.length === 6
+            );
+            setProfileComplete(isComplete);
+            // Store customer profile for later use in order snapshot
+            setCustomerProfile(c);
           }
         }
       } catch (err) {
@@ -206,8 +216,8 @@ export default function CheckoutPage() {
     }
 
     if (!profileComplete) {
-      showToast('Please add your village and city details before placing an order', 'info');
-      router.push('/profile');
+      showToast('Profile Incomplete! Please provide your full address & pincode before placing an order.', 'error');
+      router.push('/complete-profile');
       return;
     }
 
@@ -227,10 +237,21 @@ export default function CheckoutPage() {
       const orderData = {
         customerId: user.uid,
         customerName: user.displayName || 'Customer',
+        customerPhone: user.email?.split('@')[0] || '',
         items: cart,
         totalAmount: calculateTotal(),
         paymentScreenshotUrl: screenshotUrl,
         paymentStatus: paymentStatus,
+        // Save Address Snapshot
+        billingAddress: {
+          line1: customerProfile?.addressLine1 || '',
+          line2: customerProfile?.addressLine2 || '',
+          village: customerProfile?.village || '',
+          city: customerProfile?.city || '',
+          state: customerProfile?.state || 'Haryana',
+          pincode: customerProfile?.pincode || '',
+          country: customerProfile?.country || 'India'
+        }
       };
 
       const result = await placeOrder(orderData);
@@ -627,8 +648,8 @@ export default function CheckoutPage() {
 
                       <button
                         type="submit"
-                        disabled={submitting || cart.length === 0 || !profileComplete}
-                        className="w-full btn-primary flex items-center justify-center space-x-2 py-3 text-lg shadow-lg hover:shadow-xl"
+                        disabled={submitting || cart.length === 0}
+                        className={`w-full btn-primary flex items-center justify-center space-x-2 py-3 text-lg shadow-lg hover:shadow-xl ${!profileComplete ? 'bg-gray-400 hover:bg-gray-500 shadow-none hover:shadow-none' : ''}`}
                       >
                         {submitting ? (
                           <>

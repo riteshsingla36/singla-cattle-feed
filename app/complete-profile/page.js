@@ -9,8 +9,14 @@ import { getCustomerByPhone, updateCustomer } from '@/firebase/firestore';
 export default function CompleteProfilePage() {
   const router = useRouter();
   const { t } = useTranslation();
+  
+  // New Address Fields
+  const [addressLine1, setAddressLine1] = useState('');
+  const [addressLine2, setAddressLine2] = useState('');
   const [village, setVillage] = useState('');
   const [city, setCity] = useState('');
+  const [pincode, setPincode] = useState('');
+  
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [customerId, setCustomerId] = useState(null);
@@ -34,14 +40,28 @@ export default function CompleteProfilePage() {
         const result = await getCustomerByPhone(phone);
         if (result.success && result.customer) {
           setCustomerId(result.id);
-          // If village & city already exist, skip to dashboard
-          if (result.customer.village && result.customer.city) {
+          const c = result.customer;
+          
+          // Check if all new required fields are present
+          const isComplete = !!(
+            c.addressLine1 && 
+            c.village && 
+            c.city && 
+            c.pincode && 
+            c.pincode.length === 6
+          );
+
+          if (isComplete) {
             router.push('/dashboard');
             return;
           }
-          // Pre-fill if partially set
-          if (result.customer.village) setVillage(result.customer.village);
-          if (result.customer.city) setCity(result.customer.city);
+          
+          // Pre-fill existing fields
+          if (c.addressLine1) setAddressLine1(c.addressLine1);
+          if (c.addressLine2) setAddressLine2(c.addressLine2);
+          if (c.village) setVillage(c.village);
+          if (c.city) setCity(c.city);
+          if (c.pincode) setPincode(c.pincode);
         } else {
           router.push('/dashboard');
           return;
@@ -61,13 +81,20 @@ export default function CompleteProfilePage() {
     e.preventDefault();
     setError('');
 
-    if (!village.trim()) {
-      setError('Please enter your village name');
+    if (!addressLine1.trim()) {
+      setError('Please enter Address Line 1');
       return;
     }
-
+    if (!village.trim()) {
+      setError('Please enter Village/Area');
+      return;
+    }
     if (!city.trim()) {
-      setError('Please enter your city name');
+      setError('Please enter City');
+      return;
+    }
+    if (!pincode.trim() || pincode.length !== 6 || !pincode.startsWith('12')) {
+      setError('Please enter a valid 6-digit Haryana Pincode (starts with 12)');
       return;
     }
 
@@ -76,8 +103,14 @@ export default function CompleteProfilePage() {
     setLoading(true);
     try {
       const result = await updateCustomer(customerId, {
+        addressLine1: addressLine1.trim(),
+        addressLine2: addressLine2.trim(),
         village: village.trim(),
         city: city.trim(),
+        pincode: pincode.trim(),
+        state: 'Haryana',
+        country: 'India',
+        profileCompleted: true
       });
 
       if (result.success) {
@@ -103,61 +136,96 @@ export default function CompleteProfilePage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-primary/5 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-24 h-24 mb-4">
             <img src="/logo.png" alt="Singla Traders" className="w-24 h-24 object-contain" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Singla Traders</h1>
-          <p className="text-sm text-gray-600 mt-1">Premium Cattle Feed Distribution</p>
+          <p className="text-sm text-gray-600 mt-1">Professional Billing & Distribution</p>
         </div>
 
-        {/* Complete Profile Card */}
         <div className="card p-8">
-          {/* Success checkmark */}
           <div className="flex items-center justify-center mb-4">
             <div className="w-14 h-14 rounded-full bg-[#10b981]/10 flex items-center justify-center">
               <svg className="w-8 h-8 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Account Created!</h2>
-          <p className="text-sm text-gray-600 mb-8 text-center">
-            Just one more step — tell us your village and city so we can serve you better.
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Complete Your Address</h2>
+          <p className="text-sm text-gray-600 mb-8 text-center border-b pb-4">
+            We've upgraded our billing system. Please provide your full address for accurate invoices.
           </p>
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="village" className="form-label">
-                Village
-              </label>
+              <label className="form-label">Address Line 1 (House/Shop No) *</label>
               <input
-                id="village"
                 type="text"
-                value={village}
-                onChange={(e) => setVillage(e.target.value)}
+                value={addressLine1}
+                onChange={(e) => setAddressLine1(e.target.value)}
                 className="form-input"
-                placeholder="Enter your village name"
+                placeholder="e.g. Shop No. 12, Main Market"
                 disabled={loading}
-                autoFocus
               />
             </div>
 
             <div>
-              <label htmlFor="city" className="form-label">
-                City
-              </label>
+              <label className="form-label">Address Line 2 (Landmark - Optional)</label>
               <input
-                id="city"
                 type="text"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
+                value={addressLine2}
+                onChange={(e) => setAddressLine2(e.target.value)}
                 className="form-input"
-                placeholder="Enter your city name"
+                placeholder="e.g. Near Bus Stand"
                 disabled={loading}
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="form-label">Village/Area *</label>
+                <input
+                  type="text"
+                  value={village}
+                  onChange={(e) => setVillage(e.target.value)}
+                  className="form-input"
+                  placeholder="Village name"
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <label className="form-label">City *</label>
+                <input
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="form-input"
+                  placeholder="City name"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="form-label">Pincode *</label>
+                <input
+                  type="text"
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  className="form-input"
+                  placeholder="e.g. 127021"
+                  maxLength={6}
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <label className="form-label">State</label>
+                <input type="text" value="Haryana" readOnly className="form-input bg-gray-50 text-gray-500 cursor-not-allowed" />
+              </div>
             </div>
 
             {error && (
@@ -177,34 +245,14 @@ export default function CompleteProfilePage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  <span>Saving...</span>
+                  <span>Updating Profile...</span>
                 </>
               ) : (
-                <>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Save & Continue</span>
-                </>
+                <span>Save & Continue</span>
               )}
             </button>
           </form>
-
-          <div className="mt-6 text-center">
-            <button
-              type="button"
-              onClick={() => router.push('/dashboard')}
-              className="text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2"
-              disabled={loading}
-            >
-              Skip for now
-            </button>
-          </div>
         </div>
-
-        <p className="text-center text-xs text-gray-400 mt-6">
-          You can always update this from your Profile page.
-        </p>
       </div>
     </div>
   );

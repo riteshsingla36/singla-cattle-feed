@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/components/Toast';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts, confirmPayment, recordCashPayment, getOrder } from '@/firebase/firestore';
+import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts, confirmPayment, recordCashPayment, getOrder, saveBillUrl } from '@/firebase/firestore';
+import { generateOrderBill } from '@/lib/billGenerator';
 
 export default function OrdersPage() {
   const { t } = useTranslation();
@@ -39,6 +40,7 @@ export default function OrdersPage() {
   const [cashInput, setCashInput] = useState('');
   const [onlineInput, setOnlineInput] = useState('');
   const [recordingCash, setRecordingCash] = useState(false);
+  const [billGenerating, setBillGenerating] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -380,6 +382,65 @@ export default function OrdersPage() {
       showToast('Failed to open image. Please try again.', 'error');
     } finally {
       setDownloading(null);
+    }
+  };
+
+  const handleDownloadBill = async (order) => {
+    if (!order?.id) return;
+
+    // 1. If bill already exists, use Cloudinary's attachment flag to force download (if not raw)
+    if (order.billPdfUrl) {
+      let downloadUrl = order.billPdfUrl;
+      
+      if (downloadUrl.includes('/image/upload/')) {
+        downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = downloadUrl;
+        a.download = `Invoice_${order.id.substring(0, 10).toUpperCase()}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+      } else {
+        // Fallback for old 'raw' uploads
+        window.open(downloadUrl, '_blank');
+      }
+      return;
+    }
+
+    // 2. Otherwise generate and upload
+    setBillGenerating(true);
+    try {
+      const doc = await generateOrderBill(order);
+      const pdfBlob = doc.output('blob');
+      
+      const formData = new FormData();
+      formData.append('file', pdfBlob, `bill_${order.id}.pdf`);
+      formData.append('orderId', order.id);
+
+      const response = await fetch('/api/upload-bill', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || 'Failed to upload bill');
+
+      // 3. Save URL to Firestore
+      await saveBillUrl(order.id, data.url);
+      
+      // Update local state
+      setSelectedOrder({ ...order, billPdfUrl: data.url });
+      setOrders(prev => prev.map(o => o.id === order.id ? { ...o, billPdfUrl: data.url } : o));
+      
+      showToast('Bill generated successfully', 'success');
+      
+      // 4. Trigger Automatic Download
+      doc.save(`Invoice_${order.id.substring(0, 10).toUpperCase()}.pdf`);
+    } catch (error) {
+      console.error('Error generating bill:', error);
+      showToast('Failed to generate bill: ' + error.message, 'error');
+    } finally {
+      setBillGenerating(false);
     }
   };
 
@@ -1083,12 +1144,35 @@ export default function OrdersPage() {
               {selectedOrder.status !== 'cancelled' && (
                 <div className="card">
                   <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center space-x-2">
-                      <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                      <span>Payment Details</span>
-                    </h3>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center space-x-2">
+                        <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span>Payment Details</span>
+                      </h3>
+                      
+                      {/* Download Bill Button - Only if Delivered and Paid */}
+                      {selectedOrder.status === 'delivered' && selectedOrder.paymentStatus === 'paid' && (
+                        <button
+                          onClick={() => handleDownloadBill(selectedOrder)}
+                          disabled={billGenerating}
+                          className="inline-flex items-center space-x-1.5 px-3 py-1 text-xs bg-[#10b981] text-white rounded-lg hover:bg-[#059669] transition-all disabled:opacity-50 font-medium"
+                        >
+                          {billGenerating ? (
+                            <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          ) : (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                          )}
+                          <span>{billGenerating ? 'Generating...' : 'Download Bill'}</span>
+                        </button>
+                      )}
+                    </div>
 
                     {/* Payment Breakdown */}
                     <div className="space-y-2 mb-4">

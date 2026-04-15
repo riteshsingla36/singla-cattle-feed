@@ -279,6 +279,7 @@ export const placeOrder = async (orderData) => {
     const docRef = await addDoc(collection(db, 'orders'), {
       ...orderData,
       status: 'pending',
+      paymentStatus: orderData.paymentStatus || 'pending',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -349,10 +350,16 @@ export const getAllOrders = async () => {
 export const updateOrderStatus = async (orderId, status) => {
   try {
     const orderRef = doc(db, 'orders', orderId);
-    await updateDoc(orderRef, {
+    const updates = {
       status,
       updatedAt: serverTimestamp(),
-    });
+    };
+
+    if (status === 'delivered') {
+      updates.deliveredAt = serverTimestamp();
+    }
+
+    await updateDoc(orderRef, updates);
     return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
@@ -585,6 +592,20 @@ export const recordCashPayment = async (orderId, amount) => {
       updatedAt: serverTimestamp(),
     });
     return { success: true, paymentStatus };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const saveBillUrl = async (orderId, billPdfUrl) => {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    await updateDoc(orderRef, {
+      billPdfUrl,
+      billGeneratedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
   }

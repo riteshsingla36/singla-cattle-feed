@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/components/Toast';
-import { updatePaymentProof, getOrder } from '@/firebase/firestore';
+import { updatePaymentProof, getOrder, saveBillUrl } from '@/firebase/firestore';
+import { generateOrderBill } from '@/lib/billGenerator';
 
 export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUploaded, showShareButton = false, adminWhatsAppNumbers = [], qrCodeUrl = '', upiId = '' }) {
   const { t } = useTranslation();
@@ -12,6 +13,7 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
   const [uploading, setUploading] = useState(false);
   const [freshOrder, setFreshOrder] = useState(order);
   const [loading, setLoading] = useState(false);
+  const [billGenerating, setBillGenerating] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -165,6 +167,65 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
       });
     } else {
       showToast('No admin phone numbers found. Please configure admin contacts.', 'info');
+    }
+  };
+
+  const handleDownloadBill = async () => {
+    if (!freshOrder?.id) return;
+
+    // 1. If bill already exists, use Cloudinary's attachment flag to force download (if not raw)
+    if (freshOrder.billPdfUrl) {
+      let downloadUrl = freshOrder.billPdfUrl;
+      
+      // Transformations like fl_attachment ONLY work on image/video resource types, not 'raw'
+      if (downloadUrl.includes('/image/upload/')) {
+        downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = downloadUrl;
+        a.download = `Invoice_${freshOrder.id.substring(0, 10).toUpperCase()}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+      } else {
+        // Fallback for old 'raw' uploads which don't support fl_attachment
+        window.open(downloadUrl, '_blank');
+      }
+      return;
+    }
+
+    // 2. Otherwise generate and upload
+    setBillGenerating(true);
+    try {
+      const doc = await generateOrderBill(freshOrder);
+      const pdfBlob = doc.output('blob');
+      
+      const formData = new FormData();
+      formData.append('file', pdfBlob, `bill_${freshOrder.id}.pdf`);
+      formData.append('orderId', freshOrder.id);
+
+      const response = await fetch('/api/upload-bill', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || 'Failed to upload bill');
+
+      // 3. Save URL to Firestore
+      await saveBillUrl(freshOrder.id, data.url);
+      
+      // Update local state
+      setFreshOrder({ ...freshOrder, billPdfUrl: data.url });
+      
+      showToast('Bill generated successfully', 'success');
+      
+      // 4. Trigger Automatic Download
+      doc.save(`Invoice_${freshOrder.id.substring(0, 10).toUpperCase()}.pdf`);
+    } catch (error) {
+      console.error('Error generating bill:', error);
+      showToast('Failed to generate bill: ' + error.message, 'error');
+    } finally {
+      setBillGenerating(false);
     }
   };
 
@@ -364,25 +425,48 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
             {freshOrder.paymentStatus && (
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{t('payment')}</p>
-                <span
-                  className={`badge ${
-                    freshOrder.paymentStatus === 'paid'
-                      ? 'badge-success'
+                <div className="flex items-center space-x-2">
+                  <span
+                    className={`badge ${
+                      freshOrder.paymentStatus === 'paid'
+                        ? 'badge-success'
+                        : freshOrder.paymentStatus === 'partial'
+                        ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400'
+                        : freshOrder.paymentStatus === 'confirmation_pending'
+                        ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400'
+                        : 'badge-warning'
+                    }`}
+                  >
+                    {freshOrder.paymentStatus === 'paid'
+                      ? t('paymentStatusPaid')
                       : freshOrder.paymentStatus === 'partial'
-                      ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400'
+                      ? 'Partially Paid'
                       : freshOrder.paymentStatus === 'confirmation_pending'
-                      ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400'
-                      : 'badge-warning'
-                  }`}
-                >
-                  {freshOrder.paymentStatus === 'paid'
-                    ? t('paymentStatusPaid')
-                    : freshOrder.paymentStatus === 'partial'
-                    ? 'Partially Paid'
-                    : freshOrder.paymentStatus === 'confirmation_pending'
-                    ? t('paymentStatusConfirmationPending')
-                    : t('paymentStatusPending')}
-                </span>
+                      ? t('paymentStatusConfirmationPending')
+                      : t('paymentStatusPending')}
+                  </span>
+                  
+                  {/* Download Bill Button - Only if Delivered and Paid */}
+                  {freshOrder.status === 'delivered' && freshOrder.paymentStatus === 'paid' && (
+                    <button
+                      onClick={handleDownloadBill}
+                      disabled={billGenerating}
+                      className="inline-flex items-center space-x-1.5 px-3 py-1 text-xs bg-[#10b981] text-white rounded-lg hover:bg-[#059669] transition-all disabled:opacity-50 font-medium whitespace-nowrap"
+                    >
+                      {billGenerating ? (
+                        <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      ) : (
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      )}
+                      <span>{billGenerating ? 'Generating...' : 'Download Bill'}</span>
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
