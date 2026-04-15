@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/Toast';
 import { getCurrentUser } from '@/firebase/auth';
-import { getAllProducts, getCustomerAllPrices, getQRCodeSettings, placeOrder } from '@/firebase/firestore';
+import { getAllProducts, getCustomerAllPrices, getQRCodeSettings, placeOrder, getCustomerByPhone } from '@/firebase/firestore';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -18,6 +18,7 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [profileComplete, setProfileComplete] = useState(true); // assume true until checked
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -70,6 +71,20 @@ export default function CheckoutPage() {
         getCustomerAllPrices(user.uid),
         getQRCodeSettings(),
       ]);
+
+      // Check if customer has village & city
+      try {
+        const phone = user.email?.split('@')[0];
+        if (phone) {
+          const customerResult = await getCustomerByPhone(phone);
+          if (customerResult.success && customerResult.customer) {
+            const c = customerResult.customer;
+            setProfileComplete(!!(c.village && c.village.trim() && c.city && c.city.trim()));
+          }
+        }
+      } catch (err) {
+        console.error('Error checking profile:', err);
+      }
 
       if (pricesResult.success) {
         setCustomerPrices(pricesResult.prices);
@@ -187,6 +202,12 @@ export default function CheckoutPage() {
 
     if (cart.length === 0) {
       showToast('Please add items to cart', 'info');
+      return;
+    }
+
+    if (!profileComplete) {
+      showToast('Please add your village and city details before placing an order', 'info');
+      router.push('/profile');
       return;
     }
 
@@ -338,6 +359,24 @@ export default function CheckoutPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Profile Incomplete Banner */}
+        {!profileComplete && (
+          <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <div className="flex items-center space-x-2 text-amber-700 dark:text-amber-400">
+              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <span className="font-medium text-sm">Please add your village and city details to place an order.</span>
+            </div>
+            <button
+              onClick={() => router.push('/profile')}
+              className="btn-primary text-sm px-4 py-2 whitespace-nowrap"
+            >
+              Complete Profile
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Products Grid */}
           <div className="lg:col-span-2">
@@ -588,7 +627,7 @@ export default function CheckoutPage() {
 
                       <button
                         type="submit"
-                        disabled={submitting || cart.length === 0}
+                        disabled={submitting || cart.length === 0 || !profileComplete}
                         className="w-full btn-primary flex items-center justify-center space-x-2 py-3 text-lg shadow-lg hover:shadow-xl"
                       >
                         {submitting ? (
