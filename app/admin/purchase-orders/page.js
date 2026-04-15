@@ -10,8 +10,11 @@ import {
   updatePurchaseOrderStatus,
   getAllProducts,
   updateOrderStatus,
+  updatePurchaseOrderLoadingList,
 } from '@/firebase/firestore';
 import { getCurrentUser } from '@/firebase/auth';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export default function PurchaseOrdersPage() {
   const { t } = useTranslation();
@@ -33,6 +36,8 @@ export default function PurchaseOrdersPage() {
   const [loadingLinkedOrders, setLoadingLinkedOrders] = useState(false);
   const [selectedLinkedOrder, setSelectedLinkedOrder] = useState(null);
   const [showLinkedOrderModal, setShowLinkedOrderModal] = useState(false);
+  const [collatedLoadingList, setCollatedLoadingList] = useState([]);
+  const [updatingLoadingList, setUpdatingLoadingList] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -72,6 +77,157 @@ export default function PurchaseOrdersPage() {
     if (filterStatus === 'all') return purchaseOrders;
     return purchaseOrders.filter((po) => po.status === filterStatus);
   }, [purchaseOrders, filterStatus]);
+
+  // Sync collatedLoadingList when selectedOrderIds change
+  useEffect(() => {
+    if (!showCreateModal) return;
+
+    setCollatedLoadingList((prev) => {
+      const selectedOrders = pendingOrders.filter((o) => selectedOrderIds.includes(o.id));
+      
+      // Preserve existing order if possible
+      const newList = [];
+      
+      // 1. Keep existing ones that are still selected
+      prev.forEach((group) => {
+        if (selectedOrderIds.includes(group.id)) {
+          newList.push(group);
+        }
+      });
+      
+      // 2. Add new ones
+      const existingIds = prev.map((g) => g.id);
+      selectedOrders.forEach((order) => {
+        if (!existingIds.includes(order.id)) {
+          newList.push({
+            id: order.id,
+            customerName: order.customerName,
+            items: order.items.map((item) => ({
+              productName: item.productName,
+              quantity: item.quantity,
+              price: item.price,
+              productId: item.productId || item.productName
+            }))
+          });
+        }
+      });
+      
+      return newList;
+    });
+  }, [selectedOrderIds, pendingOrders, showCreateModal]);
+
+  const moveGroup = (idx, direction) => {
+    const newList = [...collatedLoadingList];
+    const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (targetIdx < 0 || targetIdx >= newList.length) return;
+    
+    [newList[idx], newList[targetIdx]] = [newList[targetIdx], newList[idx]];
+    setCollatedLoadingList(newList);
+  };
+
+  const moveItemInGroup = (groupIdx, itemIdx, direction) => {
+    const newList = [...collatedLoadingList];
+    const group = { ...newList[groupIdx] };
+    const newItems = [...group.items];
+    const targetIdx = direction === 'up' ? itemIdx - 1 : itemIdx + 1;
+    if (targetIdx < 0 || targetIdx >= newItems.length) return;
+    
+    [newItems[itemIdx], newItems[targetIdx]] = [newItems[targetIdx], newItems[itemIdx]];
+    group.items = newItems;
+    newList[groupIdx] = group;
+    setCollatedLoadingList(newList);
+  };
+
+  const handleUpdateLoadingList = async () => {
+    if (!selectedPO) return;
+    setUpdatingLoadingList(true);
+    try {
+      const result = await updatePurchaseOrderLoadingList(selectedPO.id, collatedLoadingList);
+      if (result.success) {
+        setMessage('Loading list updated successfully!');
+        // Update local PO state
+        setPurchaseOrders(prev => prev.map(po => 
+          po.id === selectedPO.id ? { ...po, loadingList: collatedLoadingList } : po
+        ));
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setError('Failed to update loading list');
+      }
+    } catch (err) {
+      setError('An error occurred while updating loading list');
+    } finally {
+      setUpdatingLoadingList(false);
+    }
+  };
+
+  const handlePrintLoadingList = (po) => {
+    const doc = new jsPDF();
+    const list = po.loadingList || collatedLoadingList || [];
+    
+    // Header
+    doc.setFillColor(80, 80, 80);
+    doc.rect(0, 0, 210, 25, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FACTORY LOADING LIST', 105, 17, { align: 'center' });
+    
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Purchase Order ID: #${po.id.substring(0, 8)}`, 15, 35);
+    doc.text(`Generated On: ${new Date().toLocaleString('en-IN')}`, 15, 40);
+    doc.text(`Total Customers: ${list.length}`, 15, 45);
+    
+    doc.setLineWidth(0.5);
+    doc.line(15, 50, 195, 50);
+    
+    let yPos = 60;
+    
+    list.forEach((group, gIdx) => {
+      // Customer Header
+      doc.setFillColor(240, 240, 240);
+      doc.rect(15, yPos - 5, 180, 8, 'F');
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${gIdx + 1}. CUSTOMER: ${group.customerName.toUpperCase()}`, 20, yPos);
+      yPos += 5;
+      
+      const body = group.items.map(item => [item.productName, `${item.quantity} Bags`]);
+      
+      autoTable(doc, {
+        startY: yPos,
+        head: [['PRODUCT DESCRIPTION', 'QUANTITY']],
+        body: body,
+        theme: 'grid',
+        headStyles: { fillColor: [100, 100, 100], textColor: 255 },
+        styles: { fontSize: 10, cellPadding: 3 },
+        margin: { left: 20, right: 15 },
+        columnStyles: {
+          1: { halign: 'right', cellWidth: 40 }
+        }
+      });
+      
+      yPos = doc.lastAutoTable.finalY + 15;
+      
+      // Page break check
+      if (yPos > 270 && gIdx < list.length - 1) {
+        doc.addPage();
+        yPos = 25;
+      }
+    });
+    
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text(`Singla Traders - Loading Collation Document | Page ${i} of ${pageCount}`, 105, 290, { align: 'center' });
+    }
+    
+    doc.save(`Loading-List-PO-${po.id.substring(0, 8)}.pdf`);
+  };
 
   // Aggregate selected orders' items with standard prices
   const aggregatedItems = useMemo(() => {
@@ -176,7 +332,8 @@ export default function PurchaseOrdersPage() {
         aggregatedItems.items,
         aggregatedItems.totals.standard,
         aggregatedItems.totals.customer,
-        aggregatedItems.totals.profit
+        aggregatedItems.totals.profit,
+        collatedLoadingList
       );
 
       if (result.success) {
@@ -197,6 +354,7 @@ export default function PurchaseOrdersPage() {
   const handleViewDetails = async (po) => {
     setSelectedPO(po);
     setShowDetailsModal(true);
+    setCollatedLoadingList(po.loadingList || []);
 
     // Fetch linked orders if we have order IDs
     if (po.selectedOrderIds && po.selectedOrderIds.length > 0) {
@@ -660,6 +818,92 @@ export default function PurchaseOrdersPage() {
                 </div>
               )}
 
+              {/* Collated Loading List */}
+              {selectedOrderIds.length > 0 && (
+                <div className="border-t pt-6 dark:border-gray-700">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-bold text-gray-800 dark:text-gray-100 italic">
+                      Collated Loading List (For Factory Loading Sequence)
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {collatedLoadingList.map((group, gIdx) => (
+                      <div key={group.id} className="border-2 border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden">
+                        <div className="bg-gray-50 dark:bg-gray-700/50 px-4 py-2 flex justify-between items-center">
+                          <div className="flex items-center space-x-3">
+                            <span className="bg-[#10b981] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">
+                              {gIdx + 1}
+                            </span>
+                            <span className="font-bold text-gray-900 dark:text-gray-100">
+                              {group.customerName}
+                            </span>
+                          </div>
+                          <div className="flex space-x-1">
+                            <button
+                              onClick={() => moveGroup(gIdx, 'up')}
+                              disabled={gIdx === 0}
+                              className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded disabled:opacity-30"
+                              title="Move Customer Up"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => moveGroup(gIdx, 'down')}
+                              disabled={gIdx === collatedLoadingList.length - 1}
+                              className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded disabled:opacity-30"
+                              title="Move Customer Down"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                            {group.items.map((item, iIdx) => (
+                              <tr key={iIdx} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+                                  {item.productName}
+                                </td>
+                                <td className="px-4 py-2 text-sm font-bold text-gray-900 dark:text-gray-100 text-right w-24">
+                                  {item.quantity} Bags
+                                </td>
+                                <td className="px-4 py-2 text-right w-20">
+                                  <div className="flex justify-end space-x-1">
+                                    <button
+                                      onClick={() => moveItemInGroup(gIdx, iIdx, 'up')}
+                                      disabled={iIdx === 0}
+                                      className="p-0.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded disabled:opacity-30"
+                                    >
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                                      </svg>
+                                    </button>
+                                    <button
+                                      onClick={() => moveItemInGroup(gIdx, iIdx, 'down')}
+                                      disabled={iIdx === group.items.length - 1}
+                                      className="p-0.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded disabled:opacity-30"
+                                    >
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Create Button */}
               <div className="flex justify-end pt-4 border-t dark:border-gray-700">
                 <button
@@ -720,15 +964,26 @@ export default function PurchaseOrdersPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
-                  <span
-                    className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                      selectedPO.status === 'delivered'
-                        ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-400'
-                        : 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400'
-                    }`}
-                  >
-                    {selectedPO.status}
-                  </span>
+                  <div className="flex items-center space-x-3">
+                    <span
+                      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
+                        selectedPO.status === 'delivered'
+                          ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-400'
+                          : 'bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400'
+                      }`}
+                    >
+                      {selectedPO.status}
+                    </span>
+                    <button
+                      onClick={() => handlePrintLoadingList(selectedPO)}
+                      className="text-xs bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 py-1 px-3 rounded flex items-center space-x-1 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2-2H7" />
+                      </svg>
+                      <span>Print Loading List</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -880,6 +1135,106 @@ export default function PurchaseOrdersPage() {
                       })()}
                     </tfoot>
                   </table>
+                </div>
+              </div>
+
+              {/* Collated Loading List (Details) */}
+              <div className="border-t pt-6 dark:border-gray-700">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-gray-800 dark:text-gray-100 italic">
+                    Collated Loading List (Factory Sequence)
+                  </h3>
+                  <button
+                    onClick={handleUpdateLoadingList}
+                    disabled={updatingLoadingList}
+                    className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50 flex items-center space-x-1 transition-all shadow-sm"
+                  >
+                    {updatingLoadingList ? (
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    <span>Save Loading Order</span>
+                  </button>
+                </div>
+                
+                <div className="space-y-4">
+                  {collatedLoadingList.length === 0 ? (
+                    <p className="text-sm text-gray-500 italic">No loading list generated for this PO.</p>
+                  ) : (
+                    collatedLoadingList.map((group, gIdx) => (
+                      <div key={group.id} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                        <div className="bg-gray-50 dark:bg-gray-700/30 px-4 py-2 flex justify-between items-center">
+                          <div className="flex items-center space-x-2">
+                            <span className="bg-gray-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
+                              {gIdx + 1}
+                            </span>
+                            <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                              {group.customerName}
+                            </span>
+                          </div>
+                          <div className="flex space-x-1">
+                            <button
+                              onClick={() => moveGroup(gIdx, 'up')}
+                              disabled={gIdx === 0}
+                              className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded disabled:opacity-20"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => moveGroup(gIdx, 'down')}
+                              disabled={gIdx === collatedLoadingList.length - 1}
+                              className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded disabled:opacity-20"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                          <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                            {group.items.map((item, iIdx) => (
+                              <tr key={iIdx} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30">
+                                <td className="px-4 py-1.5 text-xs text-gray-600 dark:text-gray-400">
+                                  {item.productName}
+                                </td>
+                                <td className="px-4 py-1.5 text-xs font-bold text-gray-900 dark:text-gray-100 text-right w-24">
+                                  {item.quantity} Bags
+                                </td>
+                                <td className="px-4 py-1.5 text-right w-20">
+                                  <div className="flex justify-end space-x-1">
+                                    <button
+                                      onClick={() => moveItemInGroup(gIdx, iIdx, 'up')}
+                                      disabled={iIdx === 0}
+                                      className="p-0.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded disabled:opacity-20"
+                                    >
+                                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                                      </svg>
+                                    </button>
+                                    <button
+                                      onClick={() => moveItemInGroup(gIdx, iIdx, 'down')}
+                                      disabled={iIdx === group.items.length - 1}
+                                      className="p-0.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded disabled:opacity-20"
+                                    >
+                                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 

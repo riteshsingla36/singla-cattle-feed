@@ -36,7 +36,9 @@ export default function PricesPage() {
       ]);
 
       if (customersResult.success) {
-        setCustomers(customersResult.customers);
+        // Filter out admins from the price management list
+        const filteredCustomers = (customersResult.customers || []).filter(c => !c.isAdmin);
+        setCustomers(filteredCustomers);
       }
 
       if (productsResult.success) {

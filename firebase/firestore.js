@@ -640,12 +640,13 @@ export const setQRCodeSettings = async (qrCodeUrl, upiId) => {
 };
 
 // ============== PURCHASE ORDERS ==============
-export const createPurchaseOrder = async (adminId, selectedOrderIds, items, totalAmount, totalCustomerAmount = null, totalProfit = null) => {
+export const createPurchaseOrder = async (adminId, selectedOrderIds, items, totalAmount, totalCustomerAmount = null, totalProfit = null, loadingList = []) => {
   try {
     const docRef = await addDoc(collection(db, 'purchaseOrders'), {
       adminId,
       selectedOrderIds,
       items, // array of { productId, productName, quantity, standardPrice, standardSubtotal, customerSubtotal, profit }
+      loadingList, // array of customer groups for loading collation
       totalAmount,
       totalCustomerAmount,
       totalProfit,
@@ -684,6 +685,19 @@ export const getPurchaseOrder = async (purchaseOrderId) => {
       return { success: true, purchaseOrder: docSnap.data() };
     }
     return { success: false, message: 'Purchase order not found' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const updatePurchaseOrderLoadingList = async (purchaseOrderId, loadingList) => {
+  try {
+    const poRef = doc(db, 'purchaseOrders', purchaseOrderId);
+    await updateDoc(poRef, {
+      loadingList,
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
   }
