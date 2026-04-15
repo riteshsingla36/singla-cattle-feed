@@ -69,7 +69,7 @@ export const ClientLayout = ({ children }) => {
   };
 
   // If this is login or register page, show without navigation
-  if (typeof window !== 'undefined' && (window.location.pathname === '/login' || window.location.pathname === '/register')) {
+  if (typeof window !== 'undefined' && (window.location.pathname === '/login' || window.location.pathname === '/register' || window.location.pathname === '/complete-profile')) {
     return <>{children}</>;
   }
 

@@ -95,7 +95,7 @@ export default function RegisterPage() {
 
         if (customerResult.success) {
           setLoading(false);
-          router.push('/dashboard');
+          router.push('/complete-profile');
         } else {
           setError('Failed to create customer profile: ' + (customerResult.error || 'Unknown error'));
           console.error('Firestore error:', customerResult.error);

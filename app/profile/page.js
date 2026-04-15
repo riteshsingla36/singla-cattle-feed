@@ -51,6 +51,14 @@ export default function ProfilePage() {
   const [customerId, setCustomerId] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Village & City state
+  const [village, setVillage] = useState('');
+  const [city, setCity] = useState('');
+  const [editingVillageCity, setEditingVillageCity] = useState(false);
+  const [savingVillageCity, setSavingVillageCity] = useState(false);
+  const [villageCityMessage, setVillageCityMessage] = useState('');
+  const [villageCityError, setVillageCityError] = useState('');
+
   // Map state
   const [position, setPosition] = useState(null);
   const [address, setAddress] = useState('');
@@ -106,6 +114,14 @@ export default function ProfilePage() {
       if (result.success && result.customer) {
         setCustomerId(result.id);
         const customer = result.customer;
+
+        // Load village & city
+        setVillage(customer.village || '');
+        setCity(customer.city || '');
+        // If either is missing, open edit mode by default
+        if (!customer.village || !customer.city) {
+          setEditingVillageCity(true);
+        }
 
         if (customer.deliveryLat && customer.deliveryLng) {
           setPosition({ lat: customer.deliveryLat, lng: customer.deliveryLng });
@@ -208,6 +224,41 @@ export default function ProfilePage() {
     }
   };
 
+  const handleSaveVillageCity = async () => {
+    if (!village.trim()) {
+      setVillageCityError('Please enter your village name');
+      return;
+    }
+    if (!city.trim()) {
+      setVillageCityError('Please enter your city name');
+      return;
+    }
+    if (!customerId) return;
+
+    setSavingVillageCity(true);
+    setVillageCityError('');
+    setVillageCityMessage('');
+
+    try {
+      const result = await updateCustomer(customerId, {
+        village: village.trim(),
+        city: city.trim(),
+      });
+
+      if (result.success) {
+        setVillageCityMessage('Village & City saved successfully!');
+        setEditingVillageCity(false);
+        setTimeout(() => setVillageCityMessage(''), 4000);
+      } else {
+        setVillageCityError(result.message || 'Failed to save');
+      }
+    } catch (error) {
+      setVillageCityError('Failed to save: ' + error.message);
+    } finally {
+      setSavingVillageCity(false);
+    }
+  };
+
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setPasswordError('');
@@ -248,6 +299,136 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-8">
+      {/* Village & City Section */}
+      <div className="card">
+        <div className="card-header">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" />
+              </svg>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Village & City</h2>
+            </div>
+            {!editingVillageCity && village && city && (
+              <button
+                type="button"
+                onClick={() => setEditingVillageCity(true)}
+                className="text-sm text-[#10b981] hover:text-[#059669] font-medium flex items-center space-x-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span>Edit</span>
+              </button>
+            )}
+          </div>
+          {(!village || !city) && (
+            <p className="text-sm text-amber-600 dark:text-amber-400 mt-1 flex items-center space-x-1">
+              <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <span>Please add your village and city details.</span>
+            </p>
+          )}
+        </div>
+
+        <div className="card-body">
+          {editingVillageCity ? (
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="village" className="form-label">Village</label>
+                <input
+                  id="village"
+                  type="text"
+                  value={village}
+                  onChange={(e) => setVillage(e.target.value)}
+                  className="form-input"
+                  placeholder="Enter your village name"
+                  disabled={savingVillageCity}
+                />
+              </div>
+              <div>
+                <label htmlFor="city" className="form-label">City</label>
+                <input
+                  id="city"
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="form-input"
+                  placeholder="Enter your city name"
+                  disabled={savingVillageCity}
+                />
+              </div>
+
+              {villageCityMessage && (
+                <div className="p-3 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-lg border border-green-200 dark:border-green-800 text-sm">
+                  {villageCityMessage}
+                </div>
+              )}
+              {villageCityError && (
+                <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800 text-sm">
+                  {villageCityError}
+                </div>
+              )}
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleSaveVillageCity}
+                  disabled={savingVillageCity}
+                  className="btn-primary flex items-center justify-center space-x-2"
+                >
+                  {savingVillageCity ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>Save</span>
+                    </>
+                  )}
+                </button>
+                {village && city && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingVillageCity(false);
+                      setVillageCityError('');
+                    }}
+                    className="btn-outline"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Village</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{village}</p>
+              </div>
+              <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">City</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{city}</p>
+              </div>
+            </div>
+          )}
+
+          {!editingVillageCity && villageCityMessage && (
+            <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-lg border border-green-200 dark:border-green-800 text-sm">
+              {villageCityMessage}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Delivery Address Section */}
       <div className="card">
         <div className="card-header">

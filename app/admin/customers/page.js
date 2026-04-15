@@ -309,6 +309,7 @@ export default function CustomersPage() {
                   <tr>
                     <th>{t('name')}</th>
                     <th>{t('phone')}</th>
+                    <th>Village / City</th>
                     <th>{t('deliveryAddress')}</th>
                     <th>{t('role')}</th>
                     <th className="text-right">{t('actions')}</th>
@@ -325,6 +326,11 @@ export default function CustomersPage() {
                       </td>
                       <td className="text-gray-600 dark:text-gray-300">
                         {customer.phone}
+                      </td>
+                      <td className="text-gray-600 dark:text-gray-300">
+                        {customer.village || customer.city
+                          ? `${customer.village || '-'}${customer.city ? ', ' + customer.city : ''}`
+                          : '-'}
                       </td>
                       <td className="text-gray-600 dark:text-gray-300 max-w-xs truncate" title={customer.deliveryAddress || ''}>
                         {customer.deliveryAddress || '-'}
@@ -437,6 +443,14 @@ export default function CustomersPage() {
                       <span className="text-gray-500 dark:text-gray-400">Phone:</span>
                       <span className="text-gray-900 dark:text-gray-100 font-medium">{customer.phone}</span>
                     </div>
+                    {(customer.village || customer.city) && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500 dark:text-gray-400">Village/City:</span>
+                        <span className="text-gray-900 dark:text-gray-100 font-medium">
+                          {customer.village || '-'}{customer.city ? ', ' + customer.city : ''}
+                        </span>
+                      </div>
+                    )}
                     {customer.deliveryAddress && (
                       <div>
                         <span className="text-gray-500 dark:text-gray-400">Address:</span>
