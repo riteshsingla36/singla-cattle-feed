@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/components/Toast';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts, confirmPayment, getOrder } from '@/firebase/firestore';
+import { getAllOrders, updateOrderStatus, getCustomerByUserId, getAllCustomers, getAllProducts, confirmPayment, recordCashPayment, getOrder } from '@/firebase/firestore';
 
 export default function OrdersPage() {
   const { t } = useTranslation();
@@ -36,6 +36,9 @@ export default function OrdersPage() {
   const [loadingProductPrices, setLoadingProductPrices] = useState(false);
   const [pageSize, setPageSize] = useState(25);
   const [currentPage, setCurrentPage] = useState(1);
+  const [cashInput, setCashInput] = useState('');
+  const [onlineInput, setOnlineInput] = useState('');
+  const [recordingCash, setRecordingCash] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -84,6 +87,8 @@ export default function OrdersPage() {
     } else {
       setProductPrices({});
     }
+    setCashInput('');
+    setOnlineInput('');
   }, [selectedOrder]);
 
   const fetchOrders = async () => {
@@ -333,16 +338,26 @@ export default function OrdersPage() {
   };
 
   const handleConfirmPayment = async (orderId) => {
+    const amount = parseFloat(onlineInput);
+    if (isNaN(amount) || amount <= 0) {
+      showToast('Please enter the online payment amount', 'error');
+      return;
+    }
+
     setConfirming(orderId);
 
-    const result = await confirmPayment(orderId);
+    const result = await confirmPayment(orderId, amount);
 
     setConfirming(null);
 
     if (result.success) {
+      showToast(`Online payment of ₹${amount} confirmed successfully`, 'success');
+      setOnlineInput('');
       fetchOrders();
-      if (selectedOrder && selectedOrder.id === orderId) {
-        setSelectedOrder({ ...selectedOrder, paymentStatus: 'paid' });
+      // Refresh the modal order data from server
+      const freshResult = await getOrder(orderId);
+      if (freshResult.success && freshResult.order) {
+        setSelectedOrder(freshResult.order);
       }
     } else {
       showToast('Failed to confirm payment', 'error');
@@ -398,6 +413,8 @@ export default function OrdersPage() {
     switch (paymentStatus) {
       case 'paid':
         return 'badge-success';
+      case 'partial':
+        return 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400';
       case 'confirmation_pending':
         return 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400';
       default:
@@ -409,10 +426,37 @@ export default function OrdersPage() {
     switch (paymentStatus) {
       case 'paid':
         return t('paymentStatusPaid');
+      case 'partial':
+        return 'Partially Paid';
       case 'confirmation_pending':
         return t('paymentStatusConfirmationPending');
       default:
         return t('paymentStatusPending');
+    }
+  };
+
+  const handleRecordCash = async (orderId) => {
+    const amount = parseFloat(cashInput);
+    if (isNaN(amount) || amount < 0) {
+      showToast('Please enter a valid cash amount', 'error');
+      return;
+    }
+
+    setRecordingCash(true);
+    const result = await recordCashPayment(orderId, amount);
+    setRecordingCash(false);
+
+    if (result.success) {
+      showToast(`Cash payment of ₹${amount} recorded successfully`, 'success');
+      setCashInput('');
+      fetchOrders();
+      // Refresh the modal order data
+      const freshResult = await getOrder(orderId);
+      if (freshResult.success && freshResult.order) {
+        setSelectedOrder(freshResult.order);
+      }
+    } else {
+      showToast('Failed to record cash payment: ' + (result.error || ''), 'error');
     }
   };
 
@@ -473,6 +517,7 @@ export default function OrdersPage() {
               >
                 <option value="all">{t('allPayments')}</option>
                 <option value="paid">{t('paymentStatusPaid')}</option>
+                <option value="partial">Partially Paid</option>
                 <option value="confirmation_pending">{t('paymentStatusConfirmationPending')}</option>
                 <option value="pending">{t('noPayment')}</option>
               </select>
@@ -892,10 +937,15 @@ export default function OrdersPage() {
               )}
 
               {selectedOrder.paymentScreenshotUrl && (
-                <div className="card">
+                <div className="card border-2 border-orange-200 dark:border-orange-900/50">
                   <div className="p-4">
                     <div className="flex justify-between items-center mb-3">
-                      <h3 className="font-semibold text-gray-800 dark:text-gray-100">{t('paymentScreenshot')}</h3>
+                      <div className="flex items-center space-x-2">
+                        <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-100">Verification Pending Proof</h3>
+                      </div>
                       <button
                         onClick={() => handleDownloadPaymentScreenshot(selectedOrder.paymentScreenshotUrl, selectedOrder.id)}
                         disabled={downloading === selectedOrder.id}
@@ -1029,23 +1079,202 @@ export default function OrdersPage() {
                 </div>
               </div>
 
+              {/* Payment Breakdown & Cash Recording */}
+              {selectedOrder.status !== 'cancelled' && (
+                <div className="card">
+                  <div className="p-4">
+                    <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center space-x-2">
+                      <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      <span>Payment Details</span>
+                    </h3>
+
+                    {/* Payment Breakdown */}
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-500 dark:text-gray-400">Order Total</span>
+                        <span className="font-bold text-gray-900 dark:text-gray-100">{formatCurrency(selectedOrder.totalAmount || 0)}</span>
+                      </div>
+                      {(selectedOrder.cashAmount > 0 || selectedOrder.onlineAmount > 0) && (
+                        <>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-500 dark:text-gray-400">💵 Cash Received</span>
+                            <span className="font-medium text-green-600 dark:text-green-400">{formatCurrency(selectedOrder.cashAmount || 0)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-500 dark:text-gray-400">🏦 Online Received</span>
+                            <span className="font-medium text-blue-600 dark:text-blue-400">{formatCurrency(selectedOrder.onlineAmount || 0)}</span>
+                          </div>
+                          <div className="border-t dark:border-gray-700 pt-2 flex justify-between text-sm">
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">Total Paid</span>
+                            <span className={`font-bold ${
+                              ((selectedOrder.cashAmount || 0) + (selectedOrder.onlineAmount || 0)) >= (selectedOrder.totalAmount || 0)
+                                ? 'text-green-600 dark:text-green-400'
+                                : 'text-amber-600 dark:text-amber-400'
+                            }`}>
+                              {formatCurrency((selectedOrder.cashAmount || 0) + (selectedOrder.onlineAmount || 0))}
+                            </span>
+                          </div>
+                          {((selectedOrder.cashAmount || 0) + (selectedOrder.onlineAmount || 0)) < (selectedOrder.totalAmount || 0) && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-500 dark:text-gray-400">Remaining</span>
+                              <span className="font-medium text-red-600 dark:text-red-400">
+                                {formatCurrency((selectedOrder.totalAmount || 0) - (selectedOrder.cashAmount || 0) - (selectedOrder.onlineAmount || 0))}
+                              </span>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Cash Payment History */}
+                    {selectedOrder.cashPayments && selectedOrder.cashPayments.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Cash Payment History</p>
+                        <div className="space-y-1.5">
+                          {selectedOrder.cashPayments.map((entry, idx) => {
+                            const entryDate = entry.recordedAt
+                              ? new Date(entry.recordedAt).toLocaleDateString('en-IN', {
+                                  day: '2-digit', month: 'short', year: 'numeric',
+                                  hour: '2-digit', minute: '2-digit',
+                                })
+                              : '-';
+                            return (
+                              <div key={idx} className="flex items-center justify-between text-sm bg-green-50 dark:bg-green-900/20 p-2.5 rounded-lg border border-green-100 dark:border-green-800">
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-green-600 dark:text-green-400 font-medium">#{idx + 1}</span>
+                                  <span className="text-gray-600 dark:text-gray-400">{entryDate}</span>
+                                </div>
+                                <span className="font-semibold text-green-700 dark:text-green-400">{formatCurrency(entry.amount)}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Online Payment History */}
+                    {selectedOrder.onlinePayments && selectedOrder.onlinePayments.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Online Payment History (Confirmed)</p>
+                        <div className="space-y-1.5">
+                          {selectedOrder.onlinePayments.map((entry, idx) => {
+                            const entryDate = entry.confirmedAt
+                              ? new Date(entry.confirmedAt).toLocaleDateString('en-IN', {
+                                  day: '2-digit', month: 'short', year: 'numeric',
+                                  hour: '2-digit', minute: '2-digit',
+                                })
+                              : '-';
+                            return (
+                              <div key={idx} className="bg-blue-50 dark:bg-blue-900/20 p-2.5 rounded-lg border border-blue-100 dark:border-blue-800">
+                                <div className="flex items-center justify-between text-sm mb-1">
+                                  <div className="flex items-center space-x-2">
+                                    <span className="text-blue-600 dark:text-blue-400 font-medium">#{idx + 1}</span>
+                                    <span className="text-gray-600 dark:text-gray-400">{entryDate}</span>
+                                  </div>
+                                  <span className="font-semibold text-blue-700 dark:text-blue-400">{formatCurrency(entry.amount)}</span>
+                                </div>
+                                {entry.screenshotUrl && (
+                                  <button
+                                    onClick={() => handleDownloadPaymentScreenshot(entry.screenshotUrl, `online_proof_${idx+1}`)}
+                                    className="text-[11px] text-blue-600 hover:text-blue-800 dark:text-blue-400 flex items-center gap-1"
+                                  >
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    Download Screenshot Proof
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Add Cash Payment */}
+                    {selectedOrder.paymentStatus !== 'paid' && (
+                      <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Add Cash Payment</label>
+                        <div className="flex gap-2">
+                          <div className="relative flex-1">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                            <input
+                              type="number"
+                              min="0"
+                              step="1"
+                              value={cashInput}
+                              onChange={(e) => setCashInput(e.target.value)}
+                              className="form-input pl-7"
+                              placeholder="Enter amount"
+                              disabled={recordingCash}
+                            />
+                          </div>
+                          <button
+                            onClick={() => handleRecordCash(selectedOrder.id)}
+                            disabled={recordingCash || !cashInput}
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 font-medium text-sm whitespace-nowrap flex items-center space-x-1"
+                          >
+                            {recordingCash ? (
+                              <>
+                                <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Adding...</span>
+                              </>
+                            ) : (
+                              <>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                <span>Add Cash</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                          This amount will be added to existing cash payments.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Action Buttons */}
               {(selectedOrder.status === 'pending' || selectedOrder.paymentStatus === 'confirmation_pending') && (
                 <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t-2 border-gray-100 dark:border-gray-700">
                   {selectedOrder.paymentStatus === 'confirmation_pending' && (
-                    <button
-                      onClick={() => {
-                        handleConfirmPayment(selectedOrder.id);
-                        closeModal();
-                      }}
-                      disabled={confirming === selectedOrder.id}
-                      className="bg-blue-600 text-white flex items-center justify-center space-x-2 px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>{confirming === selectedOrder.id ? t('confirming') : t('confirmPayment')}</span>
-                    </button>
+                    <div className="flex flex-col gap-3 w-full sm:w-auto">
+                      <div className="flex items-center gap-2">
+                        <div className="relative flex-1 sm:w-40">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="1"
+                            value={onlineInput}
+                            onChange={(e) => setOnlineInput(e.target.value)}
+                            className="form-input pl-7 py-2"
+                            placeholder="Online amount"
+                            disabled={confirming === selectedOrder.id}
+                          />
+                        </div>
+                        <button
+                          onClick={() => handleConfirmPayment(selectedOrder.id)}
+                          disabled={confirming === selectedOrder.id || !onlineInput}
+                          className="bg-blue-600 text-white flex items-center justify-center space-x-2 px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium whitespace-nowrap"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>{confirming === selectedOrder.id ? t('confirming') : 'Confirm Online'}</span>
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Enter the exact amount received online from the payment screenshot.</p>
+                    </div>
                   )}
                   {selectedOrder.status === 'pending' && (
                     <>

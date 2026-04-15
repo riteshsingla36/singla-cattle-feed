@@ -507,15 +507,84 @@ export const updatePaymentProof = async (orderId, paymentScreenshotUrl) => {
   }
 };
 
-export const confirmPayment = async (orderId) => {
+export const confirmPayment = async (orderId, amount) => {
   try {
     const orderRef = doc(db, 'orders', orderId);
+    const orderSnap = await getDoc(orderRef);
+
+    if (!orderSnap.exists()) {
+      return { success: false, error: 'Order not found' };
+    }
+
+    const orderData = orderSnap.data();
+    const totalAmount = orderData.totalAmount || 0;
+    const cashAmount = orderData.cashAmount || 0;
+    const existingOnlineAmount = orderData.onlineAmount || 0;
+    const existingOnlinePayments = orderData.onlinePayments || [];
+    const currentScreenshot = orderData.paymentScreenshotUrl || null;
+
+    // Create new payment entry
+    const newEntry = {
+      amount,
+      screenshotUrl: currentScreenshot,
+      confirmedAt: new Date().toISOString(),
+    };
+    const updatedOnlinePayments = [...existingOnlinePayments, newEntry];
+
+    const newOnlineTotal = existingOnlineAmount + amount;
+    const totalPaid = cashAmount + newOnlineTotal;
+
+    const paymentStatus = totalPaid >= totalAmount ? 'paid' : 'partial';
+
     await updateDoc(orderRef, {
-      paymentStatus: 'paid',
+      paymentStatus,
+      onlineAmount: newOnlineTotal,
+      onlinePayments: updatedOnlinePayments,
+      paymentScreenshotUrl: null, // Clear the processed screenshot
       confirmedAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
+
     return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const recordCashPayment = async (orderId, amount) => {
+  try {
+    const orderRef = doc(db, 'orders', orderId);
+    const orderSnap = await getDoc(orderRef);
+
+    if (!orderSnap.exists()) {
+      return { success: false, error: 'Order not found' };
+    }
+
+    const orderData = orderSnap.data();
+    const totalAmount = orderData.totalAmount || 0;
+    const onlineAmount = orderData.onlineAmount || 0;
+    const existingCashPayments = orderData.cashPayments || [];
+
+    // Append new cash entry
+    const newEntry = {
+      amount,
+      recordedAt: new Date().toISOString(),
+    };
+    const updatedCashPayments = [...existingCashPayments, newEntry];
+
+    // Compute total cash from all entries
+    const totalCash = updatedCashPayments.reduce((sum, entry) => sum + (entry.amount || 0), 0);
+    const totalPaid = totalCash + onlineAmount;
+    const paymentStatus = totalPaid >= totalAmount ? 'paid' : 'partial';
+
+    await updateDoc(orderRef, {
+      cashPayments: updatedCashPayments,
+      cashAmount: totalCash,
+      paymentStatus,
+      cashRecordedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true, paymentStatus };
   } catch (error) {
     return { success: false, error: error.message };
   }

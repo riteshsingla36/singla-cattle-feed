@@ -368,6 +368,8 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
                   className={`badge ${
                     freshOrder.paymentStatus === 'paid'
                       ? 'badge-success'
+                      : freshOrder.paymentStatus === 'partial'
+                      ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400'
                       : freshOrder.paymentStatus === 'confirmation_pending'
                       ? 'bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400'
                       : 'badge-warning'
@@ -375,6 +377,8 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
                 >
                   {freshOrder.paymentStatus === 'paid'
                     ? t('paymentStatusPaid')
+                    : freshOrder.paymentStatus === 'partial'
+                    ? 'Partially Paid'
                     : freshOrder.paymentStatus === 'confirmation_pending'
                     ? t('paymentStatusConfirmationPending')
                     : t('paymentStatusPending')}
@@ -425,13 +429,121 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
             </div>
           </div>
 
-          {freshOrder.paymentScreenshotUrl && (
+          {/* Payment Summary - show when any payment has been recorded */}
+          {((freshOrder.cashAmount || 0) > 0 || (freshOrder.onlineAmount || 0) > 0 || freshOrder.paymentStatus === 'partial') && (
             <div className="border-t pt-6 dark:border-gray-700">
               <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-3 flex items-center space-x-2">
                 <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                <span>Payment Screenshot</span>
+                <span>Payment Summary</span>
+              </h3>
+
+              <div className="bg-gray-50 dark:bg-gray-900/30 rounded-xl p-4 space-y-2.5">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500 dark:text-gray-400">Order Total</span>
+                  <span className="font-bold text-gray-900 dark:text-gray-100">{formatCurrency(freshOrder.totalAmount || 0)}</span>
+                </div>
+                {(freshOrder.cashAmount || 0) > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">💵 Cash Paid</span>
+                    <span className="font-medium text-green-600 dark:text-green-400">{formatCurrency(freshOrder.cashAmount)}</span>
+                  </div>
+                )}
+                {(freshOrder.onlineAmount || 0) > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">🏦 Online Paid</span>
+                    <span className="font-medium text-blue-600 dark:text-blue-400">{formatCurrency(freshOrder.onlineAmount)}</span>
+                  </div>
+                )}
+                <div className="border-t dark:border-gray-700 pt-2 flex justify-between text-sm">
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Total Paid</span>
+                  <span className={`font-bold ${
+                    ((freshOrder.cashAmount || 0) + (freshOrder.onlineAmount || 0)) >= (freshOrder.totalAmount || 0)
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-amber-600 dark:text-amber-400'
+                  }`}>
+                    {formatCurrency((freshOrder.cashAmount || 0) + (freshOrder.onlineAmount || 0))}
+                  </span>
+                </div>
+                {((freshOrder.cashAmount || 0) + (freshOrder.onlineAmount || 0)) < (freshOrder.totalAmount || 0) && (
+                  <div className="flex justify-between text-sm bg-red-50 dark:bg-red-900/20 p-2.5 rounded-lg border border-red-100 dark:border-red-800">
+                    <span className="font-medium text-red-600 dark:text-red-400">Remaining Balance</span>
+                    <span className="font-bold text-red-600 dark:text-red-400">
+                      {formatCurrency((freshOrder.totalAmount || 0) - (freshOrder.cashAmount || 0) - (freshOrder.onlineAmount || 0))}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Cash Payment History */}
+              {freshOrder.cashPayments && freshOrder.cashPayments.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Cash Payments</p>
+                  <div className="space-y-1.5">
+                    {freshOrder.cashPayments.map((entry, idx) => {
+                      const entryDate = entry.recordedAt
+                        ? new Date(entry.recordedAt).toLocaleDateString('en-IN', {
+                            day: '2-digit', month: 'short', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit',
+                          })
+                        : '-';
+                      return (
+                        <div key={idx} className="flex items-center justify-between text-sm bg-green-50 dark:bg-green-900/20 p-2 rounded-lg border border-green-100 dark:border-green-800">
+                          <span className="text-gray-600 dark:text-gray-400">{entryDate}</span>
+                          <span className="font-semibold text-green-700 dark:text-green-400">{formatCurrency(entry.amount)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Online Payment History */}
+              {freshOrder.onlinePayments && freshOrder.onlinePayments.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Online Payments (Confirmed)</p>
+                  <div className="space-y-1.5">
+                    {freshOrder.onlinePayments.map((entry, idx) => {
+                      const entryDate = entry.confirmedAt
+                        ? new Date(entry.confirmedAt).toLocaleDateString('en-IN', {
+                            day: '2-digit', month: 'short', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit',
+                          })
+                        : '-';
+                      return (
+                        <div key={idx} className="bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-100 dark:border-blue-800">
+                          <div className="flex items-center justify-between text-sm mb-1">
+                            <span className="text-gray-600 dark:text-gray-400">{entryDate}</span>
+                            <span className="font-semibold text-blue-700 dark:text-blue-400">{formatCurrency(entry.amount)}</span>
+                          </div>
+                          {entry.screenshotUrl && (
+                            <button
+                              onClick={() => handleDownloadPaymentScreenshot(entry.screenshotUrl)}
+                              className="text-[11px] text-blue-600 hover:text-blue-800 dark:text-blue-400 flex items-center gap-1"
+                            >
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                              </svg>
+                              View Screenshot
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {freshOrder.paymentScreenshotUrl && (
+            <div className="border-t pt-6 dark:border-gray-700">
+              <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-3 flex items-center space-x-2">
+                <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Current Verification Pending</span>
               </h3>
               <div className="flex justify-end mb-2">
                 <button
@@ -455,8 +567,8 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
             </div>
           )}
 
-          {/* UPI Payment Apps Section - Show if QR available and no payment screenshot */}
-          {qrCodeUrl && !freshOrder.paymentScreenshotUrl && freshOrder.status !== 'cancelled' && (
+          {/* UPI Payment Apps Section - Show if QR available and (no payment screenshot OR partial) AND not fully paid */}
+          {qrCodeUrl && freshOrder.paymentStatus !== 'paid' && (!freshOrder.paymentScreenshotUrl || freshOrder.paymentStatus === 'partial') && freshOrder.status !== 'cancelled' && (
             <div className="border-t pt-6 dark:border-gray-700">
               <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-3 flex items-center space-x-2">
                 <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -513,17 +625,19 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
             </div>
           )}
 
-          {/* Payment Upload Section - Only show if payment is pending and no screenshot */}
-          {!freshOrder.paymentScreenshotUrl && freshOrder.status !== 'cancelled' && (
+          {/* Payment Upload Section - Show if (no screenshot OR partial) AND context is not fully paid */}
+          {freshOrder.paymentStatus !== 'paid' && (!freshOrder.paymentScreenshotUrl || freshOrder.paymentStatus === 'partial') && freshOrder.status !== 'cancelled' && (
             <div className="border-t pt-6 dark:border-gray-700">
               <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-3 flex items-center space-x-2">
                 <svg className="w-5 h-5 text-[#10b981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span>Upload Payment Proof</span>
+                <span>{freshOrder.paymentStatus === 'partial' ? 'Upload Additional Payment Proof' : 'Upload Payment Proof'}</span>
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                Please upload your payment screenshot to complete this order.
+                {freshOrder.paymentStatus === 'partial' 
+                  ? 'Please upload your next payment screenshot for the remaining balance.' 
+                  : 'Please upload your payment screenshot to complete this order.'}
               </p>
               <div className="space-y-4">
                 <div>
