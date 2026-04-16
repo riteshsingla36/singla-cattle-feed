@@ -110,9 +110,22 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
           filename: `payment_proof.jpg` 
         }));
       } else {
-        const newWindow = window.open(url, '_blank');
-        if (!newWindow) {
-          window.location.href = url;
+        // Desktop Browser: Download the image as a blob to force a true file download instead of opening a tab
+        try {
+          const response = await fetch(url);
+          if (!response.ok) throw new Error('Fetch failed');
+          const blob = await response.blob();
+          const objectUrl = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = objectUrl;
+          a.download = `PaymentProof_${freshOrder?.id?.substring(0, 10) || 'Screenshot'}.jpg`;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => window.URL.revokeObjectURL(objectUrl), 1000);
+        } catch (err) {
+          // Fallback just in case
+          window.open(url, '_blank');
         }
       }
     } catch (error) {
