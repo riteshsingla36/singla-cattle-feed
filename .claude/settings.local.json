@@ -32,7 +32,12 @@
       "Bash(git log:*)",
       "WebSearch",
       "Bash(find . -name *.dart -type f)",
-      "Bash(mv temp.js components/OrderDetailsModal.js)"
+      "Bash(mv temp.js components/OrderDetailsModal.js)",
+      "Bash(ipconfig *)",
+      "Bash(tasklist)",
+      "Bash(findstr node *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3000)"
     ]
   }
 }

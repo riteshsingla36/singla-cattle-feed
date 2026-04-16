@@ -103,12 +103,17 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
     try {
       setLoading(true);
 
-      // Try to open image in new tab/window (preferred for WebView)
-      const newWindow = window.open(url, '_blank');
-
-      // If pop-up blocked or window.open not supported, fallback to same-tab navigation
-      if (!newWindow) {
-        window.location.href = url;
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ 
+          type: 'DOWNLOAD_FILE', 
+          url: url, 
+          filename: `payment_proof.jpg` 
+        }));
+      } else {
+        const newWindow = window.open(url, '_blank');
+        if (!newWindow) {
+          window.location.href = url;
+        }
       }
     } catch (error) {
       console.error('Error opening image:', error);
@@ -173,54 +178,53 @@ export default function OrderDetailsModal({ order, isOpen, onClose, onPaymentUpl
   const handleDownloadBill = async () => {
     if (!freshOrder?.id) return;
 
-    // 1. If bill already exists, use Cloudinary's attachment flag to force download (if not raw)
-    if (freshOrder.billPdfUrl) {
-      let downloadUrl = freshOrder.billPdfUrl;
-      
-      // Transformations like fl_attachment ONLY work on image/video resource types, not 'raw'
-      if (downloadUrl.includes('/image/upload/')) {
-        downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = downloadUrl;
-        a.download = `Invoice_${freshOrder.id.substring(0, 10).toUpperCase()}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-      } else {
-        // Fallback for old 'raw' uploads which don't support fl_attachment
-        window.open(downloadUrl, '_blank');
+    // 1. If React Native wrapper
+    if (window.ReactNativeWebView) {
+      setBillGenerating(true);
+      try {
+        const doc = await generateOrderBill(freshOrder);
+        const base64Data = doc.output('datauristring');
+        
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+          type: 'DOWNLOAD_BASE64',
+          base64: base64Data,
+          filename: `Invoice_${freshOrder.id.substring(0, 10).toUpperCase()}.pdf`
+        }));
+      } catch (error) {
+        console.error('Error generating base64 bill:', error);
+        showToast('Failed to generate bill for app sharing.', 'error');
+      } finally {
+        setBillGenerating(false);
       }
       return;
     }
 
-    // 2. Otherwise generate and upload
+    // 2. Desktop Browser: Always generate and download cleanly via jsPDF to circumvent Cloudinary restrictions
     setBillGenerating(true);
     try {
       const doc = await generateOrderBill(freshOrder);
-      const pdfBlob = doc.output('blob');
       
-      const formData = new FormData();
-      formData.append('file', pdfBlob, `bill_${freshOrder.id}.pdf`);
-      formData.append('orderId', freshOrder.id);
+      // If it has never been uploaded to Cloudinary, do it in the background to persist it
+      if (!freshOrder.billPdfUrl) {
+        const pdfBlob = doc.output('blob');
+        const formData = new FormData();
+        formData.append('file', pdfBlob, `bill_${freshOrder.id}.pdf`);
+        formData.append('orderId', freshOrder.id);
 
-      const response = await fetch('/api/upload-bill', {
-        method: 'POST',
-        body: formData
-      });
-
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error || 'Failed to upload bill');
-
-      // 3. Save URL to Firestore
-      await saveBillUrl(freshOrder.id, data.url);
+        fetch('/api/upload-bill', { method: 'POST', body: formData })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              saveBillUrl(freshOrder.id, data.url);
+              setFreshOrder(prev => ({ ...prev, billPdfUrl: data.url }));
+            }
+          })
+          .catch(err => console.error('Background upload failed:', err));
+      }
       
-      // Update local state
-      setFreshOrder({ ...freshOrder, billPdfUrl: data.url });
-      
-      showToast('Bill generated successfully', 'success');
-      
-      // 4. Trigger Automatic Download
+      // Instantly trigger true hard-download in the user's browser
       doc.save(`Invoice_${freshOrder.id.substring(0, 10).toUpperCase()}.pdf`);
+      showToast('Bill downloaded successfully!', 'success');
     } catch (error) {
       console.error('Error generating bill:', error);
       showToast('Failed to generate bill: ' + error.message, 'error');
