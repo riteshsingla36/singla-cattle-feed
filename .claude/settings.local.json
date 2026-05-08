@@ -37,7 +37,9 @@
       "Bash(tasklist)",
       "Bash(findstr node *)",
       "Bash(netstat -ano)",
-      "Bash(findstr :3000)"
+      "Bash(findstr :3000)",
+      "Bash(python -c \"import graphify\")",
+      "Bash(python *)"
     ]
   }
 }

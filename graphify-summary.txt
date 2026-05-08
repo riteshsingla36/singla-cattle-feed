@@ -1,0 +1,26 @@
+=== GRAPHIFY PROCESSING COMPLETE ===
+
+Graphify has successfully analyzed your codebase and created a knowledge graph with:
+- 178 nodes
+- 152 edges
+- 41 communities
+
+The following outputs have been generated in the 'graphify-out' directory:
+1. graph.html - Interactive visualization of the codebase graph (open in any browser)
+2. graph.json - Raw graph data in JSON format for programmatic use
+
+Key insights from the analysis:
+- The graph includes 175 code nodes and 3 documentation nodes
+- Most nodes represent JavaScript/Next.js components and configuration files
+- The system has identified community structures that represent related code components
+
+To explore the graph:
+1. Open 'graphify-out/graph.html' in your browser to view the interactive visualization
+2. Navigate through nodes to understand relationships between code components
+3. Use the community clustering to identify related functionality areas
+
+The graph represents relationships between:
+- Code files and their dependencies
+- Functions and components within those files
+- Configuration settings and their relationships
+- Documentation and how it relates to code components

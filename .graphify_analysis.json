@@ -1,0 +1,416 @@
+{
+  "communities": {
+    "0": [
+      "firebase_firestore_js",
+      "firestore_addcustomer",
+      "firestore_addproduct",
+      "firestore_bulkupdateorderstatus",
+      "firestore_confirmpayment",
+      "firestore_createpurchaseorder",
+      "firestore_deletecustomer",
+      "firestore_deleteproduct",
+      "firestore_getallcustomerpricesforproduct",
+      "firestore_getallcustomers",
+      "firestore_getallorders",
+      "firestore_getallproducts",
+      "firestore_getallpurchaseorders",
+      "firestore_getcustomerallprices",
+      "firestore_getcustomerbyid",
+      "firestore_getcustomerbyphone",
+      "firestore_getcustomerbyuserid",
+      "firestore_getcustomerorders",
+      "firestore_getcustomerprice",
+      "firestore_getnotifications",
+      "firestore_getorder",
+      "firestore_getordersbyids",
+      "firestore_getpriceforcustomer",
+      "firestore_getproduct",
+      "firestore_getpurchaseorder",
+      "firestore_getqrcodesettings",
+      "firestore_getunreadnotificationscount",
+      "firestore_markallnotificationsasread",
+      "firestore_marknotificationasread",
+      "firestore_recordcashpayment",
+      "firestore_savebillurl",
+      "firestore_setcustomerprice",
+      "firestore_setqrcodesettings",
+      "firestore_subscribetonotifications",
+      "firestore_subscribetosession",
+      "firestore_togglecustomerstatus",
+      "firestore_updatecustomer",
+      "firestore_updateorderstatus",
+      "firestore_updateproduct",
+      "firestore_updatepurchaseorderloadinglist",
+      "firestore_updatepurchaseorderstatus"
+    ],
+    "1": [
+      "app_admin_customers_page_js",
+      "app_admin_orders_page_js",
+      "app_admin_products_page_js",
+      "app_checkout_page_js",
+      "app_orders_page_js",
+      "app_payment_upi_redirect_page_js",
+      "components_customernav_js",
+      "components_orderdetailsmodal_js",
+      "components_toast_js",
+      "customernav_customernav",
+      "orderdetailsmodal_orderdetailsmodal",
+      "page_checkoutpage",
+      "page_customerspage",
+      "page_orderspage",
+      "page_productspage",
+      "page_upiredirectpage",
+      "toast_toastprovider",
+      "toast_usetoast"
+    ],
+    "2": [
+      "firestore_placeorder",
+      "firestore_updatepaymentproof",
+      "lib_notifications_js",
+      "notifications_createnotification",
+      "notifications_formatrelativetime",
+      "notifications_getadminid",
+      "notifications_getnotifications",
+      "notifications_getunreadnotificationscount",
+      "notifications_markallnotificationsasread",
+      "notifications_marknotificationasread",
+      "notifications_subscribetonotifications"
+    ],
+    "3": [
+      "auth_changepassword",
+      "auth_generatesessionid",
+      "auth_getcurrentuser",
+      "auth_logincustomer",
+      "auth_logoutcustomer",
+      "auth_onauthstatechanged",
+      "auth_phonetoemail",
+      "auth_registercustomer",
+      "auth_sendpasswordreset",
+      "firebase_auth_js"
+    ],
+    "4": [
+      "app_api_admin_create_customer_route_js",
+      "app_api_admin_impersonate_route_js",
+      "app_api_admin_switch_back_route_js",
+      "app_api_notifications_send_push_route_js",
+      "app_api_upload_bill_route_js",
+      "app_api_upload_route_js",
+      "firebaseadmin_initializefirebaseadmin",
+      "lib_firebaseadmin_js",
+      "route_post"
+    ],
+    "5": [
+      "components_themetoggle_js",
+      "context_themecontext_js",
+      "themecontext_applytheme",
+      "themecontext_getinitialtheme",
+      "themecontext_shouldbedarkmode",
+      "themecontext_themeprovider",
+      "themecontext_usetheme",
+      "themetoggle_themetoggle"
+    ],
+    "6": [
+      "clientlayout_clientlayout",
+      "components_clientlayout_js",
+      "components_layoutwrapper_js",
+      "hooks_useauthstate_js",
+      "layoutwrapper_layoutwrapper",
+      "useauthstate_useauthstate"
+    ],
+    "7": [
+      "components_mapsection_js",
+      "mapsection_draggablemarker",
+      "mapsection_mapclickhandler",
+      "mapsection_mapsection",
+      "mapsection_positionupdater",
+      "mapsection_searchoverlay"
+    ],
+    "8": [
+      "lib_validations_js",
+      "validations_validateemail",
+      "validations_validatenumber",
+      "validations_validatepassword",
+      "validations_validatephone",
+      "validations_validaterequired"
+    ],
+    "9": [
+      "components_languageswitcher_js",
+      "context_languagecontext_js",
+      "languagecontext_languageprovider",
+      "languagecontext_uselanguage",
+      "languageswitcher_languageswitcher"
+    ],
+    "10": [
+      "components_notificationhandler_js",
+      "notificationhandler_notificationhandler",
+      "notificationhandler_processnotificationdata",
+      "notificationhandler_routefromnotification"
+    ],
+    "11": [
+      "adminnav_adminnav",
+      "components_adminnav_js",
+      "components_useadminfcm_js",
+      "useadminfcm_useadminfcm"
+    ],
+    "12": [
+      "app_admin_prices_page_js",
+      "app_prices_page_js",
+      "page_pricespage"
+    ],
+    "13": [
+      "components_protectedroute_js",
+      "protectedroute_protectedroute",
+      "protectedroute_useauthcheck"
+    ],
+    "14": [
+      "migrate_qr_settings_migratesettings",
+      "migrate_qr_settings_prompt",
+      "scripts_migrate_qr_settings_js"
+    ],
+    "15": [
+      "app_layout_js",
+      "layout_rootlayout"
+    ],
+    "16": [
+      "app_page_js",
+      "page_home"
+    ],
+    "17": [
+      "app_admin_dashboard_page_js",
+      "page_admindashboard"
+    ],
+    "18": [
+      "app_admin_migrate_settings_page_js",
+      "page_migratesettingspage"
+    ],
+    "19": [
+      "app_admin_orders_redirect_page_js",
+      "page_orderredirectpage"
+    ],
+    "20": [
+      "app_admin_purchase_orders_page_js",
+      "page_purchaseorderspage"
+    ],
+    "21": [
+      "app_admin_settings_page_js",
+      "page_adminsettingspage"
+    ],
+    "22": [
+      "app_complete_profile_page_js",
+      "page_completeprofilepage"
+    ],
+    "23": [
+      "app_dashboard_page_js",
+      "page_dashboardpage"
+    ],
+    "24": [
+      "app_login_page_js",
+      "page_loginpage"
+    ],
+    "25": [
+      "app_profile_page_js",
+      "page_profilepage"
+    ],
+    "26": [
+      "app_register_page_js",
+      "page_registerpage"
+    ],
+    "27": [
+      "components_notificationbell_js",
+      "notificationbell_notificationbell"
+    ],
+    "28": [
+      "hooks_useauth_js",
+      "useauth_useauth"
+    ],
+    "29": [
+      "billgenerator_generateorderbill",
+      "lib_billgenerator_js"
+    ],
+    "30": [
+      "check_brackets_js"
+    ],
+    "31": [
+      "next_config_js"
+    ],
+    "32": [
+      "postcss_config_js"
+    ],
+    "33": [
+      "tailwind_config_js"
+    ],
+    "34": [
+      "firebase_firebaseadmin_js"
+    ],
+    "35": [
+      "firebase_firebaseconfig_js"
+    ],
+    "36": [
+      "lib_i18n_js"
+    ],
+    "37": [
+      "scripts_delete_all_orders_mjs"
+    ],
+    "38": [
+      "doc_1_CUSTOM_URL_SCHEME_SETUP"
+    ],
+    "39": [
+      "doc_2_README"
+    ],
+    "40": [
+      "doc_3_SETUP_GUIDE"
+    ]
+  },
+  "cohesion": {
+    "0": 0.05,
+    "1": 0.11,
+    "2": 0.22,
+    "3": 0.27,
+    "4": 0.22,
+    "5": 0.29,
+    "6": 0.33,
+    "7": 0.33,
+    "8": 0.33,
+    "9": 0.4,
+    "10": 0.67,
+    "11": 0.5,
+    "12": 0.67,
+    "13": 0.67,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0
+  },
+  "gods": [
+    {
+      "id": "toast_usetoast",
+      "label": "useToast()",
+      "degree": 9
+    },
+    {
+      "id": "route_post",
+      "label": "POST()",
+      "degree": 7
+    },
+    {
+      "id": "auth_phonetoemail",
+      "label": "phoneToEmail()",
+      "degree": 4
+    },
+    {
+      "id": "page_orderspage",
+      "label": "OrdersPage()",
+      "degree": 3
+    },
+    {
+      "id": "clientlayout_clientlayout",
+      "label": "ClientLayout()",
+      "degree": 3
+    },
+    {
+      "id": "firestore_getpriceforcustomer",
+      "label": "getPriceForCustomer()",
+      "degree": 3
+    },
+    {
+      "id": "firestore_getnotifications",
+      "label": "getNotifications()",
+      "degree": 3
+    },
+    {
+      "id": "useauthstate_useauthstate",
+      "label": "useAuthState()",
+      "degree": 3
+    },
+    {
+      "id": "notifications_createnotification",
+      "label": "createNotification()",
+      "degree": 3
+    },
+    {
+      "id": "notifications_getnotifications",
+      "label": "getNotifications()",
+      "degree": 3
+    }
+  ],
+  "surprises": [
+    {
+      "source": "CustomersPage()",
+      "target": "useToast()",
+      "source_files": [
+        "app\\admin\\customers\\page.js",
+        "components\\Toast.js"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `CustomersPage()` unexpectedly reaches hub `useToast()`"
+    },
+    {
+      "source": "ProductsPage()",
+      "target": "useToast()",
+      "source_files": [
+        "app\\admin\\products\\page.js",
+        "components\\Toast.js"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `ProductsPage()` unexpectedly reaches hub `useToast()`"
+    },
+    {
+      "source": "POST()",
+      "target": "initializeFirebaseAdmin()",
+      "source_files": [
+        "app\\api\\upload-bill\\route.js",
+        "lib\\firebaseAdmin.js"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `initializeFirebaseAdmin()` unexpectedly reaches hub `POST()`"
+    },
+    {
+      "source": "CheckoutPage()",
+      "target": "useToast()",
+      "source_files": [
+        "app\\checkout\\page.js",
+        "components\\Toast.js"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `CheckoutPage()` unexpectedly reaches hub `useToast()`"
+    },
+    {
+      "source": "UpiRedirectPage()",
+      "target": "useToast()",
+      "source_files": [
+        "app\\payment\\upi-redirect\\page.js",
+        "components\\Toast.js"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `UpiRedirectPage()` unexpectedly reaches hub `useToast()`"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "nodes": [
+    {
+      "id": "doc_1_CUSTOM_URL_SCHEME_SETUP",
+      "label": "Documentation: CUSTOM_URL_SCHEME_SETUP.md",
+      "file_type": "document",
+      "source_file": "CUSTOM_URL_SCHEME_SETUP.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "doc_2_README",
+      "label": "Documentation: README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "doc_3_SETUP_GUIDE",
+      "label": "Documentation: SETUP_GUIDE.md",
+      "file_type": "document",
+      "source_file": "SETUP_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

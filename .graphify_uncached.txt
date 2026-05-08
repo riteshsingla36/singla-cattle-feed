@@ -1,0 +1,4 @@
+CUSTOM_URL_SCHEME_SETUP.md
+README.md
+SETUP_GUIDE.md
+public\logo.png

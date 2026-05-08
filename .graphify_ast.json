@@ -1,0 +1,4484 @@
+{
+  "nodes": [
+    {
+      "id": "check_brackets_js",
+      "label": "check_brackets.js",
+      "file_type": "code",
+      "source_file": "check_brackets.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "next_config_js",
+      "label": "next.config.js",
+      "file_type": "code",
+      "source_file": "next.config.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "postcss_config_js",
+      "label": "postcss.config.js",
+      "file_type": "code",
+      "source_file": "postcss.config.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "tailwind_config_js",
+      "label": "tailwind.config.js",
+      "file_type": "code",
+      "source_file": "tailwind.config.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_layout_js",
+      "label": "layout.js",
+      "file_type": "code",
+      "source_file": "app\\layout.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "layout_rootlayout",
+      "label": "RootLayout()",
+      "file_type": "code",
+      "source_file": "app\\layout.js",
+      "source_location": "L23"
+    },
+    {
+      "id": "app_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_home",
+      "label": "Home()",
+      "file_type": "code",
+      "source_file": "app\\page.js",
+      "source_location": "L7"
+    },
+    {
+      "id": "app_admin_customers_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_customerspage",
+      "label": "CustomersPage()",
+      "file_type": "code",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L15"
+    },
+    {
+      "id": "app_admin_dashboard_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\dashboard\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_admindashboard",
+      "label": "AdminDashboard()",
+      "file_type": "code",
+      "source_file": "app\\admin\\dashboard\\page.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_admin_migrate_settings_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\migrate-settings\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_migratesettingspage",
+      "label": "MigrateSettingsPage()",
+      "file_type": "code",
+      "source_file": "app\\admin\\migrate-settings\\page.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_admin_orders_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_orderspage",
+      "label": "OrdersPage()",
+      "file_type": "code",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L10"
+    },
+    {
+      "id": "app_admin_orders_redirect_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\orders-redirect\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_orderredirectpage",
+      "label": "OrderRedirectPage()",
+      "file_type": "code",
+      "source_file": "app\\admin\\orders-redirect\\page.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_admin_prices_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\prices\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_pricespage",
+      "label": "PricesPage()",
+      "file_type": "code",
+      "source_file": "app\\admin\\prices\\page.js",
+      "source_location": "L13"
+    },
+    {
+      "id": "app_admin_products_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\products\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_productspage",
+      "label": "ProductsPage()",
+      "file_type": "code",
+      "source_file": "app\\admin\\products\\page.js",
+      "source_location": "L15"
+    },
+    {
+      "id": "app_admin_purchase_orders_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_purchaseorderspage",
+      "label": "PurchaseOrdersPage()",
+      "file_type": "code",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L19"
+    },
+    {
+      "id": "app_admin_settings_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\admin\\settings\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_adminsettingspage",
+      "label": "AdminSettingsPage()",
+      "file_type": "code",
+      "source_file": "app\\admin\\settings\\page.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "app_api_admin_create_customer_route_js",
+      "label": "route.js",
+      "file_type": "code",
+      "source_file": "app\\api\\admin\\create-customer\\route.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_post",
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\admin\\create-customer\\route.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "app_api_admin_impersonate_route_js",
+      "label": "route.js",
+      "file_type": "code",
+      "source_file": "app\\api\\admin\\impersonate\\route.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_post",
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\admin\\impersonate\\route.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "app_api_admin_switch_back_route_js",
+      "label": "route.js",
+      "file_type": "code",
+      "source_file": "app\\api\\admin\\switch-back\\route.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_post",
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\admin\\switch-back\\route.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "app_api_notifications_send_push_route_js",
+      "label": "route.js",
+      "file_type": "code",
+      "source_file": "app\\api\\notifications\\send-push\\route.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_post",
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\notifications\\send-push\\route.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_api_upload_route_js",
+      "label": "route.js",
+      "file_type": "code",
+      "source_file": "app\\api\\upload\\route.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_post",
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\upload\\route.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "app_api_upload_bill_route_js",
+      "label": "route.js",
+      "file_type": "code",
+      "source_file": "app\\api\\upload-bill\\route.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_post",
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "app\\api\\upload-bill\\route.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "app_checkout_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_checkoutpage",
+      "label": "CheckoutPage()",
+      "file_type": "code",
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "app_complete_profile_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\complete-profile\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_completeprofilepage",
+      "label": "CompleteProfilePage()",
+      "file_type": "code",
+      "source_file": "app\\complete-profile\\page.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "app_dashboard_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_dashboardpage",
+      "label": "DashboardPage()",
+      "file_type": "code",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L10"
+    },
+    {
+      "id": "app_login_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_loginpage",
+      "label": "LoginPage()",
+      "file_type": "code",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "app_orders_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_orderspage",
+      "label": "OrdersPage()",
+      "file_type": "code",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L10"
+    },
+    {
+      "id": "app_payment_upi_redirect_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\payment\\upi-redirect\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_upiredirectpage",
+      "label": "UpiRedirectPage()",
+      "file_type": "code",
+      "source_file": "app\\payment\\upi-redirect\\page.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_prices_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\prices\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_pricespage",
+      "label": "PricesPage()",
+      "file_type": "code",
+      "source_file": "app\\prices\\page.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "app_profile_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\profile\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_profilepage",
+      "label": "ProfilePage()",
+      "file_type": "code",
+      "source_file": "app\\profile\\page.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "app_register_page_js",
+      "label": "page.js",
+      "file_type": "code",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_registerpage",
+      "label": "RegisterPage()",
+      "file_type": "code",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L10"
+    },
+    {
+      "id": "components_adminnav_js",
+      "label": "AdminNav.js",
+      "file_type": "code",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "adminnav_adminnav",
+      "label": "AdminNav()",
+      "file_type": "code",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L13"
+    },
+    {
+      "id": "components_clientlayout_js",
+      "label": "ClientLayout.js",
+      "file_type": "code",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "clientlayout_clientlayout",
+      "label": "ClientLayout()",
+      "file_type": "code",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L14"
+    },
+    {
+      "id": "components_customernav_js",
+      "label": "CustomerNav.js",
+      "file_type": "code",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "customernav_customernav",
+      "label": "CustomerNav()",
+      "file_type": "code",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L13"
+    },
+    {
+      "id": "components_languageswitcher_js",
+      "label": "LanguageSwitcher.js",
+      "file_type": "code",
+      "source_file": "components\\LanguageSwitcher.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "languageswitcher_languageswitcher",
+      "label": "LanguageSwitcher()",
+      "file_type": "code",
+      "source_file": "components\\LanguageSwitcher.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "components_layoutwrapper_js",
+      "label": "LayoutWrapper.js",
+      "file_type": "code",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "layoutwrapper_layoutwrapper",
+      "label": "LayoutWrapper()",
+      "file_type": "code",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L15"
+    },
+    {
+      "id": "components_mapsection_js",
+      "label": "MapSection.js",
+      "file_type": "code",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "mapsection_mapclickhandler",
+      "label": "MapClickHandler()",
+      "file_type": "code",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L22"
+    },
+    {
+      "id": "mapsection_positionupdater",
+      "label": "PositionUpdater()",
+      "file_type": "code",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L34"
+    },
+    {
+      "id": "mapsection_draggablemarker",
+      "label": "DraggableMarker()",
+      "file_type": "code",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L49"
+    },
+    {
+      "id": "mapsection_searchoverlay",
+      "label": "SearchOverlay()",
+      "file_type": "code",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L70"
+    },
+    {
+      "id": "mapsection_mapsection",
+      "label": "MapSection()",
+      "file_type": "code",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L151"
+    },
+    {
+      "id": "components_notificationbell_js",
+      "label": "NotificationBell.js",
+      "file_type": "code",
+      "source_file": "components\\NotificationBell.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "notificationbell_notificationbell",
+      "label": "NotificationBell()",
+      "file_type": "code",
+      "source_file": "components\\NotificationBell.js",
+      "source_location": "L10"
+    },
+    {
+      "id": "components_notificationhandler_js",
+      "label": "NotificationHandler.js",
+      "file_type": "code",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "notificationhandler_routefromnotification",
+      "label": "routeFromNotification()",
+      "file_type": "code",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "notificationhandler_processnotificationdata",
+      "label": "processNotificationData()",
+      "file_type": "code",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L18"
+    },
+    {
+      "id": "notificationhandler_notificationhandler",
+      "label": "NotificationHandler()",
+      "file_type": "code",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L27"
+    },
+    {
+      "id": "components_orderdetailsmodal_js",
+      "label": "OrderDetailsModal.js",
+      "file_type": "code",
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "orderdetailsmodal_orderdetailsmodal",
+      "label": "OrderDetailsModal()",
+      "file_type": "code",
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "components_protectedroute_js",
+      "label": "ProtectedRoute.js",
+      "file_type": "code",
+      "source_file": "components\\ProtectedRoute.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "protectedroute_protectedroute",
+      "label": "ProtectedRoute()",
+      "file_type": "code",
+      "source_file": "components\\ProtectedRoute.js",
+      "source_location": "L7"
+    },
+    {
+      "id": "protectedroute_useauthcheck",
+      "label": "useAuthCheck()",
+      "file_type": "code",
+      "source_file": "components\\ProtectedRoute.js",
+      "source_location": "L31"
+    },
+    {
+      "id": "components_themetoggle_js",
+      "label": "ThemeToggle.js",
+      "file_type": "code",
+      "source_file": "components\\ThemeToggle.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "themetoggle_themetoggle",
+      "label": "ThemeToggle()",
+      "file_type": "code",
+      "source_file": "components\\ThemeToggle.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "components_toast_js",
+      "label": "Toast.js",
+      "file_type": "code",
+      "source_file": "components\\Toast.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "toast_usetoast",
+      "label": "useToast()",
+      "file_type": "code",
+      "source_file": "components\\Toast.js",
+      "source_location": "L7"
+    },
+    {
+      "id": "toast_toastprovider",
+      "label": "ToastProvider()",
+      "file_type": "code",
+      "source_file": "components\\Toast.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "components_useadminfcm_js",
+      "label": "useAdminFCM.js",
+      "file_type": "code",
+      "source_file": "components\\useAdminFCM.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "useadminfcm_useadminfcm",
+      "label": "useAdminFCM()",
+      "file_type": "code",
+      "source_file": "components\\useAdminFCM.js",
+      "source_location": "L16"
+    },
+    {
+      "id": "context_languagecontext_js",
+      "label": "LanguageContext.js",
+      "file_type": "code",
+      "source_file": "context\\LanguageContext.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "languagecontext_uselanguage",
+      "label": "useLanguage()",
+      "file_type": "code",
+      "source_file": "context\\LanguageContext.js",
+      "source_location": "L8"
+    },
+    {
+      "id": "languagecontext_languageprovider",
+      "label": "LanguageProvider()",
+      "file_type": "code",
+      "source_file": "context\\LanguageContext.js",
+      "source_location": "L16"
+    },
+    {
+      "id": "context_themecontext_js",
+      "label": "ThemeContext.js",
+      "file_type": "code",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "themecontext_usetheme",
+      "label": "useTheme()",
+      "file_type": "code",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L7"
+    },
+    {
+      "id": "themecontext_shouldbedarkmode",
+      "label": "shouldBeDarkMode()",
+      "file_type": "code",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L16"
+    },
+    {
+      "id": "themecontext_getinitialtheme",
+      "label": "getInitialTheme()",
+      "file_type": "code",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L24"
+    },
+    {
+      "id": "themecontext_applytheme",
+      "label": "applyTheme()",
+      "file_type": "code",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L42"
+    },
+    {
+      "id": "themecontext_themeprovider",
+      "label": "ThemeProvider()",
+      "file_type": "code",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L55"
+    },
+    {
+      "id": "firebase_auth_js",
+      "label": "auth.js",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "auth_phonetoemail",
+      "label": "phoneToEmail()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L15"
+    },
+    {
+      "id": "auth_registercustomer",
+      "label": "registerCustomer()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L18"
+    },
+    {
+      "id": "auth_logincustomer",
+      "label": "loginCustomer()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L34"
+    },
+    {
+      "id": "auth_changepassword",
+      "label": "changePassword()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L47"
+    },
+    {
+      "id": "auth_logoutcustomer",
+      "label": "logoutCustomer()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L62"
+    },
+    {
+      "id": "auth_getcurrentuser",
+      "label": "getCurrentUser()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L80"
+    },
+    {
+      "id": "auth_onauthstatechanged",
+      "label": "onAuthStateChanged()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L85"
+    },
+    {
+      "id": "auth_sendpasswordreset",
+      "label": "sendPasswordReset()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L90"
+    },
+    {
+      "id": "auth_generatesessionid",
+      "label": "generateSessionId()",
+      "file_type": "code",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L102"
+    },
+    {
+      "id": "firebase_firebaseadmin_js",
+      "label": "firebaseAdmin.js",
+      "file_type": "code",
+      "source_file": "firebase\\firebaseAdmin.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "firebase_firebaseconfig_js",
+      "label": "firebaseConfig.js",
+      "file_type": "code",
+      "source_file": "firebase\\firebaseConfig.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "firebase_firestore_js",
+      "label": "firestore.js",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "firestore_addcustomer",
+      "label": "addCustomer()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L21"
+    },
+    {
+      "id": "firestore_getcustomerbyphone",
+      "label": "getCustomerByPhone()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L45"
+    },
+    {
+      "id": "firestore_getcustomerbyid",
+      "label": "getCustomerById()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L54"
+    },
+    {
+      "id": "firestore_getcustomerbyuserid",
+      "label": "getCustomerByUserId()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L63"
+    },
+    {
+      "id": "firestore_updatecustomer",
+      "label": "updateCustomer()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L76"
+    },
+    {
+      "id": "firestore_togglecustomerstatus",
+      "label": "toggleCustomerStatus()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L89"
+    },
+    {
+      "id": "firestore_deletecustomer",
+      "label": "deleteCustomer()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L102"
+    },
+    {
+      "id": "firestore_getallcustomers",
+      "label": "getAllCustomers()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L111"
+    },
+    {
+      "id": "firestore_addproduct",
+      "label": "addProduct()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L125"
+    },
+    {
+      "id": "firestore_getproduct",
+      "label": "getProduct()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L138"
+    },
+    {
+      "id": "firestore_getallproducts",
+      "label": "getAllProducts()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L147"
+    },
+    {
+      "id": "firestore_updateproduct",
+      "label": "updateProduct()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L160"
+    },
+    {
+      "id": "firestore_deleteproduct",
+      "label": "deleteProduct()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L173"
+    },
+    {
+      "id": "firestore_setcustomerprice",
+      "label": "setCustomerPrice()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L183"
+    },
+    {
+      "id": "firestore_getcustomerprice",
+      "label": "getCustomerPrice()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L210"
+    },
+    {
+      "id": "firestore_getcustomerallprices",
+      "label": "getCustomerAllPrices()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L223"
+    },
+    {
+      "id": "firestore_getallcustomerpricesforproduct",
+      "label": "getAllCustomerPricesForProduct()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L241"
+    },
+    {
+      "id": "firestore_getpriceforcustomer",
+      "label": "getPriceForCustomer()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L260"
+    },
+    {
+      "id": "firestore_placeorder",
+      "label": "placeOrder()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L277"
+    },
+    {
+      "id": "firestore_getorder",
+      "label": "getOrder()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L310"
+    },
+    {
+      "id": "firestore_getcustomerorders",
+      "label": "getCustomerOrders()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L319"
+    },
+    {
+      "id": "firestore_getallorders",
+      "label": "getAllOrders()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L337"
+    },
+    {
+      "id": "firestore_updateorderstatus",
+      "label": "updateOrderStatus()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L350"
+    },
+    {
+      "id": "firestore_getnotifications",
+      "label": "getNotifications()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L369"
+    },
+    {
+      "id": "firestore_subscribetonotifications",
+      "label": "subscribeToNotifications()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L397"
+    },
+    {
+      "id": "firestore_marknotificationasread",
+      "label": "markNotificationAsRead()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L425"
+    },
+    {
+      "id": "firestore_markallnotificationsasread",
+      "label": "markAllNotificationsAsRead()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L438"
+    },
+    {
+      "id": "firestore_getunreadnotificationscount",
+      "label": "getUnreadNotificationsCount()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L459"
+    },
+    {
+      "id": "firestore_updatepaymentproof",
+      "label": "updatePaymentProof()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L472"
+    },
+    {
+      "id": "firestore_confirmpayment",
+      "label": "confirmPayment()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L517"
+    },
+    {
+      "id": "firestore_recordcashpayment",
+      "label": "recordCashPayment()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L561"
+    },
+    {
+      "id": "firestore_savebillurl",
+      "label": "saveBillUrl()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L600"
+    },
+    {
+      "id": "firestore_getqrcodesettings",
+      "label": "getQRCodeSettings()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L615"
+    },
+    {
+      "id": "firestore_setqrcodesettings",
+      "label": "setQRCodeSettings()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L628"
+    },
+    {
+      "id": "firestore_createpurchaseorder",
+      "label": "createPurchaseOrder()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L643"
+    },
+    {
+      "id": "firestore_getallpurchaseorders",
+      "label": "getAllPurchaseOrders()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L665"
+    },
+    {
+      "id": "firestore_getpurchaseorder",
+      "label": "getPurchaseOrder()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L680"
+    },
+    {
+      "id": "firestore_updatepurchaseorderloadinglist",
+      "label": "updatePurchaseOrderLoadingList()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L693"
+    },
+    {
+      "id": "firestore_updatepurchaseorderstatus",
+      "label": "updatePurchaseOrderStatus()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L706"
+    },
+    {
+      "id": "firestore_getordersbyids",
+      "label": "getOrdersByIds()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L726"
+    },
+    {
+      "id": "firestore_bulkupdateorderstatus",
+      "label": "bulkUpdateOrderStatus()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L739"
+    },
+    {
+      "id": "firestore_subscribetosession",
+      "label": "subscribeToSession()",
+      "file_type": "code",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L755"
+    },
+    {
+      "id": "hooks_useauth_js",
+      "label": "useAuth.js",
+      "file_type": "code",
+      "source_file": "hooks\\useAuth.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "useauth_useauth",
+      "label": "useAuth()",
+      "file_type": "code",
+      "source_file": "hooks\\useAuth.js",
+      "source_location": "L7"
+    },
+    {
+      "id": "hooks_useauthstate_js",
+      "label": "useAuthState.js",
+      "file_type": "code",
+      "source_file": "hooks\\useAuthState.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "useauthstate_useauthstate",
+      "label": "useAuthState()",
+      "file_type": "code",
+      "source_file": "hooks\\useAuthState.js",
+      "source_location": "L13"
+    },
+    {
+      "id": "lib_billgenerator_js",
+      "label": "billGenerator.js",
+      "file_type": "code",
+      "source_file": "lib\\billGenerator.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "billgenerator_generateorderbill",
+      "label": "generateOrderBill()",
+      "file_type": "code",
+      "source_file": "lib\\billGenerator.js",
+      "source_location": "L10"
+    },
+    {
+      "id": "lib_firebaseadmin_js",
+      "label": "firebaseAdmin.js",
+      "file_type": "code",
+      "source_file": "lib\\firebaseAdmin.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "firebaseadmin_initializefirebaseadmin",
+      "label": "initializeFirebaseAdmin()",
+      "file_type": "code",
+      "source_file": "lib\\firebaseAdmin.js",
+      "source_location": "L12"
+    },
+    {
+      "id": "lib_i18n_js",
+      "label": "i18n.js",
+      "file_type": "code",
+      "source_file": "lib\\i18n.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_notifications_js",
+      "label": "notifications.js",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "notifications_createnotification",
+      "label": "createNotification()",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L25"
+    },
+    {
+      "id": "notifications_getadminid",
+      "label": "getAdminId()",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L73"
+    },
+    {
+      "id": "notifications_subscribetonotifications",
+      "label": "subscribeToNotifications()",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L100"
+    },
+    {
+      "id": "notifications_getnotifications",
+      "label": "getNotifications()",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L139"
+    },
+    {
+      "id": "notifications_getunreadnotificationscount",
+      "label": "getUnreadNotificationsCount()",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L172"
+    },
+    {
+      "id": "notifications_marknotificationasread",
+      "label": "markNotificationAsRead()",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L191"
+    },
+    {
+      "id": "notifications_markallnotificationsasread",
+      "label": "markAllNotificationsAsRead()",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L209"
+    },
+    {
+      "id": "notifications_formatrelativetime",
+      "label": "formatRelativeTime()",
+      "file_type": "code",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L233"
+    },
+    {
+      "id": "lib_validations_js",
+      "label": "validations.js",
+      "file_type": "code",
+      "source_file": "lib\\validations.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "validations_validatephone",
+      "label": "validatePhone()",
+      "file_type": "code",
+      "source_file": "lib\\validations.js",
+      "source_location": "L3"
+    },
+    {
+      "id": "validations_validatepassword",
+      "label": "validatePassword()",
+      "file_type": "code",
+      "source_file": "lib\\validations.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "validations_validateemail",
+      "label": "validateEmail()",
+      "file_type": "code",
+      "source_file": "lib\\validations.js",
+      "source_location": "L14"
+    },
+    {
+      "id": "validations_validatenumber",
+      "label": "validateNumber()",
+      "file_type": "code",
+      "source_file": "lib\\validations.js",
+      "source_location": "L19"
+    },
+    {
+      "id": "validations_validaterequired",
+      "label": "validateRequired()",
+      "file_type": "code",
+      "source_file": "lib\\validations.js",
+      "source_location": "L23"
+    },
+    {
+      "id": "scripts_delete_all_orders_mjs",
+      "label": "delete-all-orders.mjs",
+      "file_type": "code",
+      "source_file": "scripts\\delete-all-orders.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_migrate_qr_settings_js",
+      "label": "migrate-qr-settings.js",
+      "file_type": "code",
+      "source_file": "scripts\\migrate-qr-settings.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "migrate_qr_settings_migratesettings",
+      "label": "migrateSettings()",
+      "file_type": "code",
+      "source_file": "scripts\\migrate-qr-settings.js",
+      "source_location": "L32"
+    },
+    {
+      "id": "migrate_qr_settings_prompt",
+      "label": "prompt()",
+      "file_type": "code",
+      "source_file": "scripts\\migrate-qr-settings.js",
+      "source_location": "L89"
+    }
+  ],
+  "edges": [
+    {
+      "source": "app_layout_js",
+      "target": "google",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_js",
+      "target": "app_globals_css",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_js",
+      "target": "layoutwrapper",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_layout_js",
+      "target": "layout_rootlayout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\layout.js",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "app_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_page_js",
+      "target": "page_home",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_customers_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_customers_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_customers_page_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_customers_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_customers_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_customers_page_js",
+      "target": "validations",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_customers_page_js",
+      "target": "page_customerspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_dashboard_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\dashboard\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_dashboard_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\dashboard\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_dashboard_page_js",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\dashboard\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_dashboard_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\dashboard\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_dashboard_page_js",
+      "target": "page_admindashboard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\dashboard\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_migrate_settings_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\migrate-settings\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_migrate_settings_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\migrate-settings\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_migrate_settings_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\migrate-settings\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_migrate_settings_page_js",
+      "target": "firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\migrate-settings\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_migrate_settings_page_js",
+      "target": "page_migratesettingspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\migrate-settings\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_page_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_page_js",
+      "target": "billgenerator",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_page_js",
+      "target": "page_orderspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_redirect_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders-redirect\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_redirect_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders-redirect\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_redirect_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders-redirect\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_redirect_page_js",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders-redirect\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_orders_redirect_page_js",
+      "target": "page_orderredirectpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\orders-redirect\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_prices_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\prices\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_prices_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\prices\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_prices_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\prices\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_prices_page_js",
+      "target": "page_pricespage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\prices\\page.js",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_products_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\products\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_products_page_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\products\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_products_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\products\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_products_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\products\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_products_page_js",
+      "target": "page_productspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\products\\page.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_purchase_orders_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_purchase_orders_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_purchase_orders_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_purchase_orders_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_purchase_orders_page_js",
+      "target": "jspdf",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_purchase_orders_page_js",
+      "target": "jspdf_autotable",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_purchase_orders_page_js",
+      "target": "page_purchaseorderspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\purchase-orders\\page.js",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_settings_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\settings\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_settings_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\settings\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_admin_settings_page_js",
+      "target": "page_adminsettingspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\admin\\settings\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_create_customer_route_js",
+      "target": "server",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\create-customer\\route.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_create_customer_route_js",
+      "target": "firebaseadmin",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\create-customer\\route.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_create_customer_route_js",
+      "target": "route_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\create-customer\\route.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_impersonate_route_js",
+      "target": "server",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\impersonate\\route.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_impersonate_route_js",
+      "target": "firebaseadmin",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\impersonate\\route.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_impersonate_route_js",
+      "target": "route_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\impersonate\\route.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_switch_back_route_js",
+      "target": "server",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\switch-back\\route.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_switch_back_route_js",
+      "target": "firebaseadmin",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\switch-back\\route.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_admin_switch_back_route_js",
+      "target": "route_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\admin\\switch-back\\route.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_notifications_send_push_route_js",
+      "target": "server",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\notifications\\send-push\\route.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_notifications_send_push_route_js",
+      "target": "firebaseadmin",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\notifications\\send-push\\route.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_notifications_send_push_route_js",
+      "target": "route_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\notifications\\send-push\\route.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_upload_route_js",
+      "target": "server",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\upload\\route.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_upload_route_js",
+      "target": "cloudinary",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\upload\\route.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_upload_route_js",
+      "target": "route_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\upload\\route.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_upload_bill_route_js",
+      "target": "server",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\upload-bill\\route.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_upload_bill_route_js",
+      "target": "cloudinary",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\upload-bill\\route.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app_api_upload_bill_route_js",
+      "target": "route_post",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\api\\upload-bill\\route.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "app_checkout_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_checkout_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_checkout_page_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_checkout_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_checkout_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_checkout_page_js",
+      "target": "page_checkoutpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "app_complete_profile_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\complete-profile\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_complete_profile_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\complete-profile\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_complete_profile_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\complete-profile\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_complete_profile_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\complete-profile\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_complete_profile_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\complete-profile\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_complete_profile_page_js",
+      "target": "page_completeprofilepage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\complete-profile\\page.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_js",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_js",
+      "target": "orderdetailsmodal",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_dashboard_page_js",
+      "target": "page_dashboardpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\dashboard\\page.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_login_page_js",
+      "target": "page_loginpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\login\\page.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "app_orders_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_orders_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_orders_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_orders_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_orders_page_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_orders_page_js",
+      "target": "orderdetailsmodal",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_orders_page_js",
+      "target": "page_orderspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\orders\\page.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "app_payment_upi_redirect_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\payment\\upi-redirect\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_payment_upi_redirect_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\payment\\upi-redirect\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_payment_upi_redirect_page_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\payment\\upi-redirect\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_payment_upi_redirect_page_js",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\payment\\upi-redirect\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_payment_upi_redirect_page_js",
+      "target": "page_upiredirectpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\payment\\upi-redirect\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_prices_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\prices\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_prices_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\prices\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_prices_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\prices\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_prices_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\prices\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_prices_page_js",
+      "target": "page_pricespage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\prices\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_profile_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\profile\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_profile_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\profile\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_profile_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\profile\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_profile_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\profile\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_profile_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\profile\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_profile_page_js",
+      "target": "page_profilepage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\profile\\page.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_js",
+      "target": "validations",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app_register_page_js",
+      "target": "page_registerpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\register\\page.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "languageswitcher",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "themetoggle",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "notificationbell",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "useadminfcm",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_adminnav_js",
+      "target": "adminnav_adminnav",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "languageswitcher",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "themetoggle",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "useauthstate",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_clientlayout_js",
+      "target": "clientlayout_clientlayout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "languageswitcher",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "themetoggle",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_customernav_js",
+      "target": "customernav_customernav",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_languageswitcher_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LanguageSwitcher.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_languageswitcher_js",
+      "target": "languagecontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LanguageSwitcher.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_languageswitcher_js",
+      "target": "languageswitcher_languageswitcher",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LanguageSwitcher.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "useauthstate",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "customernav",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "adminnav",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "languagecontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "themecontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "notificationhandler",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "i18n",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "components_layoutwrapper_js",
+      "target": "layoutwrapper_layoutwrapper",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "react_leaflet",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "leaflet",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "leaflet_css",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "mapsection_mapclickhandler",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "mapsection_positionupdater",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "mapsection_draggablemarker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "mapsection_searchoverlay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "components_mapsection_js",
+      "target": "mapsection_mapsection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\MapSection.js",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationbell_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationBell.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationbell_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationBell.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationbell_js",
+      "target": "notifications",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationBell.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationbell_js",
+      "target": "notificationbell_notificationbell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationBell.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationhandler_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationhandler_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationhandler_js",
+      "target": "notificationhandler_routefromnotification",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationhandler_js",
+      "target": "notificationhandler_processnotificationdata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "components_notificationhandler_js",
+      "target": "notificationhandler_notificationhandler",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "notificationhandler_processnotificationdata",
+      "target": "notificationhandler_routefromnotification",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\NotificationHandler.js",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "components_orderdetailsmodal_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_orderdetailsmodal_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_orderdetailsmodal_js",
+      "target": "toast",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_orderdetailsmodal_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_orderdetailsmodal_js",
+      "target": "billgenerator",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_orderdetailsmodal_js",
+      "target": "orderdetailsmodal_orderdetailsmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_protectedroute_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ProtectedRoute.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_protectedroute_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ProtectedRoute.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_protectedroute_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ProtectedRoute.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_protectedroute_js",
+      "target": "protectedroute_protectedroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ProtectedRoute.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_protectedroute_js",
+      "target": "protectedroute_useauthcheck",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ProtectedRoute.js",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "components_themetoggle_js",
+      "target": "themecontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ThemeToggle.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_themetoggle_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ThemeToggle.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_themetoggle_js",
+      "target": "themetoggle_themetoggle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\ThemeToggle.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_toast_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\Toast.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_toast_js",
+      "target": "toast_usetoast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\Toast.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_toast_js",
+      "target": "toast_toastprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\Toast.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "components_useadminfcm_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\useAdminFCM.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "components_useadminfcm_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\useAdminFCM.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "components_useadminfcm_js",
+      "target": "firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\useAdminFCM.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "components_useadminfcm_js",
+      "target": "firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\useAdminFCM.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "components_useadminfcm_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\useAdminFCM.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "components_useadminfcm_js",
+      "target": "useadminfcm_useadminfcm",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components\\useAdminFCM.js",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "context_languagecontext_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\LanguageContext.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "context_languagecontext_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\LanguageContext.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "context_languagecontext_js",
+      "target": "languagecontext_uselanguage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\LanguageContext.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "context_languagecontext_js",
+      "target": "languagecontext_languageprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\LanguageContext.js",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "context_themecontext_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "context_themecontext_js",
+      "target": "themecontext_usetheme",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "context_themecontext_js",
+      "target": "themecontext_shouldbedarkmode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "context_themecontext_js",
+      "target": "themecontext_getinitialtheme",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "context_themecontext_js",
+      "target": "themecontext_applytheme",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "context_themecontext_js",
+      "target": "themecontext_themeprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "themecontext_getinitialtheme",
+      "target": "themecontext_shouldbedarkmode",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "context\\ThemeContext.js",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "firebase_firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_phonetoemail",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_registercustomer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_logincustomer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_changepassword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_logoutcustomer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_getcurrentuser",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_onauthstatechanged",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_sendpasswordreset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_auth_js",
+      "target": "auth_generatesessionid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "auth_registercustomer",
+      "target": "auth_phonetoemail",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "auth_logincustomer",
+      "target": "auth_phonetoemail",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "auth_sendpasswordreset",
+      "target": "auth_phonetoemail",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\auth.js",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firebaseadmin_js",
+      "target": "firebase_admin",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firebaseAdmin.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firebaseconfig_js",
+      "target": "app",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firebaseConfig.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firebaseconfig_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firebaseConfig.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firebaseconfig_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firebaseConfig.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firebaseconfig_js",
+      "target": "storage",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firebaseConfig.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firebase_firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "notifications",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_addcustomer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getcustomerbyphone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getcustomerbyid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getcustomerbyuserid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_updatecustomer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_togglecustomerstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_deletecustomer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getallcustomers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_addproduct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getproduct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getallproducts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_updateproduct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_deleteproduct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_setcustomerprice",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getcustomerprice",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getcustomerallprices",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L223",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getallcustomerpricesforproduct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getpriceforcustomer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L260",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_placeorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L277",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getcustomerorders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L319",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getallorders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L337",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_updateorderstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L350",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getnotifications",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L369",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_subscribetonotifications",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L397",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_marknotificationasread",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L425",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_markallnotificationsasread",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L438",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getunreadnotificationscount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L459",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_updatepaymentproof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L472",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_confirmpayment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L517",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_recordcashpayment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L561",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_savebillurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L600",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getqrcodesettings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L615",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_setqrcodesettings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L628",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_createpurchaseorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L643",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getallpurchaseorders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L665",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getpurchaseorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L680",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_updatepurchaseorderloadinglist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L693",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_updatepurchaseorderstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L706",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_getordersbyids",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L726",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_bulkupdateorderstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L739",
+      "weight": 1.0
+    },
+    {
+      "source": "firebase_firestore_js",
+      "target": "firestore_subscribetosession",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L755",
+      "weight": 1.0
+    },
+    {
+      "source": "firestore_getpriceforcustomer",
+      "target": "firestore_getcustomerprice",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L262",
+      "weight": 1.0
+    },
+    {
+      "source": "firestore_getpriceforcustomer",
+      "target": "firestore_getproduct",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L268",
+      "weight": 1.0
+    },
+    {
+      "source": "firestore_markallnotificationsasread",
+      "target": "firestore_getnotifications",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L440",
+      "weight": 1.0
+    },
+    {
+      "source": "firestore_getunreadnotificationscount",
+      "target": "firestore_getnotifications",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L461",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauth_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuth.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauth_js",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuth.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauth_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuth.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauth_js",
+      "target": "useauth_useauth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuth.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauthstate_js",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuthState.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauthstate_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuthState.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauthstate_js",
+      "target": "firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuthState.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauthstate_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuthState.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "hooks_useauthstate_js",
+      "target": "useauthstate_useauthstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "hooks\\useAuthState.js",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_billgenerator_js",
+      "target": "jspdf",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\billGenerator.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_billgenerator_js",
+      "target": "jspdf_autotable",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\billGenerator.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_billgenerator_js",
+      "target": "billgenerator_generateorderbill",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\billGenerator.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_firebaseadmin_js",
+      "target": "firebase_admin",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\firebaseAdmin.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_firebaseadmin_js",
+      "target": "firebaseadmin_initializefirebaseadmin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\firebaseAdmin.js",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_i18n_js",
+      "target": "i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\i18n.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_i18n_js",
+      "target": "react_i18next",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\i18n.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_i18n_js",
+      "target": "i18next_browser_languagedetector",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\i18n.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "firebase_firebaseconfig",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "firestore",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "notifications_createnotification",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "notifications_getadminid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "notifications_subscribetonotifications",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "notifications_getnotifications",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "notifications_getunreadnotificationscount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "notifications_marknotificationasread",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "notifications_markallnotificationsasread",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_notifications_js",
+      "target": "notifications_formatrelativetime",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L233",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications_getunreadnotificationscount",
+      "target": "notifications_getnotifications",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications_markallnotificationsasread",
+      "target": "notifications_getnotifications",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\notifications.js",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_validations_js",
+      "target": "validations_validatephone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\validations.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_validations_js",
+      "target": "validations_validatepassword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\validations.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_validations_js",
+      "target": "validations_validateemail",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\validations.js",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_validations_js",
+      "target": "validations_validatenumber",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\validations.js",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_validations_js",
+      "target": "validations_validaterequired",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lib\\validations.js",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_delete_all_orders_mjs",
+      "target": "firebase_admin",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\delete-all-orders.mjs",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_delete_all_orders_mjs",
+      "target": "path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\delete-all-orders.mjs",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_delete_all_orders_mjs",
+      "target": "fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\delete-all-orders.mjs",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_migrate_qr_settings_js",
+      "target": "migrate_qr_settings_migratesettings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\migrate-qr-settings.js",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_migrate_qr_settings_js",
+      "target": "migrate_qr_settings_prompt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\migrate-qr-settings.js",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "migrate_qr_settings_migratesettings",
+      "target": "migrate_qr_settings_prompt",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts\\migrate-qr-settings.js",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "page_customerspage",
+      "target": "toast_usetoast",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app\\admin\\customers\\page.js",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "page_orderspage",
+      "target": "toast_usetoast",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app\\admin\\orders\\page.js",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "page_productspage",
+      "target": "toast_usetoast",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app\\admin\\products\\page.js",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "route_post",
+      "target": "firebaseadmin_initializefirebaseadmin",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app\\api\\admin\\create-customer\\route.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "page_checkoutpage",
+      "target": "toast_usetoast",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app\\checkout\\page.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "page_upiredirectpage",
+      "target": "toast_usetoast",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app\\payment\\upi-redirect\\page.js",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "adminnav_adminnav",
+      "target": "useadminfcm_useadminfcm",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "components\\AdminNav.js",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "clientlayout_clientlayout",
+      "target": "useauthstate_useauthstate",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "clientlayout_clientlayout",
+      "target": "toast_usetoast",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "components\\ClientLayout.js",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "customernav_customernav",
+      "target": "toast_usetoast",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "components\\CustomerNav.js",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "languageswitcher_languageswitcher",
+      "target": "languagecontext_uselanguage",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "components\\LanguageSwitcher.js",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "layoutwrapper_layoutwrapper",
+      "target": "useauthstate_useauthstate",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "components\\LayoutWrapper.js",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "orderdetailsmodal_orderdetailsmodal",
+      "target": "toast_usetoast",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "components\\OrderDetailsModal.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "themetoggle_themetoggle",
+      "target": "themecontext_usetheme",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "components\\ThemeToggle.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "firestore_placeorder",
+      "target": "notifications_createnotification",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L290",
+      "weight": 1.0
+    },
+    {
+      "source": "firestore_updatepaymentproof",
+      "target": "notifications_createnotification",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "firebase\\firestore.js",
+      "source_location": "L509",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}
