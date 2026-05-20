@@ -370,6 +370,7 @@ export default function ProductsPage() {
                   onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
                   className="form-input"
                 >
+                  <option value="25kg">25 kg</option>
                   <option value="40kg">40 kg</option>
                   <option value="45kg">45 kg</option>
                   <option value="50kg">50 kg</option>
